@@ -33,13 +33,6 @@ export type SecurityCategory = {
   indicators: SecurityIndicators[]
 }
 
-export const SECURITY_HERO_INDICATORS = [
-  SecurityIndicators.Homicides,
-  SecurityIndicators.Kidnappings,
-  SecurityIndicators.Extortion,
-  SecurityIndicators.PersonalTheft,
-] as const
-
 export const SECURITY_CATEGORIES: SecurityCategory[] = [
   {
     id: 'violence',

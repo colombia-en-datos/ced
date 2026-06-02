@@ -17,6 +17,7 @@ import type { YearPoint } from '@/hooks/use-indicator-by-year'
 import { formatNumber } from '@/utils/format'
 
 type IndicatorAnnualChartProps = {
+  id?: string
   label: string
   description?: string
   source: string
@@ -37,6 +38,7 @@ type IndicatorAnnualChartProps = {
 }
 
 export function IndicatorAnnualChart({
+  id,
   label,
   description,
   source,
@@ -61,7 +63,7 @@ export function IndicatorAnnualChart({
   if (!data || !first || !latest) return <ChartEmpty indicator={label} />
 
   return (
-    <IndicatorChartCard>
+    <IndicatorChartCard id={id}>
       <IndicatorChartCardHeader
         title={label}
         subtitle={`Total nacional reportado, ${first.year}\u2013${latest.year}`}

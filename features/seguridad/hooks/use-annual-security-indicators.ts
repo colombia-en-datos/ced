@@ -1,8 +1,4 @@
-import {
-  SECURITY_CATEGORIES,
-  SECURITY_HERO_INDICATORS,
-  SecurityIndicators,
-} from '@/data/security'
+import { SECURITY_CATEGORIES, SecurityIndicators } from '@/data/security'
 import type { IndicatorByYearResult } from '@/hooks/use-indicator-by-year'
 import { useCocaBaseSeizuresByYear } from '../api/use-coca-base-seizures'
 import { useCocaineSeizuresByYear } from '../api/use-cocaine-seizures'
@@ -76,12 +72,12 @@ export function useAnnualSecurityIndicators() {
     [SecurityIndicators.TouristCrimes]: touristCrimes,
   }
 
-  const heroIndicators = SECURITY_HERO_INDICATORS.map((id) => byId[id])
+  const allIndicators = Object.values(byId)
 
   const categories = SECURITY_CATEGORIES.map((cat) => ({
     ...cat,
     data: cat.indicators.map((id) => byId[id]),
   }))
 
-  return { heroIndicators, categories }
+  return { allIndicators, categories }
 }

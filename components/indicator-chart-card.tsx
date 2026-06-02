@@ -20,9 +20,10 @@ type IndicatorChartCardProps = {
 }
 
 export function IndicatorChartCard({
+  id,
   children,
-}: Pick<IndicatorChartCardProps, 'children'>) {
-  return <Card>{children}</Card>
+}: Pick<IndicatorChartCardProps, 'children'> & { id?: string }) {
+  return <Card id={id}>{children}</Card>
 }
 
 export function IndicatorChartCardHeader({

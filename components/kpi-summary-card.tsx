@@ -10,8 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Skeleton } from '@/components/ui/skeleton'
 import type { YearPoint } from '@/hooks/use-indicator-by-year'
+import { cn } from '@/lib/utils'
 
 type KpiSummaryCardProps = {
   label: string
@@ -25,6 +25,8 @@ type KpiSummaryCardProps = {
   displayValue?: string | null
   dataUpdatedAt?: number
   isLoading?: boolean
+  onClick?: () => void
+  className?: string
 }
 
 export function KpiSummaryCard({
@@ -39,24 +41,10 @@ export function KpiSummaryCard({
   displayValue,
   dataUpdatedAt,
   isLoading,
+  onClick,
+  className,
 }: KpiSummaryCardProps) {
-  if (isLoading) {
-    return (
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>
-            <Skeleton className="h-4 w-32" />
-          </CardDescription>
-          <CardTitle>
-            <Skeleton className="h-8 w-24" />
-          </CardTitle>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <Skeleton className="h-5 w-28" />
-        </CardFooter>
-      </Card>
-    )
-  }
+  if (isLoading) return null
 
   const displayLabel = latest ? `${label} año ${latest.year}` : label
 
@@ -64,7 +52,13 @@ export function KpiSummaryCard({
     latest && previous ? `${previous.year} vs ${latest.year}` : undefined
 
   return (
-    <Card className="@container/card">
+    <Card
+      className={cn(
+        '@container/card cursor-pointer transition-all hover:ring-4 hover:ring-border',
+        className
+      )}
+      onClick={onClick}
+    >
       <CardHeader>
         <CardDescription>{displayLabel}</CardDescription>
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
