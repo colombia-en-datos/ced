@@ -1,4 +1,9 @@
+"use client"
+
 import { Geist_Mono, IBM_Plex_Sans } from "next/font/google"
+import { AppSidebar } from "@/components/app-sidebar"
+import { SiteHeader } from "@/components/site-header"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 import "./globals.css"
 import { AppProvider } from "./provider"
@@ -20,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es"
       suppressHydrationWarning
       className={cn(
         "antialiased",
@@ -29,8 +34,31 @@ export default function RootLayout({
         ibmPlexSans.variable
       )}
     >
+      <head>
+        <title>Colombia en Datos</title>
+      </head>
+
       <body>
-        <AppProvider>{children}</AppProvider>
+        <AppProvider>
+          <SidebarProvider
+            style={
+              {
+                "--sidebar-width": "calc(var(--spacing) * 72)",
+                "--header-height": "calc(var(--spacing) * 12)",
+              } as React.CSSProperties
+            }
+          >
+            <AppSidebar variant="inset" />
+            <SidebarInset>
+              <SiteHeader />
+              <div className="flex flex-1 flex-col">
+                <div className="@container/main flex flex-1 flex-col gap-2">
+                  {children}
+                </div>
+              </div>
+            </SidebarInset>
+          </SidebarProvider>
+        </AppProvider>
       </body>
     </html>
   )
