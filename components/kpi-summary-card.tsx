@@ -10,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import type { YearPoint } from '@/hooks/use-indicator-by-year'
 import { cn } from '@/lib/utils'
 
@@ -29,6 +30,25 @@ type KpiSummaryCardProps = {
   className?: string
 }
 
+const CARD_BASE = 'w-[288px] shrink-0 min-h-52'
+
+export function KpiSummaryCardSkeleton({ className }: { className?: string }) {
+  return (
+    <Card className={cn(CARD_BASE, '@container/card', className)}>
+      <CardHeader>
+        <Skeleton className="h-4 w-36" />
+        <Skeleton className="h-8 w-24" />
+        <Skeleton className="h-3 w-16" />
+      </CardHeader>
+      <CardFooter className="flex-col items-start gap-1.5 text-sm">
+        <Skeleton className="h-4 w-32" />
+        <Skeleton className="h-4 w-40" />
+        <Skeleton className="h-3.5 w-36" />
+      </CardFooter>
+    </Card>
+  )
+}
+
 export function KpiSummaryCard({
   label,
   source,
@@ -44,7 +64,7 @@ export function KpiSummaryCard({
   onClick,
   className,
 }: KpiSummaryCardProps) {
-  if (isLoading) return null
+  if (isLoading) return <KpiSummaryCardSkeleton className={className} />
 
   const displayLabel = latest ? `${label} año ${latest.year}` : label
 
@@ -54,21 +74,24 @@ export function KpiSummaryCard({
   return (
     <Card
       className={cn(
-        '@container/card cursor-pointer transition-all hover:ring-4 hover:ring-border',
+        CARD_BASE,
+        '@container/card flex flex-col cursor-pointer transition-all hover:ring-4 hover:ring-border',
         className
       )}
       onClick={onClick}
     >
       <CardHeader>
         <CardDescription>{displayLabel}</CardDescription>
-        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+        <CardTitle className="flex items-baseline gap-1.5 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
           {displayValue ?? '\u2014'}
+          {displayUnit ? (
+            <span className="text-sm font-normal text-muted-foreground">
+              {displayUnit}
+            </span>
+          ) : null}
         </CardTitle>
-        {displayUnit ? (
-          <p className="text-xs text-muted-foreground">{displayUnit}</p>
-        ) : null}
       </CardHeader>
-      <CardFooter className="flex-col items-start gap-1.5 text-sm">
+      <CardFooter className="mt-auto flex-col items-start gap-1.5 text-sm">
         {periodLabel ? (
           <div className="flex items-center gap-2 text-muted-foreground">
             <span>{periodLabel}</span>

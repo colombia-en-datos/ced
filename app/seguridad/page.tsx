@@ -75,7 +75,7 @@ export default function SeguridadPage() {
       >
         <TabsList
           variant="line"
-          className="w-full justify-start overflow-x-auto"
+          className="w-full justify-start overflow-x-auto scrollbar-none"
         >
           {categories.map((cat) => (
             <TabsTrigger key={cat.id} value={cat.id}>
