@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import Link from "next/link"
+import Link from 'next/link'
 import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from '@/components/ui/sidebar'
 
 export function NavMain({
   items,

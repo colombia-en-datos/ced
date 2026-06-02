@@ -1,6 +1,6 @@
-"use client"
+'use client'
 
-import { KidnappingsChart } from "@/features/seguridad/components/kidnappings-chart"
+import { KidnappingsChart } from '@/features/seguridad/components/kidnappings-chart'
 
 export default function SeguridadPage() {
   return (

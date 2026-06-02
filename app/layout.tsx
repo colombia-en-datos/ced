@@ -1,21 +1,21 @@
-"use client"
+'use client'
 
-import { Geist_Mono, IBM_Plex_Sans } from "next/font/google"
-import { AppSidebar } from "@/components/app-sidebar"
-import { SiteHeader } from "@/components/site-header"
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
-import { cn } from "@/lib/utils"
-import "./globals.css"
-import { AppProvider } from "./provider"
+import { Geist_Mono, IBM_Plex_Sans } from 'next/font/google'
+import { AppSidebar } from '@/components/app-sidebar'
+import { SiteHeader } from '@/components/site-header'
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
+import { cn } from '@/lib/utils'
+import './globals.css'
+import { AppProvider } from './provider'
 
 const ibmPlexSans = IBM_Plex_Sans({
-  subsets: ["latin"],
-  variable: "--font-sans",
+  subsets: ['latin'],
+  variable: '--font-sans',
 })
 
 const fontMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
+  subsets: ['latin'],
+  variable: '--font-mono',
 })
 
 export default function RootLayout({
@@ -28,9 +28,9 @@ export default function RootLayout({
       lang="es"
       suppressHydrationWarning
       className={cn(
-        "antialiased",
+        'antialiased',
         fontMono.variable,
-        "font-sans",
+        'font-sans',
         ibmPlexSans.variable
       )}
     >
@@ -43,8 +43,8 @@ export default function RootLayout({
           <SidebarProvider
             style={
               {
-                "--sidebar-width": "calc(var(--spacing) * 72)",
-                "--header-height": "calc(var(--spacing) * 12)",
+                '--sidebar-width': 'calc(var(--spacing) * 72)',
+                '--header-height': 'calc(var(--spacing) * 12)',
               } as React.CSSProperties
             }
           >

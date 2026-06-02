@@ -1,6 +1,6 @@
-"use client"
+'use client'
 
-import type * as React from "react"
+import type * as React from 'react'
 
 import {
   SidebarGroup,
@@ -8,7 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from '@/components/ui/sidebar'
 
 export function NavSecondary({
   items,

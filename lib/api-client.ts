@@ -1,5 +1,5 @@
-import { toast } from "sonner"
-import { env } from "@/config/env"
+import { toast } from 'sonner'
+import { env } from '@/config/env'
 
 type ApiOptions = {
   params?: Record<string, string | number | boolean | undefined | null>
@@ -9,7 +9,7 @@ type ApiOptions = {
 
 function buildUrlWithParams(
   url: string,
-  params?: ApiOptions["params"]
+  params?: ApiOptions['params']
 ): string {
   if (!params) return url
   const searchParams = new URLSearchParams()
@@ -31,7 +31,7 @@ async function apiRequest<T>(
 
   const response = await fetch(fullUrl, {
     headers: {
-      Accept: "application/json",
+      Accept: 'application/json',
       ...headers,
     },
     signal,
@@ -59,7 +59,7 @@ export function socrataApi<T = Record<string, string>[]>(
     ...options,
     headers: {
       ...options?.headers,
-      ...(env.SOCRATA_TOKEN ? { "X-App-Token": env.SOCRATA_TOKEN } : {}),
+      ...(env.SOCRATA_TOKEN ? { 'X-App-Token': env.SOCRATA_TOKEN } : {}),
     },
   })
 }
@@ -72,7 +72,7 @@ export async function worldBankApi<T>(
   const url = `https://api.worldbank.org/v2/country/CO/indicator/${indicator}`
   const data = await apiRequest<[unknown, T[]]>(url, {
     ...options,
-    params: { format: "json", per_page: "100", ...options?.params },
+    params: { format: 'json', per_page: '100', ...options?.params },
   })
   return data[1]
 }
@@ -84,7 +84,7 @@ export function proxyApi<T>(
 ): Promise<T> {
   if (!env.PROXY_URL) {
     throw new Error(
-      "NEXT_PUBLIC_PROXY_URL is not configured — needed for DANE endpoints"
+      'NEXT_PUBLIC_PROXY_URL is not configured — needed for DANE endpoints'
     )
   }
   return apiRequest<T>(env.PROXY_URL, {

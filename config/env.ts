@@ -1,4 +1,4 @@
-import * as z from "zod"
+import * as z from 'zod'
 
 const EnvSchema = z.object({
   SOCRATA_TOKEN: z.string().optional(),
@@ -14,7 +14,7 @@ if (!parsedEnv.success) {
   throw new Error(
     `Invalid env:\n${Object.entries(parsedEnv.error.flatten().fieldErrors)
       .map(([k, v]) => `  - ${k}: ${v}`)
-      .join("\n")}`
+      .join('\n')}`
   )
 }
 

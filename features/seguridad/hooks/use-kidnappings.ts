@@ -1,25 +1,25 @@
-import { useQuery } from "@tanstack/react-query"
-import { socrataApi } from "@/lib/api-client"
+import { useQuery } from '@tanstack/react-query'
+import { socrataApi } from '@/lib/api-client'
 
 const KIDNAPPINGS_MANIFEST = {
-  id: "seguridad_secuestros",
-  sector: "seguridad",
-  label: "Secuestros por año",
+  id: 'seguridad_secuestros',
+  sector: 'seguridad',
+  label: 'Secuestros por año',
   description:
-    "Casos de secuestro (simple y extorsivo) registrados por la Policía Nacional",
-  source: "Policía Nacional",
+    'Casos de secuestro (simple y extorsivo) registrados por la Policía Nacional',
+  source: 'Policía Nacional',
   sourceUrl:
-    "https://www.datos.gov.co/Seguridad-y-Defensa/SECUESTRO/d7zw-hpf4/about_data",
-  resourceId: "d7zw-hpf4",
+    'https://www.datos.gov.co/Seguridad-y-Defensa/SECUESTRO/d7zw-hpf4/about_data',
+  resourceId: 'd7zw-hpf4',
   query:
-    "$select=date_extract_y(fecha_hecho) as year, sum(cantidad) as total&$group=year&$order=year ASC",
-  fields: { year: "year", value: "total" },
-  unit: "casos",
+    '$select=date_extract_y(fecha_hecho) as year, sum(cantidad) as total&$group=year&$order=year ASC',
+  fields: { year: 'year', value: 'total' },
+  unit: 'casos',
   cacheTTL: 86400,
-  positiveDirection: "down" as const,
+  positiveDirection: 'down' as const,
   policyEvents: [
-    { year: 2016, label: "Acuerdo de paz FARC" },
-    { year: 2022, label: "Inicio Paz Total" },
+    { year: 2016, label: 'Acuerdo de paz FARC' },
+    { year: 2022, label: 'Inicio Paz Total' },
   ],
 } as const
 
@@ -32,7 +32,7 @@ export type KidnappingDataPoint = {
 
 export function useKidnappings() {
   const query = useQuery({
-    queryKey: ["kidnappings"],
+    queryKey: ['kidnappings'],
     queryFn: async ({ signal }) => {
       const rows = await socrataApi<SocrataRow[]>(
         KIDNAPPINGS_MANIFEST.resourceId,

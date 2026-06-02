@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import {
   CartesianGrid,
@@ -7,13 +7,13 @@ import {
   ReferenceLine,
   XAxis,
   YAxis,
-} from "recharts"
+} from 'recharts'
 import {
   type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from '@/components/ui/chart'
 
 type PolicyEvent = {
   year: number
@@ -34,7 +34,7 @@ export function TimeLineChart({
   xKey,
   yKey,
   yLabel,
-  color = "var(--chart-1)",
+  color = 'var(--chart-1)',
   policyEvents,
 }: TimeLineChartProps) {
   const chartConfig = {
@@ -71,9 +71,9 @@ export function TimeLineChart({
             strokeDasharray="4 4"
             label={{
               value: `${event.label} (${event.year})`,
-              position: "top",
+              position: 'top',
               fontSize: 11,
-              fill: "var(--destructive)",
+              fill: 'var(--destructive)',
             }}
           />
         ))}

@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import {
   IconBuildingBank,
@@ -10,12 +10,12 @@ import {
   IconSchool,
   IconShieldLock,
   IconUsersGroup,
-} from "@tabler/icons-react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import type * as React from "react"
-import { Logo } from "@/components/logo"
-import { NavMain } from "@/components/nav-main"
+} from '@tabler/icons-react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import type * as React from 'react'
+import { Logo } from '@/components/logo'
+import { NavMain } from '@/components/nav-main'
 import {
   Sidebar,
   SidebarContent,
@@ -23,8 +23,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import { Sector, sectors } from "@/config/sectors"
+} from '@/components/ui/sidebar'
+import { Sector, sectors } from '@/config/sectors'
 
 const sectorIcons: Record<Sector, React.ReactNode> = {
   [Sector.Overview]: <IconCategory />,
@@ -45,7 +45,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     title: s.title,
     url: s.url,
     icon: sectorIcons[s.slug],
-    isActive: s.url === "/" ? pathname === "/" : pathname.startsWith(s.url),
+    isActive: s.url === '/' ? pathname === '/' : pathname.startsWith(s.url),
   }))
 
   return (

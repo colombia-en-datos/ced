@@ -1,19 +1,19 @@
-"use client"
+'use client'
 
-import { ChartEmpty } from "@/components/chart-empty"
-import { ChartSkeleton } from "@/components/chart-skeleton"
-import { TimeLineChart } from "@/components/time-line-chart"
+import { ChartEmpty } from '@/components/chart-empty'
+import { ChartSkeleton } from '@/components/chart-skeleton'
+import { TimeLineChart } from '@/components/time-line-chart'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card'
 import {
   KIDNAPPINGS_MANIFEST,
   useKidnappings,
-} from "@/features/seguridad/hooks/use-kidnappings"
+} from '@/features/seguridad/hooks/use-kidnappings'
 
 export function KidnappingsChart() {
   const { data, latest, previous, delta, isLoading, error } = useKidnappings()
@@ -29,7 +29,7 @@ export function KidnappingsChart() {
       <CardHeader>
         <CardTitle>{KIDNAPPINGS_MANIFEST.label}</CardTitle>
         <CardDescription>
-          {data[0].year}–{latest.year} &middot; Fuente:{" "}
+          {data[0].year}–{latest.year} &middot; Fuente:{' '}
           <a
             href={KIDNAPPINGS_MANIFEST.sourceUrl}
             target="_blank"
@@ -50,8 +50,8 @@ export function KidnappingsChart() {
         />
         {delta !== null && previous && (
           <p className="mt-2 text-sm text-muted-foreground">
-            {latest.year}: {latest.total.toLocaleString("es-CO")}{" "}
-            {KIDNAPPINGS_MANIFEST.unit} ({delta > 0 ? "+" : ""}
+            {latest.year}: {latest.total.toLocaleString('es-CO')}{' '}
+            {KIDNAPPINGS_MANIFEST.unit} ({delta > 0 ? '+' : ''}
             {delta.toFixed(1)}% vs {previous.year})
           </p>
         )}

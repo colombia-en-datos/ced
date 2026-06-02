@@ -1,7 +1,7 @@
-"use client"
+'use client'
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -9,14 +9,14 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Separator } from "@/components/ui/separator"
-import { SidebarTrigger } from "@/components/ui/sidebar"
-import { getSectorBySlug } from "@/config/sectors"
+} from '@/components/ui/breadcrumb'
+import { Separator } from '@/components/ui/separator'
+import { SidebarTrigger } from '@/components/ui/sidebar'
+import { getSectorBySlug } from '@/config/sectors'
 
 function useCurrentSector() {
   const pathname = usePathname()
-  const segment = pathname.split("/").filter(Boolean)[0]
+  const segment = pathname.split('/').filter(Boolean)[0]
   return segment ? (getSectorBySlug(segment) ?? null) : null
 }
 
