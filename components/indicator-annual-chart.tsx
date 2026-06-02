@@ -1,6 +1,7 @@
 'use client'
 
 import { IconInfoCircle } from '@tabler/icons-react'
+import { memo } from 'react'
 import { ChartEmpty } from '@/components/chart-empty'
 import { ChartSkeleton } from '@/components/chart-skeleton'
 import {
@@ -23,7 +24,7 @@ type IndicatorAnnualChartProps = {
   source: string
   sourceUrl: string
   positiveDirection?: 'up' | 'down'
-  events?: Event[]
+  eventsByYear?: Map<number, Event[]>
   data: YearPoint[] | undefined
   first: YearPoint | null
   latest: YearPoint | null
@@ -37,14 +38,14 @@ type IndicatorAnnualChartProps = {
   dataUpdatedAt?: number
 }
 
-export function IndicatorAnnualChart({
+export const IndicatorAnnualChart = memo(function IndicatorAnnualChart({
   id,
   label,
   description,
   source,
   sourceUrl,
   positiveDirection,
-  events,
+  eventsByYear,
   data,
   first,
   latest,
@@ -82,7 +83,7 @@ export function IndicatorAnnualChart({
           yKey={yKey}
           yLabel={label}
           unit={displayUnit}
-          events={events}
+          eventsByYear={eventsByYear}
           decimals={yKey === 'rate' ? 1 : 0}
         />
         {delta !== null && previous && displayValue && (
@@ -117,4 +118,4 @@ export function IndicatorAnnualChart({
       />
     </IndicatorChartCard>
   )
-}
+})

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { COCAINE_SEIZURES_MANIFEST } from '@/data/security'
@@ -27,7 +27,9 @@ const cocaineSeizuresResponseSchema = z.array(cocaineSeizuresRowSchema)
 
 export type CocaineSeizuresRow = z.output<typeof cocaineSeizuresRowSchema>
 
-export function useCocaineSeizures() {
+export function useCocaineSeizures(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['cocaineSeizures', 'raw'],
     queryFn: async ({ signal }) => {
@@ -40,12 +42,15 @@ export function useCocaineSeizures() {
       return cocaineSeizuresResponseSchema.parse(raw)
     },
     staleTime: COCAINE_SEIZURES_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useCocaineSeizuresByYear() {
+export function useCocaineSeizuresByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useIndicatorByYear(
-    useCocaineSeizures(),
+    useCocaineSeizures(options),
     COCAINE_SEIZURES_MANIFEST,
     EVENTS
   )

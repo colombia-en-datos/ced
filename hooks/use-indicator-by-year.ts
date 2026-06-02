@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import type { Event } from '@/data/events'
 import { POPULATION_BY_YEAR } from '@/data/population'
 import type { IndicatorManifest } from '@/data/types'
+import { useAnalysisWindow } from '@/hooks/use-analysis-window'
 import { useRateView } from '@/hooks/use-rate-view'
 import { useSocrataUpdatedAt } from '@/hooks/use-socrata-updated-at'
 import { formatNumber } from '@/utils/format'
@@ -78,16 +79,24 @@ export function useIndicatorByYear<T extends CountRow>(
   manifest: IndicatorManifest,
   events?: Event[]
 ) {
-  const currentYear = new Date().getFullYear()
   const showRate = useRateView((s) => s.showRate)
+  const windowFrom = useAnalysisWindow((s) => s.from)
+  const windowTo = useAnalysisWindow((s) => s.to)
+  const currentYear = new Date().getFullYear()
   const sourceUpdatedAt = useSocrataUpdatedAt(
     manifest.resourceId,
-    manifest.cacheTTL
+    manifest.cacheTTL,
+    { enabled: query.data !== undefined }
+  )
+
+  const allYearly = useMemo(
+    () => (query.data ? aggregateByYear(query.data, currentYear) : undefined),
+    [query.data, currentYear]
   )
 
   const yearly = useMemo(
-    () => (query.data ? aggregateByYear(query.data, currentYear) : undefined),
-    [query.data, currentYear]
+    () => allYearly?.filter((d) => d.year >= windowFrom && d.year <= windowTo),
+    [allYearly, windowFrom, windowTo]
   )
 
   const completeYears = useMemo(
@@ -114,6 +123,7 @@ export function useIndicatorByYear<T extends CountRow>(
 
   return {
     ...query,
+    isLoading: query.isPending,
     dataUpdatedAt: sourceUpdatedAt ?? query.dataUpdatedAt,
     id: manifest.id,
     label: manifest.label,

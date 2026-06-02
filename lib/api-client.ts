@@ -73,7 +73,13 @@ export const socrataApi = {
   ): Promise<T> {
     return apiRequest<T>(
       `https://www.datos.gov.co/api/views/${resourceId}.json`,
-      options
+      {
+        ...options,
+        headers: {
+          ...options?.headers,
+          ...(env.SOCRATA_TOKEN ? { 'X-App-Token': env.SOCRATA_TOKEN } : {}),
+        },
+      }
     )
   },
 }

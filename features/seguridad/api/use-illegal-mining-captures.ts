@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { ILLEGAL_MINING_CAPTURES_MANIFEST } from '@/data/security'
@@ -31,7 +31,9 @@ export type IllegalMiningCapturesRow = z.output<
   typeof illegalMiningCapturesRowSchema
 >
 
-export function useIllegalMiningCaptures() {
+export function useIllegalMiningCaptures(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['illegalMiningCaptures', 'raw'],
     queryFn: async ({ signal }) => {
@@ -44,12 +46,15 @@ export function useIllegalMiningCaptures() {
       return illegalMiningCapturesResponseSchema.parse(raw)
     },
     staleTime: ILLEGAL_MINING_CAPTURES_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useIllegalMiningCapturesByYear() {
+export function useIllegalMiningCapturesByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useIndicatorByYear(
-    useIllegalMiningCaptures(),
+    useIllegalMiningCaptures(options),
     ILLEGAL_MINING_CAPTURES_MANIFEST,
     EVENTS
   )

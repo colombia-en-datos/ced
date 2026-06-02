@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { KIDNAPPINGS_MANIFEST } from '@/data/security'
@@ -29,7 +29,9 @@ const kidnappingsResponseSchema = z.array(kidnappingRowSchema)
 
 export type KidnappingRow = z.output<typeof kidnappingRowSchema>
 
-export function useKidnappings() {
+export function useKidnappings(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['kidnappings', 'raw'],
     queryFn: async ({ signal }) => {
@@ -42,9 +44,16 @@ export function useKidnappings() {
       return kidnappingsResponseSchema.parse(raw)
     },
     staleTime: KIDNAPPINGS_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useKidnappingsByYear() {
-  return useIndicatorByYear(useKidnappings(), KIDNAPPINGS_MANIFEST, EVENTS)
+export function useKidnappingsByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
+  return useIndicatorByYear(
+    useKidnappings(options),
+    KIDNAPPINGS_MANIFEST,
+    EVENTS
+  )
 }

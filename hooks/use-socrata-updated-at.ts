@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { socrataApi } from '@/lib/api-client'
 
@@ -9,7 +9,8 @@ const socrataViewSchema = z
 /** Returns the dataset's `rowsUpdatedAt` as a millisecond timestamp, or undefined while loading. */
 export function useSocrataUpdatedAt(
   resourceId: string,
-  cacheTTL: number
+  cacheTTL: number,
+  options?: Pick<QueryObserverOptions, 'enabled'>
 ): number | undefined {
   const { data } = useQuery({
     queryKey: ['socrata-view', resourceId],
@@ -18,6 +19,7 @@ export function useSocrataUpdatedAt(
       return socrataViewSchema.parse(raw)
     },
     staleTime: cacheTTL * 1000,
+    enabled: options ? Boolean(options.enabled) : true,
   })
 
   return data

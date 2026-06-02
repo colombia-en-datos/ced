@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { InfoTip } from '@/components/info-tip'
 import {
   type ChartConfig,
   ChartContainer,
@@ -27,7 +28,7 @@ type TimeLineChartProps = {
   yLabel: string
   unit?: string
   color?: string
-  events?: Event[]
+  eventsByYear?: Map<number, Event[]>
   decimals?: number
 }
 
@@ -85,7 +86,7 @@ export function TimeLineChart({
   yLabel,
   unit,
   color = 'var(--chart-1)',
-  events,
+  eventsByYear,
   decimals = 0,
 }: TimeLineChartProps) {
   const instanceId = useId()
@@ -132,21 +133,23 @@ export function TimeLineChart({
             />
           }
         />
-        {events?.map((event, i) => (
-          <ReferenceLine
-            key={event.year}
-            x={event.year}
-            stroke="var(--color-amber-500)"
-            strokeDasharray="4 4"
-            label={{
-              value: `${event.label} (${event.year})`,
-              position: 'top',
-              fontSize: 11,
-              fill: 'var(--color-amber-500)',
-              dy: i % 2 === 0 ? 0 : 14,
-            }}
-          />
-        ))}
+        {eventsByYear
+          ? Array.from(eventsByYear.entries()).map(([year, yearEvents]) => (
+              <ReferenceLine
+                key={year}
+                x={year}
+                stroke="var(--color-amber-400)"
+                strokeDasharray="4 4"
+                strokeOpacity={0.6}
+                label={
+                  <EventMarker
+                    text={yearEvents.map((e) => e.id).join(',')}
+                    events={yearEvents}
+                  />
+                }
+              />
+            ))
+          : null}
         {hasPartial ? (
           <DashedLineEnd
             gradientId={gradientId}
@@ -167,5 +170,54 @@ export function TimeLineChart({
         )}
       </LineChart>
     </ChartContainer>
+  )
+}
+
+function EventMarker({
+  text,
+  events,
+  viewBox,
+}: {
+  text: string
+  events: Event[]
+  viewBox?: { x?: number; y?: number }
+}) {
+  const x = viewBox?.x ?? 0
+  const multi = events.length > 1
+  const size = multi ? 20 : 16
+
+  const tooltipContent = (
+    <div className="flex flex-col gap-0.5">
+      {events.map((e) => (
+        <span key={e.label} className="whitespace-nowrap">
+          <span className="font-semibold text-amber-400">{e.id}</span> {e.label}{' '}
+          ({e.year})
+        </span>
+      ))}
+    </div>
+  )
+
+  return (
+    <foreignObject
+      x={x - size / 2}
+      y={8 - size / 2}
+      width={size}
+      height={size}
+      className="overflow-visible"
+    >
+      <InfoTip content={tooltipContent}>
+        <div
+          className="flex items-center justify-center rounded-full border border-amber-400/60 bg-amber-400/15 cursor-default"
+          style={{ width: size, height: size }}
+        >
+          <span
+            className="font-semibold text-amber-500 leading-none select-none"
+            style={{ fontSize: multi ? 8 : 9 }}
+          >
+            {text}
+          </span>
+        </div>
+      </InfoTip>
+    </foreignObject>
   )
 }

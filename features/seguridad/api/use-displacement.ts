@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { DISPLACEMENT_MANIFEST } from '@/data/security'
@@ -31,7 +31,9 @@ const displacementResponseSchema = z.array(displacementRowSchema)
 
 export type DisplacementRow = z.output<typeof displacementRowSchema>
 
-export function useDisplacement() {
+export function useDisplacement(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['displacement', 'raw'],
     queryFn: async ({ signal }) => {
@@ -44,9 +46,16 @@ export function useDisplacement() {
       return displacementResponseSchema.parse(raw)
     },
     staleTime: DISPLACEMENT_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useDisplacementByYear() {
-  return useIndicatorByYear(useDisplacement(), DISPLACEMENT_MANIFEST, EVENTS)
+export function useDisplacementByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
+  return useIndicatorByYear(
+    useDisplacement(options),
+    DISPLACEMENT_MANIFEST,
+    EVENTS
+  )
 }

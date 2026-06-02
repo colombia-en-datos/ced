@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { FIREARM_SEIZURES_MANIFEST } from '@/data/security'
@@ -34,7 +34,9 @@ const firearmSeizuresResponseSchema = z.array(firearmSeizuresRowSchema)
 
 export type FirearmSeizuresRow = z.output<typeof firearmSeizuresRowSchema>
 
-export function useFirearmSeizures() {
+export function useFirearmSeizures(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['firearmSeizures', 'raw'],
     queryFn: async ({ signal }) => {
@@ -47,12 +49,15 @@ export function useFirearmSeizures() {
       return firearmSeizuresResponseSchema.parse(raw)
     },
     staleTime: FIREARM_SEIZURES_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useFirearmSeizuresByYear() {
+export function useFirearmSeizuresByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useIndicatorByYear(
-    useFirearmSeizures(),
+    useFirearmSeizures(options),
     FIREARM_SEIZURES_MANIFEST,
     EVENTS
   )

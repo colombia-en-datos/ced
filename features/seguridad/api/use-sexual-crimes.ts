@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { SEXUAL_CRIMES_MANIFEST } from '@/data/security'
@@ -27,7 +27,9 @@ const sexualCrimesResponseSchema = z.array(sexualCrimesRowSchema)
 
 export type SexualCrimesRow = z.output<typeof sexualCrimesRowSchema>
 
-export function useSexualCrimes() {
+export function useSexualCrimes(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['sexualCrimes', 'raw'],
     queryFn: async ({ signal }) => {
@@ -40,9 +42,16 @@ export function useSexualCrimes() {
       return sexualCrimesResponseSchema.parse(raw)
     },
     staleTime: SEXUAL_CRIMES_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useSexualCrimesByYear() {
-  return useIndicatorByYear(useSexualCrimes(), SEXUAL_CRIMES_MANIFEST, EVENTS)
+export function useSexualCrimesByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
+  return useIndicatorByYear(
+    useSexualCrimes(options),
+    SEXUAL_CRIMES_MANIFEST,
+    EVENTS
+  )
 }

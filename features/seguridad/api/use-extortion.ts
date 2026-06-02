@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { EXTORTION_MANIFEST } from '@/data/security'
@@ -27,7 +27,7 @@ const extortionResponseSchema = z.array(extortionRowSchema)
 
 export type ExtortionRow = z.output<typeof extortionRowSchema>
 
-export function useExtortion() {
+export function useExtortion(options?: Pick<QueryObserverOptions, 'enabled'>) {
   return useQuery({
     queryKey: ['extortion', 'raw'],
     queryFn: async ({ signal }) => {
@@ -40,9 +40,12 @@ export function useExtortion() {
       return extortionResponseSchema.parse(raw)
     },
     staleTime: EXTORTION_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useExtortionByYear() {
-  return useIndicatorByYear(useExtortion(), EXTORTION_MANIFEST, EVENTS)
+export function useExtortionByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
+  return useIndicatorByYear(useExtortion(options), EXTORTION_MANIFEST, EVENTS)
 }

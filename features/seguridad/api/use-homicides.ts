@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { HOMICIDES_MANIFEST } from '@/data/security'
@@ -37,7 +37,7 @@ const homicidesResponseSchema = z.array(homicideRowSchema)
 
 export type HomicideRow = z.output<typeof homicideRowSchema>
 
-export function useHomicides() {
+export function useHomicides(options?: Pick<QueryObserverOptions, 'enabled'>) {
   return useQuery({
     queryKey: ['homicides', 'raw'],
     queryFn: async ({ signal }) => {
@@ -50,9 +50,12 @@ export function useHomicides() {
       return homicidesResponseSchema.parse(raw)
     },
     staleTime: HOMICIDES_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useHomicidesByYear() {
-  return useIndicatorByYear(useHomicides(), HOMICIDES_MANIFEST, EVENTS)
+export function useHomicidesByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
+  return useIndicatorByYear(useHomicides(options), HOMICIDES_MANIFEST, EVENTS)
 }

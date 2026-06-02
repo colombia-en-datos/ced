@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { TRAFFIC_INJURIES_MANIFEST } from '@/data/security'
@@ -27,7 +27,9 @@ const trafficInjuriesResponseSchema = z.array(trafficInjuriesRowSchema)
 
 export type TrafficInjuriesRow = z.output<typeof trafficInjuriesRowSchema>
 
-export function useTrafficInjuries() {
+export function useTrafficInjuries(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['trafficInjuries', 'raw'],
     queryFn: async ({ signal }) => {
@@ -40,12 +42,15 @@ export function useTrafficInjuries() {
       return trafficInjuriesResponseSchema.parse(raw)
     },
     staleTime: TRAFFIC_INJURIES_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useTrafficInjuriesByYear() {
+export function useTrafficInjuriesByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useIndicatorByYear(
-    useTrafficInjuries(),
+    useTrafficInjuries(options),
     TRAFFIC_INJURIES_MANIFEST,
     EVENTS
   )

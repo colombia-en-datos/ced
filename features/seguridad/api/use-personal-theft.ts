@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { PERSONAL_THEFT_MANIFEST } from '@/data/security'
@@ -27,7 +27,9 @@ const personalTheftResponseSchema = z.array(personalTheftRowSchema)
 
 export type PersonalTheftRow = z.output<typeof personalTheftRowSchema>
 
-export function usePersonalTheft() {
+export function usePersonalTheft(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['personalTheft', 'raw'],
     queryFn: async ({ signal }) => {
@@ -40,9 +42,16 @@ export function usePersonalTheft() {
       return personalTheftResponseSchema.parse(raw)
     },
     staleTime: PERSONAL_THEFT_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function usePersonalTheftByYear() {
-  return useIndicatorByYear(usePersonalTheft(), PERSONAL_THEFT_MANIFEST, EVENTS)
+export function usePersonalTheftByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
+  return useIndicatorByYear(
+    usePersonalTheft(options),
+    PERSONAL_THEFT_MANIFEST,
+    EVENTS
+  )
 }

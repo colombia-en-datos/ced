@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { OIL_PIPELINE_BOMBINGS_MANIFEST } from '@/data/security'
@@ -29,7 +29,9 @@ export type OilPipelineBombingsRow = z.output<
   typeof oilPipelineBombingsRowSchema
 >
 
-export function useOilPipelineBombings() {
+export function useOilPipelineBombings(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['oilPipelineBombings', 'raw'],
     queryFn: async ({ signal }) => {
@@ -42,12 +44,15 @@ export function useOilPipelineBombings() {
       return oilPipelineBombingsResponseSchema.parse(raw)
     },
     staleTime: OIL_PIPELINE_BOMBINGS_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useOilPipelineBombingsByYear() {
+export function useOilPipelineBombingsByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useIndicatorByYear(
-    useOilPipelineBombings(),
+    useOilPipelineBombings(options),
     OIL_PIPELINE_BOMBINGS_MANIFEST,
     EVENTS
   )

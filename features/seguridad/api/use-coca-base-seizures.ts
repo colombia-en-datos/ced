@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { COCA_BASE_SEIZURES_MANIFEST } from '@/data/security'
@@ -27,7 +27,9 @@ const cocaBaseSeizuresResponseSchema = z.array(cocaBaseSeizuresRowSchema)
 
 export type CocaBaseSeizuresRow = z.output<typeof cocaBaseSeizuresRowSchema>
 
-export function useCocaBaseSeizures() {
+export function useCocaBaseSeizures(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['cocaBaseSeizures', 'raw'],
     queryFn: async ({ signal }) => {
@@ -40,12 +42,15 @@ export function useCocaBaseSeizures() {
       return cocaBaseSeizuresResponseSchema.parse(raw)
     },
     staleTime: COCA_BASE_SEIZURES_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useCocaBaseSeizuresByYear() {
+export function useCocaBaseSeizuresByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useIndicatorByYear(
-    useCocaBaseSeizures(),
+    useCocaBaseSeizures(options),
     COCA_BASE_SEIZURES_MANIFEST,
     EVENTS
   )

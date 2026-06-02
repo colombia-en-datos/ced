@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { VEHICLE_THEFT_MANIFEST } from '@/data/security'
@@ -31,7 +31,9 @@ const vehicleTheftResponseSchema = z.array(vehicleTheftRowSchema)
 
 export type VehicleTheftRow = z.output<typeof vehicleTheftRowSchema>
 
-export function useVehicleTheft() {
+export function useVehicleTheft(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['vehicleTheft', 'raw'],
     queryFn: async ({ signal }) => {
@@ -44,9 +46,16 @@ export function useVehicleTheft() {
       return vehicleTheftResponseSchema.parse(raw)
     },
     staleTime: VEHICLE_THEFT_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useVehicleTheftByYear() {
-  return useIndicatorByYear(useVehicleTheft(), VEHICLE_THEFT_MANIFEST, EVENTS)
+export function useVehicleTheftByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
+  return useIndicatorByYear(
+    useVehicleTheft(options),
+    VEHICLE_THEFT_MANIFEST,
+    EVENTS
+  )
 }

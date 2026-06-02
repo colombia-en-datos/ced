@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { FORCE_CASUALTIES_MANIFEST } from '@/data/security'
@@ -29,7 +29,9 @@ const forceCasualtiesResponseSchema = z.array(forceCasualtiesRowSchema)
 
 export type ForceCasualtiesRow = z.output<typeof forceCasualtiesRowSchema>
 
-export function useForceCasualties() {
+export function useForceCasualties(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useQuery({
     queryKey: ['forceCasualties', 'raw'],
     queryFn: async ({ signal }) => {
@@ -42,12 +44,15 @@ export function useForceCasualties() {
       return forceCasualtiesResponseSchema.parse(raw)
     },
     staleTime: FORCE_CASUALTIES_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useForceCasualtiesByYear() {
+export function useForceCasualtiesByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
   return useIndicatorByYear(
-    useForceCasualties(),
+    useForceCasualties(options),
     FORCE_CASUALTIES_MANIFEST,
     EVENTS
   )

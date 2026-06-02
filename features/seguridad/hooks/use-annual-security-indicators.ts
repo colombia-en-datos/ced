@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from 'react'
 import { SECURITY_CATEGORIES, SecurityIndicators } from '@/data/security'
 import type { IndicatorByYearResult } from '@/hooks/use-indicator-by-year'
 import { useCocaBaseSeizuresByYear } from '../api/use-coca-base-seizures'
@@ -23,29 +24,78 @@ import { useTouristCrimesByYear } from '../api/use-tourist-crimes'
 import { useTrafficInjuriesByYear } from '../api/use-traffic-injuries'
 import { useVehicleTheftByYear } from '../api/use-vehicle-theft'
 
-export function useAnnualSecurityIndicators() {
-  const kidnappings = useKidnappingsByYear()
-  const homicides = useHomicidesByYear()
-  const extortion = useExtortionByYear()
-  const terrorism = useTerrorismByYear()
-  const crimesAgainstMinors = useCrimesAgainstMinorsByYear()
-  const financialTheft = useFinancialTheftByYear()
-  const forceCasualties = useForceCasualtiesByYear()
-  const domesticViolence = useDomesticViolenceByYear()
-  const displacement = useDisplacementByYear()
-  const personalTheft = usePersonalTheftByYear()
-  const homeTheft = useHomeTheftByYear()
-  const vehicleTheft = useVehicleTheftByYear()
-  const cropEradication = useCropEradicationByYear()
-  const cocaineSeizures = useCocaineSeizuresByYear()
-  const cocaBaseSeizures = useCocaBaseSeizuresByYear()
-  const sexualCrimes = useSexualCrimesByYear()
-  const illegalMiningCaptures = useIllegalMiningCapturesByYear()
-  const firearmSeizures = useFirearmSeizuresByYear()
-  const marijuanaSeizures = useMarijuanaSeizuresByYear()
-  const oilPipelineBombings = useOilPipelineBombingsByYear()
-  const trafficInjuries = useTrafficInjuriesByYear()
-  const touristCrimes = useTouristCrimesByYear()
+export function useAnnualSecurityIndicators(activeCategory: string) {
+  const [secondWaveEnabled, setSecondWaveEnabled] = useState(false)
+
+  const activeIds = useMemo(
+    () =>
+      new Set(
+        SECURITY_CATEGORIES.find((c) => c.id === activeCategory)?.indicators ??
+          []
+      ),
+    [activeCategory]
+  )
+
+  const on = (id: SecurityIndicators) => ({
+    enabled: activeIds.has(id) || secondWaveEnabled,
+  })
+
+  const kidnappings = useKidnappingsByYear(on(SecurityIndicators.Kidnappings))
+  const homicides = useHomicidesByYear(on(SecurityIndicators.Homicides))
+  const extortion = useExtortionByYear(on(SecurityIndicators.Extortion))
+  const terrorism = useTerrorismByYear(on(SecurityIndicators.Terrorism))
+  const crimesAgainstMinors = useCrimesAgainstMinorsByYear(
+    on(SecurityIndicators.CrimesAgainstMinors)
+  )
+  const financialTheft = useFinancialTheftByYear(
+    on(SecurityIndicators.FinancialTheft)
+  )
+  const forceCasualties = useForceCasualtiesByYear(
+    on(SecurityIndicators.ForceCasualties)
+  )
+  const domesticViolence = useDomesticViolenceByYear(
+    on(SecurityIndicators.DomesticViolence)
+  )
+  const displacement = useDisplacementByYear(
+    on(SecurityIndicators.Displacement)
+  )
+  const personalTheft = usePersonalTheftByYear(
+    on(SecurityIndicators.PersonalTheft)
+  )
+  const homeTheft = useHomeTheftByYear(on(SecurityIndicators.HomeTheft))
+  const vehicleTheft = useVehicleTheftByYear(
+    on(SecurityIndicators.VehicleTheft)
+  )
+  const cropEradication = useCropEradicationByYear(
+    on(SecurityIndicators.CropEradication)
+  )
+  const cocaineSeizures = useCocaineSeizuresByYear(
+    on(SecurityIndicators.CocaineSeizures)
+  )
+  const cocaBaseSeizures = useCocaBaseSeizuresByYear(
+    on(SecurityIndicators.CocaBaseSeizures)
+  )
+  const sexualCrimes = useSexualCrimesByYear(
+    on(SecurityIndicators.SexualCrimes)
+  )
+  const illegalMiningCaptures = useIllegalMiningCapturesByYear(
+    on(SecurityIndicators.IllegalMiningCaptures)
+  )
+  const firearmSeizures = useFirearmSeizuresByYear(
+    on(SecurityIndicators.FirearmSeizures)
+  )
+  const marijuanaSeizures = useMarijuanaSeizuresByYear(
+    on(SecurityIndicators.MarijuanaSeizures)
+  )
+  const oilPipelineBombings = useOilPipelineBombingsByYear(
+    on(SecurityIndicators.OilPipelineBombings)
+  )
+  const trafficInjuries = useTrafficInjuriesByYear(
+    on(SecurityIndicators.TrafficInjuries)
+  )
+  const touristCrimes = useTouristCrimesByYear(
+    on(SecurityIndicators.TouristCrimes)
+  )
 
   const byId: Record<string, IndicatorByYearResult> = {
     [SecurityIndicators.Kidnappings]: kidnappings,
@@ -71,6 +121,17 @@ export function useAnnualSecurityIndicators() {
     [SecurityIndicators.TrafficInjuries]: trafficInjuries,
     [SecurityIndicators.TouristCrimes]: touristCrimes,
   }
+
+  // Enable second wave once the active category finishes loading
+  const activeLoaded = [...activeIds].every(
+    (id) => byId[id]?.data !== undefined
+  )
+
+  useEffect(() => {
+    if (activeLoaded && !secondWaveEnabled) {
+      setSecondWaveEnabled(true)
+    }
+  }, [activeLoaded, secondWaveEnabled])
 
   const allIndicators = Object.values(byId)
 

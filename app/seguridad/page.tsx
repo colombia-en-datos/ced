@@ -4,12 +4,35 @@ import { useCallback, useMemo, useState } from 'react'
 import { IndicatorAnnualChart } from '@/components/indicator-annual-chart'
 import { SectorHeader } from '@/components/sector-header'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { EVENTS, type Event } from '@/data/events'
+import { SECURITY_CATEGORIES } from '@/data/security'
 import { KpiSummaryStrip } from '@/features/seguridad/components/kpi-summary-strip'
 import { useAnnualSecurityIndicators } from '@/features/seguridad/hooks/use-annual-security-indicators'
+import { useAnalysisSettings } from '@/hooks/use-analysis-settings'
+
+/** Group events by year for chart markers. Call once and share across charts. */
+function groupEventsByYear(events: Event[]) {
+  const byYear = new Map<number, Event[]>()
+  for (const e of events) {
+    const list = byYear.get(e.year) ?? []
+    list.push(e)
+    byYear.set(e.year, list)
+  }
+  return byYear
+}
 
 export default function SeguridadPage() {
-  const { allIndicators, categories } = useAnnualSecurityIndicators()
-  const [activeTab, setActiveTab] = useState(categories[0]?.id ?? '')
+  const settings = useAnalysisSettings()
+  const [activeTab, setActiveTab] = useState(SECURITY_CATEGORIES[0].id)
+  const { allIndicators, categories } = useAnnualSecurityIndicators(activeTab)
+
+  const eventsByYear = useMemo(
+    () =>
+      groupEventsByYear(
+        EVENTS.filter((e) => settings.enabledEvents.has(e.label))
+      ),
+    [settings.enabledEvents]
+  )
 
   const indicatorToCategory = useMemo(() => {
     const map: Record<string, string> = {}
@@ -90,10 +113,11 @@ export default function SeguridadPage() {
               {cat.description}
             </p>
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-              {cat.data.map(({ id: indicatorId, ...rest }) => (
+              {cat.data.map(({ id: indicatorId, events: _, ...rest }) => (
                 <IndicatorAnnualChart
                   key={rest.label}
                   id={`chart-${indicatorId}`}
+                  eventsByYear={eventsByYear}
                   {...rest}
                 />
               ))}

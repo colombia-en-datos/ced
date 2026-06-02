@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from 'react'
 import { DataUpdatedAt } from '@/components/data-updated-at'
 import { SourceBadge } from '@/components/source-badge'
 import { TrendBadge } from '@/components/trend-badge'
@@ -49,7 +50,7 @@ export function KpiSummaryCardSkeleton({ className }: { className?: string }) {
   )
 }
 
-export function KpiSummaryCard({
+export const KpiSummaryCard = memo(function KpiSummaryCard({
   label,
   source,
   sourceUrl,
@@ -108,4 +109,4 @@ export function KpiSummaryCard({
       </CardFooter>
     </Card>
   )
-}
+})

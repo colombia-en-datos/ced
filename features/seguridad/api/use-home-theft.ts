@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { EVENTS } from '@/data/events'
 import { HOME_THEFT_MANIFEST } from '@/data/security'
@@ -27,7 +27,7 @@ const homeTheftResponseSchema = z.array(homeTheftRowSchema)
 
 export type HomeTheftRow = z.output<typeof homeTheftRowSchema>
 
-export function useHomeTheft() {
+export function useHomeTheft(options?: Pick<QueryObserverOptions, 'enabled'>) {
   return useQuery({
     queryKey: ['homeTheft', 'raw'],
     queryFn: async ({ signal }) => {
@@ -40,9 +40,12 @@ export function useHomeTheft() {
       return homeTheftResponseSchema.parse(raw)
     },
     staleTime: HOME_THEFT_MANIFEST.cacheTTL * 1000,
+    enabled: Boolean(options?.enabled),
   })
 }
 
-export function useHomeTheftByYear() {
-  return useIndicatorByYear(useHomeTheft(), HOME_THEFT_MANIFEST, EVENTS)
+export function useHomeTheftByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+) {
+  return useIndicatorByYear(useHomeTheft(options), HOME_THEFT_MANIFEST, EVENTS)
 }

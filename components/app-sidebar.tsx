@@ -1,6 +1,7 @@
 'use client'
 
 import {
+  IconAdjustments,
   IconBuildingBank,
   IconCategory,
   IconDevices,
@@ -71,6 +72,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild isActive={pathname === '/configuracion'}>
+              <Link href="/configuracion">
+                <IconAdjustments />
+                <span>Configuración</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <ThemeToggle />
           </SidebarMenuItem>
