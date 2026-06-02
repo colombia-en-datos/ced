@@ -32,12 +32,18 @@ export function IndicatorChartCardHeader({
   children?: ReactNode
 }) {
   return (
-    <CardHeader>
+    <CardHeader className="border-b border-border/40 pb-4">
       <div className="flex items-center gap-2">
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="text-lg font-semibold tracking-tight">
+          {title}
+        </CardTitle>
         {children}
       </div>
-      {subtitle && <CardDescription>{subtitle}</CardDescription>}
+      {subtitle ? (
+        <CardDescription className="font-mono text-xs tracking-wide text-muted-foreground/70">
+          {subtitle}
+        </CardDescription>
+      ) : null}
     </CardHeader>
   )
 }
@@ -53,7 +59,7 @@ export function IndicatorChartCardFooter({
   sourceUrl,
 }: Pick<IndicatorChartCardProps, 'source' | 'sourceUrl'>) {
   return (
-    <CardFooter className="justify-end">
+    <CardFooter className="justify-end border-t border-border/40 pt-4">
       <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />
     </CardFooter>
   )

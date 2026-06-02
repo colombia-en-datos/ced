@@ -47,6 +47,31 @@ function computeDelta(
     : null
 }
 
+export type IndicatorByYearResult = {
+  id: string
+  label: string
+  description: string
+  source: string
+  sourceUrl: string
+  unit: string
+  positiveDirection: 'up' | 'down'
+  events: Event[] | undefined
+  data: YearPoint[] | undefined
+  completeYears: YearPoint[]
+  first: YearPoint | null
+  latest: YearPoint | null
+  previous: YearPoint | null
+  absoluteDelta: number | null
+  rateDelta: number | null
+  delta: number | null
+  displayUnit: string
+  displayValue: string | null
+  yKey: string
+  isLoading: boolean
+  error: Error | null
+  dataUpdatedAt: number
+}
+
 export function useIndicatorByYear<T extends CountRow>(
   query: UseQueryResult<T[]>,
   manifest: IndicatorManifest,
@@ -84,6 +109,7 @@ export function useIndicatorByYear<T extends CountRow>(
 
   return {
     ...query,
+    id: manifest.id,
     label: manifest.label,
     description: manifest.description,
     source: manifest.source,

@@ -23,11 +23,11 @@ export function SectorHeader({
     <div className="flex flex-col gap-3 px-4 sm:flex-row sm:items-center sm:justify-between lg:px-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        {subtitle && (
+        {subtitle ? (
           <p className="text-sm text-muted-foreground">{subtitle}</p>
-        )}
+        ) : null}
       </div>
-      {hasRateToggle && (
+      {hasRateToggle ? (
         <div className="flex shrink-0 items-center gap-2">
           <Switch
             id="rate-view"
@@ -46,7 +46,7 @@ export function SectorHeader({
             <IconInfoCircle className="size-4 text-muted-foreground" />
           </InfoTip>
         </div>
-      )}
+      ) : null}
     </div>
   )
 }

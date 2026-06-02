@@ -11,6 +11,7 @@ import {
 } from '@/components/indicator-chart-card'
 import { InfoTip } from '@/components/info-tip'
 import { TimeLineChart } from '@/components/time-line-chart'
+import { TrendBadge } from '@/components/trend-badge'
 import type { Event } from '@/data/events'
 import type { YearPoint } from '@/hooks/use-indicator-by-year'
 import { formatNumber } from '@/utils/format'
@@ -20,6 +21,7 @@ type IndicatorAnnualChartProps = {
   description?: string
   source: string
   sourceUrl: string
+  positiveDirection?: 'up' | 'down'
   events?: Event[]
   data: YearPoint[] | undefined
   first: YearPoint | null
@@ -38,6 +40,7 @@ export function IndicatorAnnualChart({
   description,
   source,
   sourceUrl,
+  positiveDirection,
   events,
   data,
   first,
@@ -61,11 +64,11 @@ export function IndicatorAnnualChart({
         title={label}
         subtitle={`Total nacional reportado, ${first.year}\u2013${latest.year}`}
       >
-        {description && (
+        {description ? (
           <InfoTip content={description}>
             <IconInfoCircle className="size-4 text-muted-foreground" />
           </InfoTip>
-        )}
+        ) : null}
       </IndicatorChartCardHeader>
 
       <IndicatorChartCardContent>
@@ -79,10 +82,27 @@ export function IndicatorAnnualChart({
           decimals={yKey === 'rate' ? 1 : 0}
         />
         {delta !== null && previous && displayValue && (
-          <p className="mt-2 text-sm text-muted-foreground">
-            {latest.year}: {displayValue} {displayUnit} ({delta > 0 ? '+' : ''}
-            {formatNumber(delta, 1)}% vs {previous.year})
-          </p>
+          <div className="mt-3 flex items-baseline gap-2">
+            <span className="font-mono text-sm font-medium tabular-nums text-foreground">
+              {latest.year}: {displayValue}{' '}
+              <span className="font-sans text-xs font-normal text-muted-foreground">
+                {displayUnit}
+              </span>
+            </span>
+            {positiveDirection != null && (
+              <TrendBadge delta={delta} positiveDirection={positiveDirection} />
+            )}
+            <span className="text-xs text-muted-foreground/60">
+              vs{' '}
+              <span className="font-mono tabular-nums">
+                {formatNumber(
+                  previous[yKey as keyof YearPoint] as number,
+                  yKey === 'rate' ? 1 : 0
+                )}
+              </span>{' '}
+              en {previous.year}
+            </span>
+          </div>
         )}
       </IndicatorChartCardContent>
 

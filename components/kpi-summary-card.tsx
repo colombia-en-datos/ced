@@ -1,8 +1,7 @@
 'use client'
 
-import { IconTrendingDown, IconTrendingUp } from '@tabler/icons-react'
 import { SourceBadge } from '@/components/source-badge'
-import { Badge } from '@/components/ui/badge'
+import { TrendBadge } from '@/components/trend-badge'
 import {
   Card,
   CardDescription,
@@ -12,7 +11,7 @@ import {
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { YearPoint } from '@/hooks/use-indicator-by-year'
-import { formatNumber, formatRelativeTime } from '@/utils/format'
+import { formatRelativeTime } from '@/utils/format'
 
 type KpiSummaryCardProps = {
   label: string
@@ -64,15 +63,6 @@ export function KpiSummaryCard({
   const periodLabel =
     latest && previous ? `${previous.year} vs ${latest.year}` : undefined
 
-  const trendIsPositive =
-    delta != null &&
-    positiveDirection != null &&
-    ((positiveDirection === 'down' && delta < 0) ||
-      (positiveDirection === 'up' && delta > 0))
-
-  const TrendIcon =
-    delta != null && delta >= 0 ? IconTrendingUp : IconTrendingDown
-
   return (
     <Card className="@container/card">
       <CardHeader>
@@ -80,28 +70,19 @@ export function KpiSummaryCard({
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
           {displayValue ?? '\u2014'}
         </CardTitle>
-        {displayUnit && (
+        {displayUnit ? (
           <p className="text-xs text-muted-foreground">{displayUnit}</p>
-        )}
+        ) : null}
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
-        {periodLabel && (
+        {periodLabel ? (
           <div className="flex items-center gap-2 text-muted-foreground">
             <span>{periodLabel}</span>
             {delta != null && positiveDirection != null && (
-              <Badge
-                variant="outline"
-                className={
-                  trendIsPositive ? 'text-emerald-600' : 'text-red-600'
-                }
-              >
-                <TrendIcon />
-                {delta > 0 ? '+' : ''}
-                {formatNumber(delta, 1)}%
-              </Badge>
+              <TrendBadge delta={delta} positiveDirection={positiveDirection} />
             )}
           </div>
-        )}
+        ) : null}
         <div className="text-muted-foreground">
           Fuente:{' '}
           <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />

@@ -26,9 +26,9 @@ export function ChartEmpty({
         </EmptyMedia>
         <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription>
-          {indicator
+          {indicator != null
             ? `No hay datos disponibles para ${indicator}.`
-            : description}
+            : (description ?? '')}
         </EmptyDescription>
       </EmptyHeader>
     </Empty>
