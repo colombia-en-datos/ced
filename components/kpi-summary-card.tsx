@@ -11,27 +11,23 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
+import type { IndicatorManifest } from '@/data/types'
+import type { YearPoint } from '@/hooks/use-indicator-by-year'
 import { formatNumber } from '@/utils/format'
 
 type KpiSummaryCardProps = {
-  label: string
-  value: number | null
-  delta: number | null
-  periodLabel?: string
-  positiveDirection: 'up' | 'down'
-  source: string
-  sourceUrl: string
+  manifest: IndicatorManifest
+  latest?: YearPoint | null
+  previous?: YearPoint | null
+  delta?: number | null
   isLoading?: boolean
 }
 
 export function KpiSummaryCard({
-  label,
-  value,
+  manifest,
+  latest,
+  previous,
   delta,
-  periodLabel,
-  positiveDirection,
-  source,
-  sourceUrl,
   isLoading,
 }: KpiSummaryCardProps) {
   if (isLoading) {
@@ -52,27 +48,34 @@ export function KpiSummaryCard({
     )
   }
 
+  const label = latest
+    ? `${manifest.label} año ${latest.year}`
+    : `${manifest.label} por año`
+
+  const periodLabel =
+    latest && previous ? `${previous.year} vs ${latest.year}` : undefined
+
   const trendIsPositive =
-    delta !== null &&
-    ((positiveDirection === 'down' && delta < 0) ||
-      (positiveDirection === 'up' && delta > 0))
+    delta != null &&
+    ((manifest.positiveDirection === 'down' && delta < 0) ||
+      (manifest.positiveDirection === 'up' && delta > 0))
 
   const TrendIcon =
-    delta !== null && delta >= 0 ? IconTrendingUp : IconTrendingDown
+    delta != null && delta >= 0 ? IconTrendingUp : IconTrendingDown
 
   return (
     <Card className="@container/card">
       <CardHeader>
         <CardDescription>{label}</CardDescription>
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-          {value !== null ? formatNumber(value) : '\u2014'}
+          {latest ? formatNumber(latest.total) : '\u2014'}
         </CardTitle>
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
         {periodLabel && (
           <div className="flex items-center gap-2 text-muted-foreground">
             <span>{periodLabel}</span>
-            {delta !== null && (
+            {delta != null && (
               <Badge
                 variant="outline"
                 className={
@@ -88,7 +91,11 @@ export function KpiSummaryCard({
         )}
         <div className="text-muted-foreground">
           Fuente:{' '}
-          <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />
+          <SourceBadge
+            source={manifest.source}
+            sourceUrl={manifest.sourceUrl}
+            variant="inline"
+          />
         </div>
       </CardFooter>
     </Card>

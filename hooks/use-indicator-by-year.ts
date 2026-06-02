@@ -1,16 +1,15 @@
+import type { UseQueryResult } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import { type KidnappingRow, useKidnappings } from './use-kidnappings'
 
-export type KidnappingYearPoint = {
+type CountRow = { date: Date; count: number }
+
+export type YearPoint = {
   year: number
   total: number
   isPartial: boolean
 }
 
-function aggregateByYear(
-  rows: KidnappingRow[],
-  currentYear: number
-): KidnappingYearPoint[] {
+function aggregateByYear(rows: CountRow[], currentYear: number): YearPoint[] {
   const map = new Map<number, number>()
 
   for (const row of rows) {
@@ -27,8 +26,10 @@ function aggregateByYear(
     }))
 }
 
-export function useKidnappingsByYear() {
-  const query = useKidnappings()
+export function useIndicatorByYear<T extends CountRow>(
+  query: UseQueryResult<T[]>,
+  label: string
+) {
   const currentYear = new Date().getFullYear()
 
   const yearly = useMemo(
@@ -53,6 +54,7 @@ export function useKidnappingsByYear() {
 
   return {
     ...query,
+    label,
     data: yearly,
     completeYears,
     latest,

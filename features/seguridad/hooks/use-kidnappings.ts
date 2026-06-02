@@ -1,26 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { Sector } from '@/config/sectors'
+import { KIDNAPPINGS_MANIFEST } from '@/data/security'
+import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
 import { socrataApi } from '@/lib/api-client'
-
-export const KIDNAPPINGS_MANIFEST = {
-  id: `${Sector.Seguridad}_kidnappings`,
-  sector: Sector.Seguridad,
-  label: 'Secuestros por año',
-  description:
-    'Casos de secuestro (simple y extorsivo) registrados por Ministerio de Defensa Nacional',
-  source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/SECUESTRO/d7zw-hpf4/about_data',
-  resourceId: 'd7zw-hpf4',
-  unit: 'casos',
-  cacheTTL: 86400,
-  positiveDirection: 'down' as const,
-  policyEvents: [
-    { year: 2016, label: 'Acuerdo de paz FARC' },
-    { year: 2022, label: 'Inicio Paz Total' },
-  ],
-} as const
 
 const kidnappingRowSchema = z
   .object({
@@ -60,4 +42,8 @@ export function useKidnappings() {
     },
     staleTime: KIDNAPPINGS_MANIFEST.cacheTTL * 1000,
   })
+}
+
+export function useKidnappingsByYear() {
+  return useIndicatorByYear(useKidnappings(), 'Secuestros por año')
 }
