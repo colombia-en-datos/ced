@@ -25,8 +25,10 @@ type TimeLineChartProps = {
   xKey: string
   yKey: string
   yLabel: string
+  unit?: string
   color?: string
   events?: Event[]
+  decimals?: number
 }
 
 function DashedLineEnd({
@@ -81,8 +83,10 @@ export function TimeLineChart({
   xKey,
   yKey,
   yLabel,
+  unit,
   color = 'var(--chart-1)',
   events,
+  decimals = 0,
 }: TimeLineChartProps) {
   const instanceId = useId()
   const gradientId = `solid-mask-${instanceId.replaceAll(':', '')}`
@@ -116,12 +120,19 @@ export function TimeLineChart({
           cursor={false}
           content={
             <ChartTooltipContent
-              hideLabel
-              formatter={(value) => formatNumber(Number(value))}
+              labelClassName="text-xs font-light text-muted-foreground"
+              labelFormatter={(_label, payload) =>
+                String(payload?.[0]?.payload?.[xKey] ?? _label)
+              }
+              formatter={(value) => (
+                <span className="text-sm font-medium text-foreground">
+                  {formatNumber(Number(value), decimals)} {unit}
+                </span>
+              )}
             />
           }
         />
-        {events?.map((event) => (
+        {events?.map((event, i) => (
           <ReferenceLine
             key={event.year}
             x={event.year}
@@ -132,6 +143,7 @@ export function TimeLineChart({
               position: 'top',
               fontSize: 11,
               fill: 'var(--color-amber-500)',
+              dy: i % 2 === 0 ? 0 : 14,
             }}
           />
         ))}

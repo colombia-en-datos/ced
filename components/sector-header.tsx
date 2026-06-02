@@ -1,14 +1,9 @@
 'use client'
 
 import { IconInfoCircle } from '@tabler/icons-react'
+import { InfoTip } from '@/components/info-tip'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 import { useRateView } from '@/hooks/use-rate-view'
 
 type SectorHeaderProps = {
@@ -25,7 +20,7 @@ export function SectorHeader({
   const { showRate, toggleRate } = useRateView()
 
   return (
-    <div className="flex items-center justify-between px-4 lg:px-6">
+    <div className="flex flex-col gap-3 px-4 sm:flex-row sm:items-center sm:justify-between lg:px-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
         {subtitle && (
@@ -33,7 +28,7 @@ export function SectorHeader({
         )}
       </div>
       {hasRateToggle && (
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <Switch
             id="rate-view"
             size="sm"
@@ -43,18 +38,13 @@ export function SectorHeader({
           <Label htmlFor="rate-view" className="text-sm text-muted-foreground">
             Tasa por 100k hab.
           </Label>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <IconInfoCircle className="size-4 text-muted-foreground" />
-              </TooltipTrigger>
-              <TooltipContent>
-                Los valores absolutos muestran el total reportado. La tasa por
+          <InfoTip
+            content="Los valores absolutos muestran el total reportado. La tasa por
                 100k normaliza por población, permitiendo comparar entre
-                períodos con diferente tamaño poblacional.
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+                períodos con diferente tamaño poblacional."
+          >
+            <IconInfoCircle className="size-4 text-muted-foreground" />
+          </InfoTip>
         </div>
       )}
     </div>

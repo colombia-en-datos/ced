@@ -9,13 +9,8 @@ import {
   IndicatorChartCardFooter,
   IndicatorChartCardHeader,
 } from '@/components/indicator-chart-card'
+import { InfoTip } from '@/components/info-tip'
 import { TimeLineChart } from '@/components/time-line-chart'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
 import type { Event } from '@/data/events'
 import type { YearPoint } from '@/hooks/use-indicator-by-year'
 import { formatNumber } from '@/utils/format'
@@ -67,14 +62,9 @@ export function IndicatorAnnualChart({
         subtitle={`Total nacional reportado, ${first.year}\u2013${latest.year}`}
       >
         {description && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <IconInfoCircle className="size-4 text-muted-foreground" />
-              </TooltipTrigger>
-              <TooltipContent>{description}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <InfoTip content={description}>
+            <IconInfoCircle className="size-4 text-muted-foreground" />
+          </InfoTip>
         )}
       </IndicatorChartCardHeader>
 
@@ -84,7 +74,9 @@ export function IndicatorAnnualChart({
           xKey="year"
           yKey={yKey}
           yLabel={label}
+          unit={displayUnit}
           events={events}
+          decimals={yKey === 'rate' ? 1 : 0}
         />
         {delta !== null && previous && displayValue && (
           <p className="mt-2 text-sm text-muted-foreground">
