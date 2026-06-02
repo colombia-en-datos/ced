@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { CRIMES_AGAINST_MINORS_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 // Each row is one victim — no `cantidad` column in this dataset
 const crimesAgainstMinorsRowSchema = z
@@ -25,37 +22,7 @@ const crimesAgainstMinorsRowSchema = z
     count: 1 as number,
   }))
 
-const crimesAgainstMinorsResponseSchema = z.array(crimesAgainstMinorsRowSchema)
+export type CrimesAgainstMinorsRow = z.output<typeof crimesAgainstMinorsRowSchema>
 
-export type CrimesAgainstMinorsRow = z.output<
-  typeof crimesAgainstMinorsRowSchema
->
-
-export function useCrimesAgainstMinors(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['crimesAgainstMinors', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        CRIMES_AGAINST_MINORS_MANIFEST.resourceId,
-        '$order=fecha ASC&$limit=135000',
-        { signal }
-      )
-
-      return crimesAgainstMinorsResponseSchema.parse(raw)
-    },
-    staleTime: CRIMES_AGAINST_MINORS_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useCrimesAgainstMinorsByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useCrimesAgainstMinors(options),
-    CRIMES_AGAINST_MINORS_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useCrimesAgainstMinors, useByYear: useCrimesAgainstMinorsByYear } =
+  createSocrataIndicator(CRIMES_AGAINST_MINORS_MANIFEST, crimesAgainstMinorsRowSchema)

@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { VEHICLE_THEFT_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const vehicleTheftRowSchema = z
   .object({
@@ -27,35 +24,9 @@ const vehicleTheftRowSchema = z
     count: row.cantidad,
   }))
 
-const vehicleTheftResponseSchema = z.array(vehicleTheftRowSchema)
-
 export type VehicleTheftRow = z.output<typeof vehicleTheftRowSchema>
 
-export function useVehicleTheft(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['vehicleTheft', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        VEHICLE_THEFT_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=400000',
-        { signal }
-      )
-
-      return vehicleTheftResponseSchema.parse(raw)
-    },
-    staleTime: VEHICLE_THEFT_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useVehicleTheftByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useVehicleTheft(options),
-    VEHICLE_THEFT_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useVehicleTheft, useByYear: useVehicleTheftByYear } = createSocrataIndicator(
+  VEHICLE_THEFT_MANIFEST,
+  vehicleTheftRowSchema
+)

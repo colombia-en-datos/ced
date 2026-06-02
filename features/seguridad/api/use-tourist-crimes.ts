@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { TOURIST_CRIMES_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 // No `cantidad` field — each row is one incident, so count is always 1
 const touristCrimesRowSchema = z
@@ -16,38 +13,12 @@ const touristCrimesRowSchema = z
     date: row.fecha,
     department: row.departamento,
     municipality: row.municipio,
-    count: 1,
+    count: 1 as number,
   }))
-
-const touristCrimesResponseSchema = z.array(touristCrimesRowSchema)
 
 export type TouristCrimesRow = z.output<typeof touristCrimesRowSchema>
 
-export function useTouristCrimes(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['touristCrimes', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        TOURIST_CRIMES_MANIFEST.resourceId,
-        '$order=fecha ASC&$limit=500',
-        { signal }
-      )
-
-      return touristCrimesResponseSchema.parse(raw)
-    },
-    staleTime: TOURIST_CRIMES_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useTouristCrimesByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useTouristCrimes(options),
-    TOURIST_CRIMES_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useTouristCrimes, useByYear: useTouristCrimesByYear } = createSocrataIndicator(
+  TOURIST_CRIMES_MANIFEST,
+  touristCrimesRowSchema
+)

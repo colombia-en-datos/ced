@@ -9,14 +9,8 @@ type TrendBadgeProps = {
   className?: string
 }
 
-export function TrendBadge({
-  delta,
-  positiveDirection,
-  className,
-}: TrendBadgeProps) {
-  const isPositive =
-    (positiveDirection === 'down' && delta < 0) ||
-    (positiveDirection === 'up' && delta > 0)
+export function TrendBadge({ delta, positiveDirection, className }: TrendBadgeProps) {
+  const isPositive = (positiveDirection === 'down' && delta < 0) || (positiveDirection === 'up' && delta > 0)
 
   const TrendIcon = delta >= 0 ? IconTrendingUp : IconTrendingDown
 

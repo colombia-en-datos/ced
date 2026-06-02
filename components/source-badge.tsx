@@ -7,11 +7,7 @@ type SourceBadgeProps = {
   variant?: 'inline' | 'badge'
 }
 
-export function SourceBadge({
-  source,
-  sourceUrl,
-  variant = 'badge',
-}: SourceBadgeProps) {
+export function SourceBadge({ source, sourceUrl, variant = 'badge' }: SourceBadgeProps) {
   if (variant === 'inline') {
     return (
       <a

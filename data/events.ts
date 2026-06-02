@@ -55,6 +55,4 @@ export const EVENT_GROUPS: EventGroup[] = [
   },
 ]
 
-export const EVENTS: Event[] = EVENT_GROUPS.flatMap((g) => g.events).sort(
-  (a, b) => a.id - b.id
-)
+export const EVENTS: Event[] = EVENT_GROUPS.flatMap((g) => g.events).sort((a, b) => a.id - b.id)

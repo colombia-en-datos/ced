@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { FORCE_CASUALTIES_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const forceCasualtiesRowSchema = z
   .object({
@@ -25,35 +22,9 @@ const forceCasualtiesRowSchema = z
     count: row.cantidad,
   }))
 
-const forceCasualtiesResponseSchema = z.array(forceCasualtiesRowSchema)
-
 export type ForceCasualtiesRow = z.output<typeof forceCasualtiesRowSchema>
 
-export function useForceCasualties(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['forceCasualties', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        FORCE_CASUALTIES_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=23000',
-        { signal }
-      )
-
-      return forceCasualtiesResponseSchema.parse(raw)
-    },
-    staleTime: FORCE_CASUALTIES_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useForceCasualtiesByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useForceCasualties(options),
-    FORCE_CASUALTIES_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useForceCasualties, useByYear: useForceCasualtiesByYear } = createSocrataIndicator(
+  FORCE_CASUALTIES_MANIFEST,
+  forceCasualtiesRowSchema
+)

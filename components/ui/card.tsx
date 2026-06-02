@@ -48,11 +48,7 @@ function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
 
 function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
   return (
-    <div
-      data-slot="card-description"
-      className={cn('text-sm text-muted-foreground', className)}
-      {...props}
-    />
+    <div data-slot="card-description" className={cn('text-sm text-muted-foreground', className)} {...props} />
   )
 }
 
@@ -60,10 +56,7 @@ function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="card-action"
-      className={cn(
-        'col-start-2 row-span-2 row-start-1 self-start justify-self-end',
-        className
-      )}
+      className={cn('col-start-2 row-span-2 row-start-1 self-start justify-self-end', className)}
       {...props}
     />
   )
@@ -92,12 +85,4 @@ function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
   )
 }
 
-export {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-}
+export { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }

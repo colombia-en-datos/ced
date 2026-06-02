@@ -1,11 +1,5 @@
 import { IconDatabaseOff } from '@tabler/icons-react'
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from '@/components/ui/empty'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty'
 
 type ChartEmptyProps = {
   title?: string
@@ -26,9 +20,7 @@ export function ChartEmpty({
         </EmptyMedia>
         <EmptyTitle>{title}</EmptyTitle>
         <EmptyDescription>
-          {indicator != null
-            ? `No hay datos disponibles para ${indicator}.`
-            : (description ?? '')}
+          {indicator != null ? `No hay datos disponibles para ${indicator}.` : (description ?? '')}
         </EmptyDescription>
       </EmptyHeader>
     </Empty>

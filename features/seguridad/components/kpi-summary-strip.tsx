@@ -1,9 +1,6 @@
 'use client'
 
-import {
-  KpiSummaryCard,
-  KpiSummaryCardSkeleton,
-} from '@/components/kpi-summary-card'
+import { KpiSummaryCard, KpiSummaryCardSkeleton } from '@/components/kpi-summary-card'
 import { Marquee } from '@/components/ui/marquee'
 import type { IndicatorByYearResult } from '@/hooks/use-indicator-by-year'
 
@@ -14,10 +11,7 @@ type KpiSummaryStripProps = {
 
 const MIN_LOADED = 4
 
-export function KpiSummaryStrip({
-  indicators,
-  onIndicatorClick,
-}: KpiSummaryStripProps) {
+export function KpiSummaryStrip({ indicators, onIndicatorClick }: KpiSummaryStripProps) {
   const loadedCount = indicators.filter((i) => !i.isLoading).length
 
   if (loadedCount < MIN_LOADED) {
@@ -40,9 +34,7 @@ export function KpiSummaryStrip({
         <KpiSummaryCard
           key={indicator.id}
           {...indicator}
-          onClick={
-            onIndicatorClick ? () => onIndicatorClick(indicator.id) : undefined
-          }
+          onClick={onIndicatorClick ? () => onIndicatorClick(indicator.id) : undefined}
         />
       ))}
     </Marquee>

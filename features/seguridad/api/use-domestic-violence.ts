@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { DOMESTIC_VIOLENCE_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const domesticViolenceRowSchema = z
   .object({
@@ -25,35 +22,9 @@ const domesticViolenceRowSchema = z
     count: row.cantidad,
   }))
 
-const domesticViolenceResponseSchema = z.array(domesticViolenceRowSchema)
-
 export type DomesticViolenceRow = z.output<typeof domesticViolenceRowSchema>
 
-export function useDomesticViolence(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['domesticViolence', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        DOMESTIC_VIOLENCE_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=850000',
-        { signal }
-      )
-
-      return domesticViolenceResponseSchema.parse(raw)
-    },
-    staleTime: DOMESTIC_VIOLENCE_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useDomesticViolenceByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useDomesticViolence(options),
-    DOMESTIC_VIOLENCE_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useDomesticViolence, useByYear: useDomesticViolenceByYear } = createSocrataIndicator(
+  DOMESTIC_VIOLENCE_MANIFEST,
+  domesticViolenceRowSchema
+)

@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { MARIJUANA_SEIZURES_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const marijuanaSeizuresRowSchema = z
   .object({
@@ -23,35 +20,9 @@ const marijuanaSeizuresRowSchema = z
     count: row.cantidad,
   }))
 
-const marijuanaSeizuresResponseSchema = z.array(marijuanaSeizuresRowSchema)
-
 export type MarijuanaSeizuresRow = z.output<typeof marijuanaSeizuresRowSchema>
 
-export function useMarijuanaSeizures(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['marijuanaSeizures', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        MARIJUANA_SEIZURES_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=640000',
-        { signal }
-      )
-
-      return marijuanaSeizuresResponseSchema.parse(raw)
-    },
-    staleTime: MARIJUANA_SEIZURES_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useMarijuanaSeizuresByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useMarijuanaSeizures(options),
-    MARIJUANA_SEIZURES_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useMarijuanaSeizures, useByYear: useMarijuanaSeizuresByYear } = createSocrataIndicator(
+  MARIJUANA_SEIZURES_MANIFEST,
+  marijuanaSeizuresRowSchema
+)

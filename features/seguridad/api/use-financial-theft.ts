@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { FINANCIAL_THEFT_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const financialTheftRowSchema = z
   .object({
@@ -23,35 +20,9 @@ const financialTheftRowSchema = z
     count: row.cantidad,
   }))
 
-const financialTheftResponseSchema = z.array(financialTheftRowSchema)
-
 export type FinancialTheftRow = z.output<typeof financialTheftRowSchema>
 
-export function useFinancialTheft(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['financialTheft', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        FINANCIAL_THEFT_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=3300',
-        { signal }
-      )
-
-      return financialTheftResponseSchema.parse(raw)
-    },
-    staleTime: FINANCIAL_THEFT_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useFinancialTheftByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useFinancialTheft(options),
-    FINANCIAL_THEFT_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useFinancialTheft, useByYear: useFinancialTheftByYear } = createSocrataIndicator(
+  FINANCIAL_THEFT_MANIFEST,
+  financialTheftRowSchema
+)

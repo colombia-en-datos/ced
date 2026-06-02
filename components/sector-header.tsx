@@ -12,29 +12,18 @@ type SectorHeaderProps = {
   hasRateToggle?: boolean
 }
 
-export function SectorHeader({
-  title,
-  subtitle,
-  hasRateToggle,
-}: SectorHeaderProps) {
+export function SectorHeader({ title, subtitle, hasRateToggle }: SectorHeaderProps) {
   const { showRate, toggleRate } = useRateView()
 
   return (
     <div className="flex flex-col gap-3 px-4 sm:flex-row sm:items-center sm:justify-between lg:px-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">{title}</h1>
-        {subtitle ? (
-          <p className="text-sm text-muted-foreground">{subtitle}</p>
-        ) : null}
+        {subtitle ? <p className="text-sm text-muted-foreground">{subtitle}</p> : null}
       </div>
       {hasRateToggle ? (
         <div className="flex shrink-0 items-center gap-2">
-          <Switch
-            id="rate-view"
-            size="sm"
-            checked={showRate}
-            onCheckedChange={toggleRate}
-          />
+          <Switch id="rate-view" size="sm" checked={showRate} onCheckedChange={toggleRate} />
           <Label htmlFor="rate-view" className="text-sm text-muted-foreground">
             Tasa por 100k hab.
           </Label>

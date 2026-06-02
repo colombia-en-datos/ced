@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { OIL_PIPELINE_BOMBINGS_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const oilPipelineBombingsRowSchema = z
   .object({
@@ -23,37 +20,7 @@ const oilPipelineBombingsRowSchema = z
     count: row.cantidad,
   }))
 
-const oilPipelineBombingsResponseSchema = z.array(oilPipelineBombingsRowSchema)
+export type OilPipelineBombingsRow = z.output<typeof oilPipelineBombingsRowSchema>
 
-export type OilPipelineBombingsRow = z.output<
-  typeof oilPipelineBombingsRowSchema
->
-
-export function useOilPipelineBombings(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['oilPipelineBombings', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        OIL_PIPELINE_BOMBINGS_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=1800',
-        { signal }
-      )
-
-      return oilPipelineBombingsResponseSchema.parse(raw)
-    },
-    staleTime: OIL_PIPELINE_BOMBINGS_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useOilPipelineBombingsByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useOilPipelineBombings(options),
-    OIL_PIPELINE_BOMBINGS_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useOilPipelineBombings, useByYear: useOilPipelineBombingsByYear } =
+  createSocrataIndicator(OIL_PIPELINE_BOMBINGS_MANIFEST, oilPipelineBombingsRowSchema)

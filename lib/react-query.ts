@@ -1,7 +1,4 @@
-import {
-  experimental_createQueryPersister,
-  type PersistedQuery,
-} from '@tanstack/query-persist-client-core'
+import { experimental_createQueryPersister, type PersistedQuery } from '@tanstack/query-persist-client-core'
 import type { DefaultOptions } from '@tanstack/react-query'
 import { idbStorage } from '@/lib/idb-storage'
 import pkg from '@/package.json'

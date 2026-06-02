@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { TRAFFIC_INJURIES_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const trafficInjuriesRowSchema = z
   .object({
@@ -23,35 +20,9 @@ const trafficInjuriesRowSchema = z
     count: row.cantidad,
   }))
 
-const trafficInjuriesResponseSchema = z.array(trafficInjuriesRowSchema)
-
 export type TrafficInjuriesRow = z.output<typeof trafficInjuriesRowSchema>
 
-export function useTrafficInjuries(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['trafficInjuries', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        TRAFFIC_INJURIES_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=810000',
-        { signal }
-      )
-
-      return trafficInjuriesResponseSchema.parse(raw)
-    },
-    staleTime: TRAFFIC_INJURIES_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useTrafficInjuriesByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useTrafficInjuries(options),
-    TRAFFIC_INJURIES_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useTrafficInjuries, useByYear: useTrafficInjuriesByYear } = createSocrataIndicator(
+  TRAFFIC_INJURIES_MANIFEST,
+  trafficInjuriesRowSchema
+)

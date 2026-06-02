@@ -7,10 +7,7 @@ type ApiOptions = {
   signal?: AbortSignal
 }
 
-function buildUrlWithParams(
-  url: string,
-  params?: ApiOptions['params']
-): string {
+function buildUrlWithParams(url: string, params?: ApiOptions['params']): string {
   if (!params) return url
   const searchParams = new URLSearchParams()
   for (const [key, value] of Object.entries(params)) {
@@ -22,10 +19,7 @@ function buildUrlWithParams(
   return qs ? `${url}?${qs}` : url
 }
 
-async function apiRequest<T>(
-  url: string,
-  options: ApiOptions = {}
-): Promise<T> {
+async function apiRequest<T>(url: string, options: ApiOptions = {}): Promise<T> {
   const { params, headers = {}, signal } = options
   const fullUrl = buildUrlWithParams(url, params)
 
@@ -67,28 +61,19 @@ export const socrataApi = {
   },
 
   /** Fetch dataset metadata (views API). */
-  view<T = Record<string, unknown>>(
-    resourceId: string,
-    options?: ApiOptions
-  ): Promise<T> {
-    return apiRequest<T>(
-      `https://www.datos.gov.co/api/views/${resourceId}.json`,
-      {
-        ...options,
-        headers: {
-          ...options?.headers,
-          ...(env.SOCRATA_TOKEN ? { 'X-App-Token': env.SOCRATA_TOKEN } : {}),
-        },
-      }
-    )
+  view<T = Record<string, unknown>>(resourceId: string, options?: ApiOptions): Promise<T> {
+    return apiRequest<T>(`https://www.datos.gov.co/api/views/${resourceId}.json`, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        ...(env.SOCRATA_TOKEN ? { 'X-App-Token': env.SOCRATA_TOKEN } : {}),
+      },
+    })
   },
 }
 
 /** Api a World Bank indicator for Colombia. Response data is at index [1]. */
-export async function worldBankApi<T>(
-  indicator: string,
-  options?: ApiOptions
-): Promise<T[]> {
+export async function worldBankApi<T>(indicator: string, options?: ApiOptions): Promise<T[]> {
   const url = `https://api.worldbank.org/v2/country/CO/indicator/${indicator}`
   const data = await apiRequest<[unknown, T[]]>(url, {
     ...options,

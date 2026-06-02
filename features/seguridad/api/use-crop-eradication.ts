@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { CROP_ERADICATION_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const cropEradicationRowSchema = z
   .object({
@@ -24,35 +21,9 @@ const cropEradicationRowSchema = z
     count: row.cantidad,
   }))
 
-const cropEradicationResponseSchema = z.array(cropEradicationRowSchema)
-
 export type CropEradicationRow = z.output<typeof cropEradicationRowSchema>
 
-export function useCropEradication(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['cropEradication', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        CROP_ERADICATION_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=150000',
-        { signal }
-      )
-
-      return cropEradicationResponseSchema.parse(raw)
-    },
-    staleTime: CROP_ERADICATION_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useCropEradicationByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useCropEradication(options),
-    CROP_ERADICATION_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useCropEradication, useByYear: useCropEradicationByYear } = createSocrataIndicator(
+  CROP_ERADICATION_MANIFEST,
+  cropEradicationRowSchema
+)

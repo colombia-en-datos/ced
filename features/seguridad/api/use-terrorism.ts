@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { TERRORISM_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const terrorismRowSchema = z
   .object({
@@ -23,29 +20,9 @@ const terrorismRowSchema = z
     count: row.cantidad,
   }))
 
-const terrorismResponseSchema = z.array(terrorismRowSchema)
-
 export type TerrorismRow = z.output<typeof terrorismRowSchema>
 
-export function useTerrorism(options?: Pick<QueryObserverOptions, 'enabled'>) {
-  return useQuery({
-    queryKey: ['terrorism', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        TERRORISM_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=150000',
-        { signal }
-      )
-
-      return terrorismResponseSchema.parse(raw)
-    },
-    staleTime: TERRORISM_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useTerrorismByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(useTerrorism(options), TERRORISM_MANIFEST, EVENTS)
-}
+export const { useRaw: useTerrorism, useByYear: useTerrorismByYear } = createSocrataIndicator(
+  TERRORISM_MANIFEST,
+  terrorismRowSchema
+)

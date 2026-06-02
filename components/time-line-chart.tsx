@@ -1,21 +1,9 @@
 'use client'
 
 import { useId } from 'react'
-import {
-  CartesianGrid,
-  Line,
-  LineChart,
-  ReferenceLine,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from 'recharts'
 import { InfoTip } from '@/components/info-tip'
-import {
-  type ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart'
+import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import type { Event } from '@/data/events'
 import { formatNumber } from '@/utils/format'
 
@@ -104,27 +92,16 @@ export function TimeLineChart({
 
   return (
     <ChartContainer config={chartConfig}>
-      <LineChart
-        accessibilityLayer
-        data={data}
-        margin={{ left: 12, right: 12, top: 20 }}
-      >
+      <LineChart accessibilityLayer data={data} margin={{ left: 12, right: 12, top: 20 }}>
         <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey={xKey}
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-        />
+        <XAxis dataKey={xKey} tickLine={false} axisLine={false} tickMargin={8} />
         <YAxis hide />
         <ChartTooltip
           cursor={false}
           content={
             <ChartTooltipContent
               labelClassName="text-xs font-light text-muted-foreground"
-              labelFormatter={(_label, payload) =>
-                String(payload?.[0]?.payload?.[xKey] ?? _label)
-              }
+              labelFormatter={(_label, payload) => String(payload?.[0]?.payload?.[xKey] ?? _label)}
               formatter={(value) => (
                 <span className="text-sm font-medium text-foreground">
                   {formatNumber(Number(value), decimals)} {unit}
@@ -141,12 +118,7 @@ export function TimeLineChart({
                 stroke="var(--color-amber-400)"
                 strokeDasharray="4 4"
                 strokeOpacity={0.6}
-                label={
-                  <EventMarker
-                    text={yearEvents.map((e) => e.id).join(',')}
-                    events={yearEvents}
-                  />
-                }
+                label={<EventMarker text={yearEvents.map((e) => e.id).join(',')} events={yearEvents} />}
               />
             ))
           : null}
@@ -190,21 +162,14 @@ function EventMarker({
     <div className="flex flex-col gap-0.5">
       {events.map((e) => (
         <span key={e.label} className="whitespace-nowrap">
-          <span className="font-semibold text-amber-400">{e.id}</span> {e.label}{' '}
-          ({e.year})
+          <span className="font-semibold text-amber-400">{e.id}</span> {e.label} ({e.year})
         </span>
       ))}
     </div>
   )
 
   return (
-    <foreignObject
-      x={x - size / 2}
-      y={8 - size / 2}
-      width={size}
-      height={size}
-      className="overflow-visible"
-    >
+    <foreignObject x={x - size / 2} y={8 - size / 2} width={size} height={size} className="overflow-visible">
       <InfoTip content={tooltipContent}>
         <div
           className="flex items-center justify-center rounded-full border border-amber-400/60 bg-amber-400/15 cursor-default"

@@ -1,11 +1,6 @@
 'use client'
 
-import {
-  IconDots,
-  IconFolder,
-  IconShare3,
-  IconTrash,
-} from '@tabler/icons-react'
+import { IconDots, IconFolder, IconShare3, IconTrash } from '@tabler/icons-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,10 +43,7 @@ export function NavDocuments({
             </SidebarMenuButton>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuAction
-                  showOnHover
-                  className="rounded-sm data-[state=open]:bg-accent"
-                >
+                <SidebarMenuAction showOnHover className="rounded-sm data-[state=open]:bg-accent">
                   <IconDots />
                   <span className="sr-only">More</span>
                 </SidebarMenuAction>

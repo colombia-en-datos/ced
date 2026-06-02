@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { SECURITY_CATEGORIES, SecurityIndicators } from '@/data/security'
+import { SECURITY_CATEGORIES, type SecurityIndicators } from '@/data/security'
 import type { IndicatorByYearResult } from '@/hooks/use-indicator-by-year'
 import { useCocaBaseSeizuresByYear } from '../api/use-coca-base-seizures'
 import { useCocaineSeizuresByYear } from '../api/use-cocaine-seizures'
@@ -31,101 +31,41 @@ export function useAnnualSecurityIndicators(activeCategory: string) {
     () =>
       new Set(
         SECURITY_CATEGORIES.find((c) => c.id === activeCategory)?.indicators ??
-          []
+          ([] as `${SecurityIndicators}`[])
       ),
     [activeCategory]
   )
 
-  const on = (id: SecurityIndicators) => ({
+  const on = (id: `${SecurityIndicators}`) => ({
     enabled: activeIds.has(id) || secondWaveEnabled,
   })
 
-  const kidnappings = useKidnappingsByYear(on(SecurityIndicators.Kidnappings))
-  const homicides = useHomicidesByYear(on(SecurityIndicators.Homicides))
-  const extortion = useExtortionByYear(on(SecurityIndicators.Extortion))
-  const terrorism = useTerrorismByYear(on(SecurityIndicators.Terrorism))
-  const crimesAgainstMinors = useCrimesAgainstMinorsByYear(
-    on(SecurityIndicators.CrimesAgainstMinors)
-  )
-  const financialTheft = useFinancialTheftByYear(
-    on(SecurityIndicators.FinancialTheft)
-  )
-  const forceCasualties = useForceCasualtiesByYear(
-    on(SecurityIndicators.ForceCasualties)
-  )
-  const domesticViolence = useDomesticViolenceByYear(
-    on(SecurityIndicators.DomesticViolence)
-  )
-  const displacement = useDisplacementByYear(
-    on(SecurityIndicators.Displacement)
-  )
-  const personalTheft = usePersonalTheftByYear(
-    on(SecurityIndicators.PersonalTheft)
-  )
-  const homeTheft = useHomeTheftByYear(on(SecurityIndicators.HomeTheft))
-  const vehicleTheft = useVehicleTheftByYear(
-    on(SecurityIndicators.VehicleTheft)
-  )
-  const cropEradication = useCropEradicationByYear(
-    on(SecurityIndicators.CropEradication)
-  )
-  const cocaineSeizures = useCocaineSeizuresByYear(
-    on(SecurityIndicators.CocaineSeizures)
-  )
-  const cocaBaseSeizures = useCocaBaseSeizuresByYear(
-    on(SecurityIndicators.CocaBaseSeizures)
-  )
-  const sexualCrimes = useSexualCrimesByYear(
-    on(SecurityIndicators.SexualCrimes)
-  )
-  const illegalMiningCaptures = useIllegalMiningCapturesByYear(
-    on(SecurityIndicators.IllegalMiningCaptures)
-  )
-  const firearmSeizures = useFirearmSeizuresByYear(
-    on(SecurityIndicators.FirearmSeizures)
-  )
-  const marijuanaSeizures = useMarijuanaSeizuresByYear(
-    on(SecurityIndicators.MarijuanaSeizures)
-  )
-  const oilPipelineBombings = useOilPipelineBombingsByYear(
-    on(SecurityIndicators.OilPipelineBombings)
-  )
-  const trafficInjuries = useTrafficInjuriesByYear(
-    on(SecurityIndicators.TrafficInjuries)
-  )
-  const touristCrimes = useTouristCrimesByYear(
-    on(SecurityIndicators.TouristCrimes)
-  )
-
-  const byId: Record<string, IndicatorByYearResult> = {
-    [SecurityIndicators.Kidnappings]: kidnappings,
-    [SecurityIndicators.Homicides]: homicides,
-    [SecurityIndicators.Extortion]: extortion,
-    [SecurityIndicators.Terrorism]: terrorism,
-    [SecurityIndicators.CrimesAgainstMinors]: crimesAgainstMinors,
-    [SecurityIndicators.FinancialTheft]: financialTheft,
-    [SecurityIndicators.ForceCasualties]: forceCasualties,
-    [SecurityIndicators.DomesticViolence]: domesticViolence,
-    [SecurityIndicators.Displacement]: displacement,
-    [SecurityIndicators.PersonalTheft]: personalTheft,
-    [SecurityIndicators.HomeTheft]: homeTheft,
-    [SecurityIndicators.VehicleTheft]: vehicleTheft,
-    [SecurityIndicators.CropEradication]: cropEradication,
-    [SecurityIndicators.CocaineSeizures]: cocaineSeizures,
-    [SecurityIndicators.CocaBaseSeizures]: cocaBaseSeizures,
-    [SecurityIndicators.SexualCrimes]: sexualCrimes,
-    [SecurityIndicators.IllegalMiningCaptures]: illegalMiningCaptures,
-    [SecurityIndicators.FirearmSeizures]: firearmSeizures,
-    [SecurityIndicators.MarijuanaSeizures]: marijuanaSeizures,
-    [SecurityIndicators.OilPipelineBombings]: oilPipelineBombings,
-    [SecurityIndicators.TrafficInjuries]: trafficInjuries,
-    [SecurityIndicators.TouristCrimes]: touristCrimes,
+  const byId: Record<`${SecurityIndicators}`, IndicatorByYearResult> = {
+    kidnappings: useKidnappingsByYear(on('kidnappings')),
+    homicides: useHomicidesByYear(on('homicides')),
+    extortion: useExtortionByYear(on('extortion')),
+    terrorism: useTerrorismByYear(on('terrorism')),
+    crimes_against_minors: useCrimesAgainstMinorsByYear(on('crimes_against_minors')),
+    financial_theft: useFinancialTheftByYear(on('financial_theft')),
+    force_casualties: useForceCasualtiesByYear(on('force_casualties')),
+    domestic_violence: useDomesticViolenceByYear(on('domestic_violence')),
+    displacement: useDisplacementByYear(on('displacement')),
+    personal_theft: usePersonalTheftByYear(on('personal_theft')),
+    home_theft: useHomeTheftByYear(on('home_theft')),
+    vehicle_theft: useVehicleTheftByYear(on('vehicle_theft')),
+    crop_eradication: useCropEradicationByYear(on('crop_eradication')),
+    cocaine_seizures: useCocaineSeizuresByYear(on('cocaine_seizures')),
+    coca_base_seizures: useCocaBaseSeizuresByYear(on('coca_base_seizures')),
+    sexual_crimes: useSexualCrimesByYear(on('sexual_crimes')),
+    illegal_mining_captures: useIllegalMiningCapturesByYear(on('illegal_mining_captures')),
+    firearm_seizures: useFirearmSeizuresByYear(on('firearm_seizures')),
+    marijuana_seizures: useMarijuanaSeizuresByYear(on('marijuana_seizures')),
+    oil_pipeline_bombings: useOilPipelineBombingsByYear(on('oil_pipeline_bombings')),
+    traffic_injuries: useTrafficInjuriesByYear(on('traffic_injuries')),
+    tourist_crimes: useTouristCrimesByYear(on('tourist_crimes')),
   }
 
-  // Enable second wave once the active category finishes loading
-  const activeLoaded = [...activeIds].every(
-    (id) => byId[id]?.data !== undefined
-  )
+  const activeLoaded = [...activeIds].every((id) => byId[id]?.data !== undefined)
 
   useEffect(() => {
     if (activeLoaded && !secondWaveEnabled) {

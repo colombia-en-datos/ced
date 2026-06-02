@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { FIREARM_SEIZURES_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 // fecha_hecho is stored as text in DD/MM/YYYY format, not calendar_date
 const parseDDMMYYYY = (s: string) => {
@@ -30,35 +27,9 @@ const firearmSeizuresRowSchema = z
     count: row.cantidad,
   }))
 
-const firearmSeizuresResponseSchema = z.array(firearmSeizuresRowSchema)
-
 export type FirearmSeizuresRow = z.output<typeof firearmSeizuresRowSchema>
 
-export function useFirearmSeizures(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['firearmSeizures', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        FIREARM_SEIZURES_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=550000',
-        { signal }
-      )
-
-      return firearmSeizuresResponseSchema.parse(raw)
-    },
-    staleTime: FIREARM_SEIZURES_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useFirearmSeizuresByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useFirearmSeizures(options),
-    FIREARM_SEIZURES_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useFirearmSeizures, useByYear: useFirearmSeizuresByYear } = createSocrataIndicator(
+  FIREARM_SEIZURES_MANIFEST,
+  firearmSeizuresRowSchema
+)

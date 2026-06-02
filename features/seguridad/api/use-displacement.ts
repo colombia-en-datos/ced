@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { DISPLACEMENT_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const displacementRowSchema = z
   .object({
@@ -27,35 +24,9 @@ const displacementRowSchema = z
     events: row.eventos,
   }))
 
-const displacementResponseSchema = z.array(displacementRowSchema)
-
 export type DisplacementRow = z.output<typeof displacementRowSchema>
 
-export function useDisplacement(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['displacement', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        DISPLACEMENT_MANIFEST.resourceId,
-        '$order=vigencia ASC&$limit=400000',
-        { signal }
-      )
-
-      return displacementResponseSchema.parse(raw)
-    },
-    staleTime: DISPLACEMENT_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useDisplacementByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useDisplacement(options),
-    DISPLACEMENT_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useDisplacement, useByYear: useDisplacementByYear } = createSocrataIndicator(
+  DISPLACEMENT_MANIFEST,
+  displacementRowSchema
+)

@@ -26,12 +26,8 @@ export function usePopulationByYear() {
 
   const first = data[0] ?? null
   const latest = completeYears[completeYears.length - 1] ?? null
-  const previous =
-    completeYears.length >= 2 ? completeYears[completeYears.length - 2] : null
-  const delta =
-    latest && previous
-      ? ((latest.total - previous.total) / previous.total) * 100
-      : null
+  const previous = completeYears.length >= 2 ? completeYears[completeYears.length - 2] : null
+  const delta = latest && previous ? ((latest.total - previous.total) / previous.total) * 100 : null
 
   return {
     label: 'Población nacional',

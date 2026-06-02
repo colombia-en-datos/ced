@@ -32,9 +32,7 @@ function aggregateByYear(rows: CountRow[], currentYear: number): YearPoint[] {
     .map(([year, total]) => ({
       year,
       total,
-      rate: POPULATION_BY_YEAR[year]
-        ? (total / POPULATION_BY_YEAR[year]) * PER
-        : 0,
+      rate: POPULATION_BY_YEAR[year] ? (total / POPULATION_BY_YEAR[year]) * PER : 0,
       isPartial: year === currentYear,
     }))
 }
@@ -83,11 +81,9 @@ export function useIndicatorByYear<T extends CountRow>(
   const windowFrom = useAnalysisWindow((s) => s.from)
   const windowTo = useAnalysisWindow((s) => s.to)
   const currentYear = new Date().getFullYear()
-  const sourceUpdatedAt = useSocrataUpdatedAt(
-    manifest.resourceId,
-    manifest.cacheTTL,
-    { enabled: query.data !== undefined }
-  )
+  const sourceUpdatedAt = useSocrataUpdatedAt(manifest.resourceId, manifest.cacheTTL, {
+    enabled: query.data !== undefined,
+  })
 
   const allYearly = useMemo(
     () => (query.data ? aggregateByYear(query.data, currentYear) : undefined),
@@ -99,26 +95,18 @@ export function useIndicatorByYear<T extends CountRow>(
     [allYearly, windowFrom, windowTo]
   )
 
-  const completeYears = useMemo(
-    () => yearly?.filter((d) => !d.isPartial) ?? [],
-    [yearly]
-  )
+  const completeYears = useMemo(() => yearly?.filter((d) => !d.isPartial) ?? [], [yearly])
 
   const first = yearly?.[0] ?? null
   const latest = completeYears[completeYears.length - 1] ?? null
-  const previous =
-    completeYears.length >= 2 ? completeYears[completeYears.length - 2] : null
+  const previous = completeYears.length >= 2 ? completeYears[completeYears.length - 2] : null
 
   const absoluteDelta = computeDelta(latest, previous, 'total')
   const rateDelta = computeDelta(latest, previous, 'rate')
 
   const delta = showRate ? rateDelta : absoluteDelta
   const displayUnit = showRate ? 'por 100k hab.' : manifest.unit
-  const displayValue = latest
-    ? showRate
-      ? formatNumber(latest.rate, 1)
-      : formatNumber(latest.total)
-    : null
+  const displayValue = latest ? (showRate ? formatNumber(latest.rate, 1) : formatNumber(latest.total)) : null
   const yKey = showRate ? 'rate' : 'total'
 
   return {

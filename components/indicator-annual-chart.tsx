@@ -59,8 +59,7 @@ export const IndicatorAnnualChart = memo(function IndicatorAnnualChart({
   dataUpdatedAt,
 }: IndicatorAnnualChartProps) {
   if (isLoading) return <ChartSkeleton />
-  if (error)
-    return <p className="text-destructive text-sm">Error: {error.message}</p>
+  if (error) return <p className="text-destructive text-sm">Error: {error.message}</p>
   if (!data || !first || !latest) return <ChartEmpty indicator={label} />
 
   return (
@@ -90,20 +89,13 @@ export const IndicatorAnnualChart = memo(function IndicatorAnnualChart({
           <div className="mt-3 flex items-baseline gap-2">
             <span className="font-mono text-sm font-medium tabular-nums text-foreground">
               {latest.year}: {displayValue}{' '}
-              <span className="font-sans text-xs font-normal text-muted-foreground">
-                {displayUnit}
-              </span>
+              <span className="font-sans text-xs font-normal text-muted-foreground">{displayUnit}</span>
             </span>
-            {positiveDirection != null && (
-              <TrendBadge delta={delta} positiveDirection={positiveDirection} />
-            )}
+            {positiveDirection != null && <TrendBadge delta={delta} positiveDirection={positiveDirection} />}
             <span className="text-xs text-muted-foreground/60">
               vs{' '}
               <span className="font-mono tabular-nums">
-                {formatNumber(
-                  previous[yKey as keyof YearPoint] as number,
-                  yKey === 'rate' ? 1 : 0
-                )}
+                {formatNumber(previous[yKey as keyof YearPoint] as number, yKey === 'rate' ? 1 : 0)}
               </span>{' '}
               en {previous.year}
             </span>
@@ -111,11 +103,7 @@ export const IndicatorAnnualChart = memo(function IndicatorAnnualChart({
         )}
       </IndicatorChartCardContent>
 
-      <IndicatorChartCardFooter
-        source={source}
-        sourceUrl={sourceUrl}
-        dataUpdatedAt={dataUpdatedAt}
-      />
+      <IndicatorChartCardFooter source={source} sourceUrl={sourceUrl} dataUpdatedAt={dataUpdatedAt} />
     </IndicatorChartCard>
   )
 })

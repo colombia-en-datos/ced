@@ -1,5 +1,5 @@
 import { Sector } from '@/config/sectors'
-import { inidicatorManifest } from './types'
+import { indicatorManifest } from './types'
 
 export enum SecurityIndicators {
   CocaBaseSeizures = 'coca_base_seizures',
@@ -37,8 +37,7 @@ export const SECURITY_CATEGORIES: SecurityCategory[] = [
   {
     id: 'violence',
     label: 'Violencia y conflicto',
-    description:
-      'Delitos contra la vida e infraestructura en el contexto del conflicto armado.',
+    description: 'Delitos contra la vida e infraestructura en el contexto del conflicto armado.',
     indicators: [
       SecurityIndicators.Homicides,
       SecurityIndicators.Terrorism,
@@ -52,8 +51,7 @@ export const SECURITY_CATEGORIES: SecurityCategory[] = [
   {
     id: 'social',
     label: 'Convivencia',
-    description:
-      'Indicadores de violencia interpersonal y protección de poblaciones vulnerables.',
+    description: 'Indicadores de violencia interpersonal y protección de poblaciones vulnerables.',
     indicators: [
       SecurityIndicators.DomesticViolence,
       SecurityIndicators.SexualCrimes,
@@ -89,7 +87,7 @@ export const SECURITY_CATEGORIES: SecurityCategory[] = [
   },
 ]
 
-export const COCA_BASE_SEIZURES_MANIFEST = inidicatorManifest.parse({
+export const COCA_BASE_SEIZURES_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.CocaBaseSeizures}`,
   sector: Sector.Seguridad,
   label: 'Incautaciones de base de coca',
@@ -99,27 +97,32 @@ export const COCA_BASE_SEIZURES_MANIFEST = inidicatorManifest.parse({
   sourceUrl:
     'https://www.datos.gov.co/Seguridad-y-Defensa/INCAUTACIONES-DE-BASE-DE-COCA/nxbk-nikm/about_data',
   resourceId: 'nxbk-nikm',
+  queryKey: 'cocaBaseSeizures',
+  orderField: 'fecha_hecho',
+  limit: 230000,
   unit: 'kg',
   cacheTTL: 86400,
   positiveDirection: 'up',
 })
 
-export const COCAINE_SEIZURES_MANIFEST = inidicatorManifest.parse({
+export const COCAINE_SEIZURES_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.CocaineSeizures}`,
   sector: Sector.Seguridad,
   label: 'Incautaciones de cocaína',
   description:
     'Kilogramos de clorhidrato de cocaína incautados por la fuerza pública. El clorhidrato de cocaína es el producto obtenido de la pasta de coca mediante cambios de pH y procesos de precipitación, finalizado con adición de ácido clorhídrico',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/INCAUTACIONES-DE-COCA-NA/26zg-9p9r/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/INCAUTACIONES-DE-COCA-NA/26zg-9p9r/about_data',
   resourceId: '26zg-9p9r',
+  queryKey: 'cocaineSeizures',
+  orderField: 'fecha_hecho',
+  limit: 200000,
   unit: 'kg',
   cacheTTL: 86400,
   positiveDirection: 'up',
 })
 
-export const CRIMES_AGAINST_MINORS_MANIFEST = inidicatorManifest.parse({
+export const CRIMES_AGAINST_MINORS_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.CrimesAgainstMinors}`,
   sector: Sector.Seguridad,
   label: 'Delitos contra niños y adolescentes',
@@ -129,21 +132,26 @@ export const CRIMES_AGAINST_MINORS_MANIFEST = inidicatorManifest.parse({
   sourceUrl:
     'https://www.datos.gov.co/Seguridad-y-Defensa/Ni-os-ni-as-y-adolescentes-v-ctimas-de-delitos-en-/8mcu-22np/about_data',
   resourceId: '8mcu-22np',
+  queryKey: 'crimesAgainstMinors',
+  orderField: 'fecha',
+  limit: 135000,
   unit: 'víctimas',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const CROP_ERADICATION_MANIFEST = inidicatorManifest.parse({
+export const CROP_ERADICATION_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.CropEradication}`,
   sector: Sector.Seguridad,
   label: 'Erradicación de cultivos',
   description:
     'Eliminación física o afectación directa de los cultivos ilícitos. Se ejecuta a través del empleo de diferentes modalidades que buscan la disminución de este tipo de plantaciones',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/ERRADICACI-N/p72f-qcvk/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/ERRADICACI-N/p72f-qcvk/about_data',
   resourceId: 'p72f-qcvk',
+  queryKey: 'cropEradication',
+  orderField: 'fecha_hecho',
+  limit: 150000,
   unit: 'hectáreas',
   cacheTTL: 86400,
   positiveDirection: 'up',
@@ -152,7 +160,7 @@ export const CROP_ERADICATION_MANIFEST = inidicatorManifest.parse({
 // National-level dataset (e29y-pi4y, 368k rows). Chosen over the departmental
 // dataset (ynab-fjc9, 5.3M rows) to keep client-side aggregation feasible.
 // For the department heatmap, use ynab-fjc9 with server-side SoQL grouping.
-export const DISPLACEMENT_MANIFEST = inidicatorManifest.parse({
+export const DISPLACEMENT_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.Displacement}`,
   sector: Sector.Seguridad,
   label: 'Desplazamiento forzado',
@@ -162,42 +170,49 @@ export const DISPLACEMENT_MANIFEST = inidicatorManifest.parse({
   sourceUrl:
     'https://www.datos.gov.co/Inclusi-n-Social-y-Reconciliaci-n/REPORTE-VICTIMAS-DESPLAZAMIENTO-ANUALIZADO-OCURREN/e29y-pi4y/about_data',
   resourceId: 'e29y-pi4y',
+  queryKey: 'displacement',
+  orderField: 'vigencia',
+  limit: 400000,
   unit: 'personas',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const DOMESTIC_VIOLENCE_MANIFEST = inidicatorManifest.parse({
+export const DOMESTIC_VIOLENCE_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.DomesticViolence}`,
   sector: Sector.Seguridad,
   label: 'Violencia intrafamiliar',
   description:
     'Víctimas de violencia intrafamiliar, definida como toda acción en la que se maltrate física o psicológicamente a cualquier miembro del núcleo familiar',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/VIOLENCIA-INTRAFAMILIAR/gepp-dxcs/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/VIOLENCIA-INTRAFAMILIAR/gepp-dxcs/about_data',
   resourceId: 'gepp-dxcs',
+  queryKey: 'domesticViolence',
+  orderField: 'fecha_hecho',
+  limit: 850000,
   unit: 'víctimas',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const EXTORTION_MANIFEST = inidicatorManifest.parse({
+export const EXTORTION_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.Extortion}`,
   sector: Sector.Seguridad,
   label: 'Extorsión',
   description:
     'Según el art. 244 del Código Penal Colombiano, Ley 599 de 2000, el que constriña a otro a hacer, tolerar u omitir alguna cosa, con el propósito de obtener provecho ilícito para sí o para un tercero',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/EXTORSI-N/q2ib-t9am/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/EXTORSI-N/q2ib-t9am/about_data',
   resourceId: 'q2ib-t9am',
+  queryKey: 'extortion',
+  orderField: 'fecha_hecho',
+  limit: 150000,
   unit: 'víctimas',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const FINANCIAL_THEFT_MANIFEST = inidicatorManifest.parse({
+export const FINANCIAL_THEFT_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.FinancialTheft}`,
   sector: Sector.Seguridad,
   label: 'Hurto a entidades financieras',
@@ -207,27 +222,32 @@ export const FINANCIAL_THEFT_MANIFEST = inidicatorManifest.parse({
   sourceUrl:
     'https://www.datos.gov.co/Seguridad-y-Defensa/HURTO-A-ENTIDADES-FINANCIERAS/i7h7-wmjc/about_data',
   resourceId: 'i7h7-wmjc',
+  queryKey: 'financialTheft',
+  orderField: 'fecha_hecho',
+  limit: 3300,
   unit: 'casos',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const FIREARM_SEIZURES_MANIFEST = inidicatorManifest.parse({
+export const FIREARM_SEIZURES_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.FirearmSeizures}`,
   sector: Sector.Seguridad,
   label: 'Incautación de armas de fuego',
-  description:
-    'Armas de fuego incautadas por la Policía Nacional en todo el territorio colombiano',
+  description: 'Armas de fuego incautadas por la Policía Nacional en todo el territorio colombiano',
   source: 'Policía Nacional',
   sourceUrl:
     'https://www.datos.gov.co/Seguridad-y-Defensa/Reporte-Incautaci-n-de-Armas-de-Fuego-Polic-a-Naci/2iz5-9bbz/about_data',
   resourceId: '2iz5-9bbz',
+  queryKey: 'firearmSeizures',
+  orderField: 'fecha_hecho',
+  limit: 550000,
   unit: 'armas',
   cacheTTL: 86400,
   positiveDirection: 'up',
 })
 
-export const FORCE_CASUALTIES_MANIFEST = inidicatorManifest.parse({
+export const FORCE_CASUALTIES_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.ForceCasualties}`,
   sector: Sector.Seguridad,
   label: 'Afectación de la fuerza pública',
@@ -237,102 +257,115 @@ export const FORCE_CASUALTIES_MANIFEST = inidicatorManifest.parse({
   sourceUrl:
     'https://www.datos.gov.co/Seguridad-y-Defensa/AFECTACI-N-DE-MIEMBROS-DE-LA-FUERZA-P-BLICA/8rpn-wpty/about_data',
   resourceId: '8rpn-wpty',
+  queryKey: 'forceCasualties',
+  orderField: 'fecha_hecho',
+  limit: 23000,
   unit: 'víctimas',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const HOMICIDES_MANIFEST = inidicatorManifest.parse({
+export const HOMICIDES_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.Homicides}`,
   sector: Sector.Seguridad,
   label: 'Homicidios',
   description:
     'Toda muerte causada por otra persona por cualquier tipo de elemento, registrada por Ministerio de Defensa Nacional',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/HOMICIDIO/m8fd-ahd9/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/HOMICIDIO/m8fd-ahd9/about_data',
   resourceId: 'm8fd-ahd9',
+  queryKey: 'homicides',
+  orderField: 'fecha_hecho',
+  limit: 350000,
   unit: 'víctimas',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const SEXUAL_CRIMES_MANIFEST = inidicatorManifest.parse({
+export const SEXUAL_CRIMES_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.SexualCrimes}`,
   sector: Sector.Seguridad,
   label: 'Delitos sexuales',
   description:
     'Delitos contemplados en el Título IV del Código Penal Colombiano que atentan contra la libertad, integridad y formación sexuales. Se mide en víctimas',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/DELITOS-SEXUALES/bz43-8ahq/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/DELITOS-SEXUALES/bz43-8ahq/about_data',
   resourceId: 'bz43-8ahq',
+  queryKey: 'sexualCrimes',
+  orderField: 'fecha_hecho',
+  limit: 570000,
   unit: 'víctimas',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const PERSONAL_THEFT_MANIFEST = inidicatorManifest.parse({
+export const PERSONAL_THEFT_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.PersonalTheft}`,
   sector: Sector.Seguridad,
   label: 'Hurto a personas',
   description:
     'Modalidad de hurto donde el victimario utiliza diferentes medios con el fin de apoderarse de los elementos de valor que lleva consigo una persona',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/HURTO-PERSONAS/4rxi-8m8d/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/HURTO-PERSONAS/4rxi-8m8d/about_data',
   resourceId: '4rxi-8m8d',
+  queryKey: 'personalTheft',
+  orderField: 'fecha_hecho',
+  limit: 650000,
   unit: 'víctimas',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const MARIJUANA_SEIZURES_MANIFEST = inidicatorManifest.parse({
+export const MARIJUANA_SEIZURES_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.MarijuanaSeizures}`,
   sector: Sector.Seguridad,
   label: 'Incautaciones de marihuana',
-  description:
-    'Kilogramos de marihuana incautados por la fuerza pública en el ejercicio de sus funciones',
+  description: 'Kilogramos de marihuana incautados por la fuerza pública en el ejercicio de sus funciones',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/INCAUTACIONES-DE-MARIHUANA/g228-vp9d/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/INCAUTACIONES-DE-MARIHUANA/g228-vp9d/about_data',
   resourceId: 'g228-vp9d',
+  queryKey: 'marijuanaSeizures',
+  orderField: 'fecha_hecho',
+  limit: 640000,
   unit: 'kg',
   cacheTTL: 86400,
   positiveDirection: 'up',
 })
 
-export const OIL_PIPELINE_BOMBINGS_MANIFEST = inidicatorManifest.parse({
+export const OIL_PIPELINE_BOMBINGS_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.OilPipelineBombings}`,
   sector: Sector.Seguridad,
   label: 'Voladura de oleoductos',
-  description:
-    'Afectación a la infraestructura crítica: voladura de oleoductos',
+  description: 'Afectación a la infraestructura crítica: voladura de oleoductos',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/VOLADURA-DE-OLEDUCTOS/ec2r-4byk/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/VOLADURA-DE-OLEDUCTOS/ec2r-4byk/about_data',
   resourceId: 'ec2r-4byk',
+  queryKey: 'oilPipelineBombings',
+  orderField: 'fecha_hecho',
+  limit: 1800,
   unit: 'casos',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const VEHICLE_THEFT_MANIFEST = inidicatorManifest.parse({
+export const VEHICLE_THEFT_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.VehicleTheft}`,
   sector: Sector.Seguridad,
   label: 'Hurto a vehículos',
   description:
     'Sumatoria del hurto de automotores y motocicletas registrado por Ministerio de Defensa Nacional',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/HURTO-A-VEH-CULOS/csb4-y6v2/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/HURTO-A-VEH-CULOS/csb4-y6v2/about_data',
   resourceId: 'csb4-y6v2',
+  queryKey: 'vehicleTheft',
+  orderField: 'fecha_hecho',
+  limit: 400000,
   unit: 'unidades',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const TRAFFIC_INJURIES_MANIFEST = inidicatorManifest.parse({
+export const TRAFFIC_INJURIES_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.TrafficInjuries}`,
   sector: Sector.Seguridad,
   label: 'Lesiones en accidentes de tránsito',
@@ -342,81 +375,93 @@ export const TRAFFIC_INJURIES_MANIFEST = inidicatorManifest.parse({
   sourceUrl:
     'https://www.datos.gov.co/Seguridad-y-Defensa/LESIONES-ACCIDENTES-DE-TR-NSITO/ntej-qq7v/about_data',
   resourceId: 'ntej-qq7v',
+  queryKey: 'trafficInjuries',
+  orderField: 'fecha_hecho',
+  limit: 810000,
   unit: 'víctimas',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const TERRORISM_MANIFEST = inidicatorManifest.parse({
+export const TERRORISM_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.Terrorism}`,
   sector: Sector.Seguridad,
   label: 'Terrorismo',
   description:
     'El que provoque o mantenga en estado de zozobra o terror a la población o a un sector de ella, mediante actos que pongan en peligro la vida, la integridad física o la libertad de las personas o las edificaciones o medios de comunicación, transporte, procesamiento o conducción de fluidos o fuerzas motrices, valiéndose de medios capaces de causar estragos (Ley 599 de 2000, artículo 343)',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/TERRORISMO/yi5j-5fe9/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/TERRORISMO/yi5j-5fe9/about_data',
   resourceId: 'yi5j-5fe9',
+  queryKey: 'terrorism',
+  orderField: 'fecha_hecho',
+  limit: 150000,
   unit: 'casos',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const TOURIST_CRIMES_MANIFEST = inidicatorManifest.parse({
+export const TOURIST_CRIMES_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.TouristCrimes}`,
   sector: Sector.Seguridad,
   label: 'Delitos contra turistas',
-  description:
-    'Turistas víctimas de delitos en Colombia, registrados por la Policía Nacional',
+  description: 'Turistas víctimas de delitos en Colombia, registrados por la Policía Nacional',
   source: 'Policía Nacional',
   sourceUrl:
     'https://www.datos.gov.co/Seguridad-y-Defensa/Turistas-v-ctimas-de-delitos-en-Colombia/p2r3-hbie/about_data',
   resourceId: 'p2r3-hbie',
+  queryKey: 'touristCrimes',
+  orderField: 'fecha',
+  limit: 500,
   unit: 'casos',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const ILLEGAL_MINING_CAPTURES_MANIFEST = inidicatorManifest.parse({
+export const ILLEGAL_MINING_CAPTURES_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.IllegalMiningCaptures}`,
   sector: Sector.Seguridad,
   label: 'Capturas por minería ilegal',
   description:
     'Capturas por explotación ilícita de yacimiento minero según el artículo 332 del Código Penal Colombiano, realizadas por la fuerza pública',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/CAPTURAS-POR-MINER-A-ILEGAL/3wcs-8xp9/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/CAPTURAS-POR-MINER-A-ILEGAL/3wcs-8xp9/about_data',
   resourceId: '3wcs-8xp9',
+  queryKey: 'illegalMiningCaptures',
+  orderField: 'fecha_hecho',
+  limit: 8000,
   unit: 'capturas',
   cacheTTL: 86400,
   positiveDirection: 'up',
 })
 
-export const HOME_THEFT_MANIFEST = inidicatorManifest.parse({
+export const HOME_THEFT_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.HomeTheft}`,
   sector: Sector.Seguridad,
   label: 'Hurto a residencias',
   description:
     'Modalidad en la que el victimario utiliza diferentes medios con el fin de apoderarse de los elementos que existan en el interior de una vivienda',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/HURTO-A-RESIDENCIAS/7mn7-vzqp/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/HURTO-A-RESIDENCIAS/7mn7-vzqp/about_data',
   resourceId: '7mn7-vzqp',
+  queryKey: 'homeTheft',
+  orderField: 'fecha_hecho',
+  limit: 650000,
   unit: 'casos',
   cacheTTL: 86400,
   positiveDirection: 'down',
 })
 
-export const KIDNAPPINGS_MANIFEST = inidicatorManifest.parse({
+export const KIDNAPPINGS_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Seguridad}_${SecurityIndicators.Kidnappings}`,
   sector: Sector.Seguridad,
   label: 'Secuestros',
-  description:
-    'Casos de secuestro (simple y extorsivo) registrados por Ministerio de Defensa Nacional',
+  description: 'Casos de secuestro (simple y extorsivo) registrados por Ministerio de Defensa Nacional',
   source: 'MinDefensa',
-  sourceUrl:
-    'https://www.datos.gov.co/Seguridad-y-Defensa/SECUESTRO/d7zw-hpf4/about_data',
+  sourceUrl: 'https://www.datos.gov.co/Seguridad-y-Defensa/SECUESTRO/d7zw-hpf4/about_data',
   resourceId: 'd7zw-hpf4',
+  queryKey: 'kidnappings',
+  orderField: 'fecha_hecho',
+  limit: 50000,
   unit: 'casos',
   cacheTTL: 86400,
   positiveDirection: 'down',

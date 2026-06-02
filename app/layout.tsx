@@ -27,12 +27,7 @@ export default function RootLayout({
     <html
       lang="es"
       suppressHydrationWarning
-      className={cn(
-        'antialiased',
-        fontMono.variable,
-        'font-sans',
-        ibmPlexSans.variable
-      )}
+      className={cn('antialiased', fontMono.variable, 'font-sans', ibmPlexSans.variable)}
     >
       <head>
         <title>Colombia en Datos</title>
@@ -45,9 +40,7 @@ export default function RootLayout({
             <SidebarInset>
               <SiteHeader />
               <div className="flex flex-1 flex-col">
-                <div className="@container/main flex flex-1 flex-col gap-2">
-                  {children}
-                </div>
+                <div className="@container/main flex flex-1 flex-col gap-2">{children}</div>
               </div>
             </SidebarInset>
           </SidebarProvider>

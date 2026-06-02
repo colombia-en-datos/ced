@@ -2,9 +2,7 @@ import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
 import { socrataApi } from '@/lib/api-client'
 
-const socrataViewSchema = z
-  .object({ rowsUpdatedAt: z.number() })
-  .transform((v) => v.rowsUpdatedAt * 1000)
+const socrataViewSchema = z.object({ rowsUpdatedAt: z.number() }).transform((v) => v.rowsUpdatedAt * 1000)
 
 /** Returns the dataset's `rowsUpdatedAt` as a millisecond timestamp, or undefined while loading. */
 export function useSocrataUpdatedAt(

@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { KIDNAPPINGS_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const kidnappingRowSchema = z
   .object({
@@ -25,35 +22,9 @@ const kidnappingRowSchema = z
     count: row.cantidad,
   }))
 
-const kidnappingsResponseSchema = z.array(kidnappingRowSchema)
-
 export type KidnappingRow = z.output<typeof kidnappingRowSchema>
 
-export function useKidnappings(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['kidnappings', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        KIDNAPPINGS_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=50000',
-        { signal }
-      )
-
-      return kidnappingsResponseSchema.parse(raw)
-    },
-    staleTime: KIDNAPPINGS_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useKidnappingsByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useKidnappings(options),
-    KIDNAPPINGS_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useKidnappings, useByYear: useKidnappingsByYear } = createSocrataIndicator(
+  KIDNAPPINGS_MANIFEST,
+  kidnappingRowSchema
+)

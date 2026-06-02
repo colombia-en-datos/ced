@@ -25,7 +25,7 @@ Fetch `https://www.datos.gov.co/api/views/{resourceId}.json` and extract:
 | `description` | manifest `description` (trim to a concise sentence) |
 | `attribution` | manifest `source` (e.g. "MinDefensa") |
 | `columns[].fieldName` | Zod schema fields |
-| `columns[].cachedContents.count` | total rows — use to set `$limit` with ~30% headroom |
+| `columns[].cachedContents.count` | total rows — use to set `limit` with ~30% headroom |
 | `columns[].cachedContents.null` | if `> "0"` on `cantidad`, need `z.preprocess` for missing values |
 
 ### 3. Add enum value to the sector's data file
@@ -35,19 +35,22 @@ Fetch `https://www.datos.gov.co/api/views/{resourceId}.json` and extract:
 
 ### 4. Add manifest constant to the same data file
 
-Create `{NAME}_MANIFEST` using `inidicatorManifest.parse({...})`:
+Create `{NAME}_MANIFEST` using `indicatorManifest.parse({...})`:
 
 ```typescript
-export const {NAME}_MANIFEST = inidicatorManifest.parse({
+export const {NAME}_MANIFEST = indicatorManifest.parse({
   id: `${Sector.X}_${SectorIndicators.Y}`,
   sector: Sector.X,
-  label: '...',           // from metadata `name`
-  description: '...',     // from metadata `description`
-  source: '...',          // from metadata `attribution`, shortened
-  sourceUrl: '...',       // the about_data URL the user provided
-  resourceId: '...',      // from the URL
-  unit: '...',            // from metadata description or `unidad` column values
-  cacheTTL: ...,          // 86400 for security, 604800 for economic/education, 2592000 for World Bank
+  label: '...',             // from metadata `name`
+  description: '...',       // from metadata `description`
+  source: '...',            // from metadata `attribution`, shortened
+  sourceUrl: '...',         // the about_data URL the user provided
+  resourceId: '...',        // from the URL
+  queryKey: '...',          // camelCase identifier (e.g. 'homicides')
+  orderField: '...',        // Socrata column to sort by (usually 'fecha_hecho')
+  limit: ...,               // row count from metadata + ~30% headroom
+  unit: '...',              // from metadata description or `unidad` column values
+  cacheTTL: ...,            // 86400 for security, 604800 for economic/education, 2592000 for World Bank
   positiveDirection: '...', // from user input
 })
 ```
@@ -60,13 +63,15 @@ The hook must:
 - Define a Zod row schema matching the column `fieldName`s from the metadata
 - If `cantidad` (or the value field) has nulls per the metadata: use `z.preprocess((v) => (v == null ? 0 : v), z.coerce.number())` and add a comment explaining why
 - `.transform()` all fields to camelCase (e.g. `fecha_hecho` -> `date`, `cantidad` -> `count`)
-- Export a `use{Name}()` raw query hook with:
-  - `queryKey: ['{camelName}', 'raw']`
-  - `$limit` set based on row count from metadata + ~30% headroom
-  - `staleTime` from the manifest's `cacheTTL`
-- Export a `use{Name}ByYear()` hook composing `useIndicatorByYear(use{Name}(), {NAME}_MANIFEST, EVENTS)`
+- Export the row type: `export type {Name}Row = z.output<typeof schema>`
+- Use `createSocrataIndicator` to generate both hooks:
 
-The row schema output MUST satisfy the `CountRow` type: `{ date: Date; count: number }` (plus any extra fields).
+```typescript
+export const { useRaw: use{Name}, useByYear: use{Name}ByYear } =
+  createSocrataIndicator({NAME}_MANIFEST, rowSchema)
+```
+
+The row schema output MUST satisfy `{ date: Date; count: number }` (plus any extra fields).
 
 ### 6. Wire into the sector's annual indicators hook
 
@@ -74,13 +79,14 @@ File: `features/{sector}/hooks/use-annual-{sector}-indicators.ts`
 
 - Import `use{Name}ByYear`
 - Call the hook inside the main function
-- Add the result to the returned array
+- Add the result to the returned `byId` record
 
 ## Reference files
 
 - Sector enum: `config/sectors.tsx`
 - Manifest type: `data/types.ts`
 - Sector data files: `data/{sector}.ts`
+- Factory: `lib/create-socrata-indicator.ts`
 - Shared hook: `hooks/use-indicator-by-year.ts`
 - Events: `data/events.ts`
 - API client: `lib/api-client.ts`

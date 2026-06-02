@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { COCA_BASE_SEIZURES_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const cocaBaseSeizuresRowSchema = z
   .object({
@@ -23,35 +20,9 @@ const cocaBaseSeizuresRowSchema = z
     count: row.cantidad,
   }))
 
-const cocaBaseSeizuresResponseSchema = z.array(cocaBaseSeizuresRowSchema)
-
 export type CocaBaseSeizuresRow = z.output<typeof cocaBaseSeizuresRowSchema>
 
-export function useCocaBaseSeizures(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useQuery({
-    queryKey: ['cocaBaseSeizures', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        COCA_BASE_SEIZURES_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=230000',
-        { signal }
-      )
-
-      return cocaBaseSeizuresResponseSchema.parse(raw)
-    },
-    staleTime: COCA_BASE_SEIZURES_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useCocaBaseSeizuresByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(
-    useCocaBaseSeizures(options),
-    COCA_BASE_SEIZURES_MANIFEST,
-    EVENTS
-  )
-}
+export const { useRaw: useCocaBaseSeizures, useByYear: useCocaBaseSeizuresByYear } = createSocrataIndicator(
+  COCA_BASE_SEIZURES_MANIFEST,
+  cocaBaseSeizuresRowSchema
+)

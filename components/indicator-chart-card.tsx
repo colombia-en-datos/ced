@@ -1,14 +1,7 @@
 import type { ReactNode } from 'react'
 import { DataUpdatedAt } from '@/components/data-updated-at'
 import { SourceBadge } from '@/components/source-badge'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 type IndicatorChartCardProps = {
   title: string
@@ -36,9 +29,7 @@ export function IndicatorChartCardHeader({
   return (
     <CardHeader className="border-b border-border/40 pb-4">
       <div className="flex items-center gap-2">
-        <CardTitle className="text-lg font-semibold tracking-tight">
-          {title}
-        </CardTitle>
+        <CardTitle className="text-lg font-semibold tracking-tight">{title}</CardTitle>
         {children}
       </div>
       {subtitle ? (
@@ -50,9 +41,7 @@ export function IndicatorChartCardHeader({
   )
 }
 
-export function IndicatorChartCardContent({
-  children,
-}: Pick<IndicatorChartCardProps, 'children'>) {
+export function IndicatorChartCardContent({ children }: Pick<IndicatorChartCardProps, 'children'>) {
   return <CardContent>{children}</CardContent>
 }
 

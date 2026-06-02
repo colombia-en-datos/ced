@@ -1,9 +1,6 @@
-import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
-import { EVENTS } from '@/data/events'
 import { EXTORTION_MANIFEST } from '@/data/security'
-import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
-import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const extortionRowSchema = z
   .object({
@@ -23,29 +20,9 @@ const extortionRowSchema = z
     count: row.cantidad,
   }))
 
-const extortionResponseSchema = z.array(extortionRowSchema)
-
 export type ExtortionRow = z.output<typeof extortionRowSchema>
 
-export function useExtortion(options?: Pick<QueryObserverOptions, 'enabled'>) {
-  return useQuery({
-    queryKey: ['extortion', 'raw'],
-    queryFn: async ({ signal }) => {
-      const raw = await socrataApi.resource(
-        EXTORTION_MANIFEST.resourceId,
-        '$order=fecha_hecho ASC&$limit=150000',
-        { signal }
-      )
-
-      return extortionResponseSchema.parse(raw)
-    },
-    staleTime: EXTORTION_MANIFEST.cacheTTL * 1000,
-    enabled: Boolean(options?.enabled),
-  })
-}
-
-export function useExtortionByYear(
-  options?: Pick<QueryObserverOptions, 'enabled'>
-) {
-  return useIndicatorByYear(useExtortion(options), EXTORTION_MANIFEST, EVENTS)
-}
+export const { useRaw: useExtortion, useByYear: useExtortionByYear } = createSocrataIndicator(
+  EXTORTION_MANIFEST,
+  extortionRowSchema
+)

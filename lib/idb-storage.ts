@@ -1,7 +1,4 @@
-import type {
-  AsyncStorage,
-  PersistedQuery,
-} from '@tanstack/query-persist-client-core'
+import type { AsyncStorage, PersistedQuery } from '@tanstack/query-persist-client-core'
 
 const DB_NAME = 'ced'
 const STORE_NAME = 'query-cache'
@@ -48,10 +45,7 @@ export const idbStorage: AsyncStorage<PersistedQuery> = {
   async getItem(key: string) {
     const db = await getDb()
     return new Promise<PersistedQuery | undefined>((resolve, reject) => {
-      const req = db
-        .transaction(STORE_NAME, 'readonly')
-        .objectStore(STORE_NAME)
-        .get(key)
+      const req = db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).get(key)
       req.onsuccess = () => resolve(req.result as PersistedQuery | undefined)
       req.onerror = () => reject(req.error ?? new Error('getItem failed'))
     })
@@ -61,10 +55,7 @@ export const idbStorage: AsyncStorage<PersistedQuery> = {
     try {
       const db = await getDb()
       await new Promise<void>((resolve, reject) => {
-        const req = db
-          .transaction(STORE_NAME, 'readwrite')
-          .objectStore(STORE_NAME)
-          .put(value, key)
+        const req = db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).put(value, key)
         req.onsuccess = () => resolve()
         req.onerror = () => reject(req.error ?? new Error('setItem failed'))
       })
@@ -77,10 +68,7 @@ export const idbStorage: AsyncStorage<PersistedQuery> = {
     try {
       const db = await getDb()
       await new Promise<void>((resolve, reject) => {
-        const req = db
-          .transaction(STORE_NAME, 'readwrite')
-          .objectStore(STORE_NAME)
-          .delete(key)
+        const req = db.transaction(STORE_NAME, 'readwrite').objectStore(STORE_NAME).delete(key)
         req.onsuccess = () => resolve()
         req.onerror = () => reject(req.error ?? new Error('removeItem failed'))
       })

@@ -4,13 +4,7 @@ import { memo } from 'react'
 import { DataUpdatedAt } from '@/components/data-updated-at'
 import { SourceBadge } from '@/components/source-badge'
 import { TrendBadge } from '@/components/trend-badge'
-import {
-  Card,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { YearPoint } from '@/hooks/use-indicator-by-year'
 import { cn } from '@/lib/utils'
@@ -69,8 +63,7 @@ export const KpiSummaryCard = memo(function KpiSummaryCard({
 
   const displayLabel = latest ? `${label} año ${latest.year}` : label
 
-  const periodLabel =
-    latest && previous ? `${previous.year} vs ${latest.year}` : undefined
+  const periodLabel = latest && previous ? `${previous.year} vs ${latest.year}` : undefined
 
   return (
     <Card
@@ -86,9 +79,7 @@ export const KpiSummaryCard = memo(function KpiSummaryCard({
         <CardTitle className="flex items-baseline gap-1.5 text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
           {displayValue ?? '\u2014'}
           {displayUnit ? (
-            <span className="text-sm font-normal text-muted-foreground">
-              {displayUnit}
-            </span>
+            <span className="text-sm font-normal text-muted-foreground">{displayUnit}</span>
           ) : null}
         </CardTitle>
       </CardHeader>
@@ -102,8 +93,7 @@ export const KpiSummaryCard = memo(function KpiSummaryCard({
           </div>
         ) : null}
         <div className="text-muted-foreground">
-          Fuente:{' '}
-          <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />
+          Fuente: <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />
         </div>
         {dataUpdatedAt ? <DataUpdatedAt timestamp={dataUpdatedAt} /> : null}
       </CardFooter>
