@@ -1,28 +1,30 @@
 import { useEffect, useMemo, useState } from 'react'
 import { SECURITY_CATEGORIES, type SecurityIndicators } from '@/data/security'
 import type { IndicatorByYearResult } from '@/hooks/use-indicator-by-year'
-import { useCocaBaseSeizuresByYear } from '../api/use-coca-base-seizures'
-import { useCocaineSeizuresByYear } from '../api/use-cocaine-seizures'
-import { useCrimesAgainstMinorsByYear } from '../api/use-crimes-against-minors'
-import { useCropEradicationByYear } from '../api/use-crop-eradication'
-import { useDisplacementByYear } from '../api/use-displacement'
-import { useDomesticViolenceByYear } from '../api/use-domestic-violence'
-import { useExtortionByYear } from '../api/use-extortion'
-import { useFinancialTheftByYear } from '../api/use-financial-theft'
-import { useFirearmSeizuresByYear } from '../api/use-firearm-seizures'
-import { useForceCasualtiesByYear } from '../api/use-force-casualties'
-import { useHomeTheftByYear } from '../api/use-home-theft'
-import { useHomicidesByYear } from '../api/use-homicides'
-import { useIllegalMiningCapturesByYear } from '../api/use-illegal-mining-captures'
-import { useKidnappingsByYear } from '../api/use-kidnappings'
-import { useMarijuanaSeizuresByYear } from '../api/use-marijuana-seizures'
-import { useOilPipelineBombingsByYear } from '../api/use-oil-pipeline-bombings'
-import { usePersonalTheftByYear } from '../api/use-personal-theft'
-import { useSexualCrimesByYear } from '../api/use-sexual-crimes'
-import { useTerrorismByYear } from '../api/use-terrorism'
-import { useTouristCrimesByYear } from '../api/use-tourist-crimes'
-import { useTrafficInjuriesByYear } from '../api/use-traffic-injuries'
-import { useVehicleTheftByYear } from '../api/use-vehicle-theft'
+import {
+  useCocaBaseSeizuresByYear,
+  useCocaineSeizuresByYear,
+  useCrimesAgainstMinorsByYear,
+  useCropEradicationByYear,
+  useDisplacementByYear,
+  useDomesticViolenceByYear,
+  useExtortionByYear,
+  useFinancialTheftByYear,
+  useFirearmSeizuresByYear,
+  useForceCasualtiesByYear,
+  useHomeTheftByYear,
+  useHomicidesByYear,
+  useIllegalMiningCapturesByYear,
+  useKidnappingsByYear,
+  useMarijuanaSeizuresByYear,
+  useOilPipelineBombingsByYear,
+  usePersonalTheftByYear,
+  useSexualCrimesByYear,
+  useTerrorismByYear,
+  useTouristCrimesByYear,
+  useTrafficInjuriesByYear,
+  useVehicleTheftByYear,
+} from '../api/indicators'
 
 export function useAnnualSecurityIndicators(activeCategory: string) {
   const [secondWaveEnabled, setSecondWaveEnabled] = useState(false)
