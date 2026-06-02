@@ -32,7 +32,7 @@ export function useCropEradication() {
   return useQuery({
     queryKey: ['cropEradication', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         CROP_ERADICATION_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=150000',
         { signal }

@@ -33,7 +33,7 @@ export function useDomesticViolence() {
   return useQuery({
     queryKey: ['domesticViolence', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         DOMESTIC_VIOLENCE_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=850000',
         { signal }

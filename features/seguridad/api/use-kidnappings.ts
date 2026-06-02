@@ -33,7 +33,7 @@ export function useKidnappings() {
   return useQuery({
     queryKey: ['kidnappings', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         KIDNAPPINGS_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=50000',
         { signal }

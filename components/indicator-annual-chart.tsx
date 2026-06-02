@@ -33,6 +33,7 @@ type IndicatorAnnualChartProps = {
   yKey: string
   isLoading: boolean
   error: Error | null
+  dataUpdatedAt?: number
 }
 
 export function IndicatorAnnualChart({
@@ -52,6 +53,7 @@ export function IndicatorAnnualChart({
   yKey,
   isLoading,
   error,
+  dataUpdatedAt,
 }: IndicatorAnnualChartProps) {
   if (isLoading) return <ChartSkeleton />
   if (error)
@@ -106,7 +108,11 @@ export function IndicatorAnnualChart({
         )}
       </IndicatorChartCardContent>
 
-      <IndicatorChartCardFooter source={source} sourceUrl={sourceUrl} />
+      <IndicatorChartCardFooter
+        source={source}
+        sourceUrl={sourceUrl}
+        dataUpdatedAt={dataUpdatedAt}
+      />
     </IndicatorChartCard>
   )
 }

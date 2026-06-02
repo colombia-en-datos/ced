@@ -33,7 +33,7 @@ export function useForceCasualties() {
   return useQuery({
     queryKey: ['forceCasualties', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         FORCE_CASUALTIES_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=23000',
         { signal }

@@ -35,7 +35,7 @@ export function useCrimesAgainstMinors() {
   return useQuery({
     queryKey: ['crimesAgainstMinors', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         CRIMES_AGAINST_MINORS_MANIFEST.resourceId,
         '$order=fecha ASC&$limit=135000',
         { signal }

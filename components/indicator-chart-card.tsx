@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { DataUpdatedAt } from '@/components/data-updated-at'
 import { SourceBadge } from '@/components/source-badge'
 import {
   Card,
@@ -57,9 +58,13 @@ export function IndicatorChartCardContent({
 export function IndicatorChartCardFooter({
   source,
   sourceUrl,
-}: Pick<IndicatorChartCardProps, 'source' | 'sourceUrl'>) {
+  dataUpdatedAt,
+}: Pick<IndicatorChartCardProps, 'source' | 'sourceUrl'> & {
+  dataUpdatedAt?: number
+}) {
   return (
-    <CardFooter className="justify-end border-t border-border/40 pt-4">
+    <CardFooter className="items-center justify-between border-t border-border/40 pt-4">
+      {dataUpdatedAt ? <DataUpdatedAt timestamp={dataUpdatedAt} /> : <span />}
       <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />
     </CardFooter>
   )

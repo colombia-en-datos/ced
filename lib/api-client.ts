@@ -46,22 +46,36 @@ async function apiRequest<T>(
   return response.json()
 }
 
-/** Api from datos.gov.co Socrata API. Pass the resource ID and optional SoQL query string. */
-export function socrataApi<T = Record<string, string>[]>(
-  resourceId: string,
-  query?: string,
-  options?: ApiOptions
-): Promise<T> {
-  const base = `https://www.datos.gov.co/resource/${resourceId}.json`
-  const url = query ? `${base}?${query}` : base
+/** datos.gov.co Socrata API client. */
+export const socrataApi = {
+  /** Fetch dataset rows. Pass the resource ID and optional SoQL query string. */
+  resource<T = Record<string, string>[]>(
+    resourceId: string,
+    query?: string,
+    options?: ApiOptions
+  ): Promise<T> {
+    const base = `https://www.datos.gov.co/resource/${resourceId}.json`
+    const url = query ? `${base}?${query}` : base
 
-  return apiRequest<T>(url, {
-    ...options,
-    headers: {
-      ...options?.headers,
-      ...(env.SOCRATA_TOKEN ? { 'X-App-Token': env.SOCRATA_TOKEN } : {}),
-    },
-  })
+    return apiRequest<T>(url, {
+      ...options,
+      headers: {
+        ...options?.headers,
+        ...(env.SOCRATA_TOKEN ? { 'X-App-Token': env.SOCRATA_TOKEN } : {}),
+      },
+    })
+  },
+
+  /** Fetch dataset metadata (views API). */
+  view<T = Record<string, unknown>>(
+    resourceId: string,
+    options?: ApiOptions
+  ): Promise<T> {
+    return apiRequest<T>(
+      `https://www.datos.gov.co/api/views/${resourceId}.json`,
+      options
+    )
+  },
 }
 
 /** Api a World Bank indicator for Colombia. Response data is at index [1]. */
@@ -75,20 +89,4 @@ export async function worldBankApi<T>(
     params: { format: 'json', per_page: '100', ...options?.params },
   })
   return data[1]
-}
-
-/** Api JSON through the CORS proxy (for DANE endpoints that block browser requests). */
-export function proxyApi<T>(
-  targetUrl: string,
-  options?: ApiOptions
-): Promise<T> {
-  if (!env.PROXY_URL) {
-    throw new Error(
-      'NEXT_PUBLIC_PROXY_URL is not configured — needed for DANE endpoints'
-    )
-  }
-  return apiRequest<T>(env.PROXY_URL, {
-    ...options,
-    params: { url: targetUrl, ...options?.params },
-  })
 }

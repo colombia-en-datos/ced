@@ -31,7 +31,7 @@ export function usePersonalTheft() {
   return useQuery({
     queryKey: ['personalTheft', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         PERSONAL_THEFT_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=650000',
         { signal }

@@ -35,7 +35,7 @@ export function useVehicleTheft() {
   return useQuery({
     queryKey: ['vehicleTheft', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         VEHICLE_THEFT_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=400000',
         { signal }

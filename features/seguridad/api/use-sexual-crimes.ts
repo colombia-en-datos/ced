@@ -31,7 +31,7 @@ export function useSexualCrimes() {
   return useQuery({
     queryKey: ['sexualCrimes', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         SEXUAL_CRIMES_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=570000',
         { signal }

@@ -35,7 +35,7 @@ export function useIllegalMiningCaptures() {
   return useQuery({
     queryKey: ['illegalMiningCaptures', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         ILLEGAL_MINING_CAPTURES_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=8000',
         { signal }

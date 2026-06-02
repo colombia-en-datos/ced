@@ -31,7 +31,7 @@ export function useFinancialTheft() {
   return useQuery({
     queryKey: ['financialTheft', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         FINANCIAL_THEFT_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=3300',
         { signal }

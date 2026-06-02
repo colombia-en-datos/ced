@@ -31,7 +31,7 @@ export function useTrafficInjuries() {
   return useQuery({
     queryKey: ['trafficInjuries', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         TRAFFIC_INJURIES_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=810000',
         { signal }

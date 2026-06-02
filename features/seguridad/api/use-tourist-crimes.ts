@@ -27,7 +27,7 @@ export function useTouristCrimes() {
   return useQuery({
     queryKey: ['touristCrimes', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         TOURIST_CRIMES_MANIFEST.resourceId,
         '$order=fecha ASC&$limit=500',
         { signal }

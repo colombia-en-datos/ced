@@ -4,6 +4,7 @@ import type { Event } from '@/data/events'
 import { POPULATION_BY_YEAR } from '@/data/population'
 import type { IndicatorManifest } from '@/data/types'
 import { useRateView } from '@/hooks/use-rate-view'
+import { useSocrataUpdatedAt } from '@/hooks/use-socrata-updated-at'
 import { formatNumber } from '@/utils/format'
 
 type CountRow = { date: Date; count: number }
@@ -79,6 +80,10 @@ export function useIndicatorByYear<T extends CountRow>(
 ) {
   const currentYear = new Date().getFullYear()
   const showRate = useRateView((s) => s.showRate)
+  const sourceUpdatedAt = useSocrataUpdatedAt(
+    manifest.resourceId,
+    manifest.cacheTTL
+  )
 
   const yearly = useMemo(
     () => (query.data ? aggregateByYear(query.data, currentYear) : undefined),
@@ -109,6 +114,7 @@ export function useIndicatorByYear<T extends CountRow>(
 
   return {
     ...query,
+    dataUpdatedAt: sourceUpdatedAt ?? query.dataUpdatedAt,
     id: manifest.id,
     label: manifest.label,
     description: manifest.description,

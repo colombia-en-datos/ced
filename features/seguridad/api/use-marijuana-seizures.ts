@@ -31,7 +31,7 @@ export function useMarijuanaSeizures() {
   return useQuery({
     queryKey: ['marijuanaSeizures', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         MARIJUANA_SEIZURES_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=640000',
         { signal }

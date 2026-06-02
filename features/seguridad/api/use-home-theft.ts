@@ -31,7 +31,7 @@ export function useHomeTheft() {
   return useQuery({
     queryKey: ['homeTheft', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         HOME_THEFT_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=650000',
         { signal }

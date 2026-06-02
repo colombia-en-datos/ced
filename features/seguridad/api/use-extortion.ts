@@ -31,7 +31,7 @@ export function useExtortion() {
   return useQuery({
     queryKey: ['extortion', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         EXTORTION_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=150000',
         { signal }

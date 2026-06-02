@@ -33,7 +33,7 @@ export function useOilPipelineBombings() {
   return useQuery({
     queryKey: ['oilPipelineBombings', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         OIL_PIPELINE_BOMBINGS_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=1800',
         { signal }

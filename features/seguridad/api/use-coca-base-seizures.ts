@@ -31,7 +31,7 @@ export function useCocaBaseSeizures() {
   return useQuery({
     queryKey: ['cocaBaseSeizures', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         COCA_BASE_SEIZURES_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=230000',
         { signal }

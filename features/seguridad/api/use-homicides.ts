@@ -41,7 +41,7 @@ export function useHomicides() {
   return useQuery({
     queryKey: ['homicides', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         HOMICIDES_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=350000',
         { signal }

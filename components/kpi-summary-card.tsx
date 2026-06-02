@@ -1,5 +1,6 @@
 'use client'
 
+import { DataUpdatedAt } from '@/components/data-updated-at'
 import { SourceBadge } from '@/components/source-badge'
 import { TrendBadge } from '@/components/trend-badge'
 import {
@@ -11,7 +12,6 @@ import {
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import type { YearPoint } from '@/hooks/use-indicator-by-year'
-import { formatRelativeTime } from '@/utils/format'
 
 type KpiSummaryCardProps = {
   label: string
@@ -87,11 +87,7 @@ export function KpiSummaryCard({
           Fuente:{' '}
           <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />
         </div>
-        {dataUpdatedAt ? (
-          <span className="text-xs text-muted-foreground">
-            Actualizado {formatRelativeTime(dataUpdatedAt)}
-          </span>
-        ) : null}
+        {dataUpdatedAt ? <DataUpdatedAt timestamp={dataUpdatedAt} /> : null}
       </CardFooter>
     </Card>
   )

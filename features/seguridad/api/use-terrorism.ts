@@ -31,7 +31,7 @@ export function useTerrorism() {
   return useQuery({
     queryKey: ['terrorism', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         TERRORISM_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=150000',
         { signal }

@@ -35,7 +35,7 @@ export function useDisplacement() {
   return useQuery({
     queryKey: ['displacement', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         DISPLACEMENT_MANIFEST.resourceId,
         '$order=vigencia ASC&$limit=400000',
         { signal }

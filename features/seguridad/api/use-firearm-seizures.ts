@@ -38,7 +38,7 @@ export function useFirearmSeizures() {
   return useQuery({
     queryKey: ['firearmSeizures', 'raw'],
     queryFn: async ({ signal }) => {
-      const raw = await socrataApi(
+      const raw = await socrataApi.resource(
         FIREARM_SEIZURES_MANIFEST.resourceId,
         '$order=fecha_hecho ASC&$limit=550000',
         { signal }
