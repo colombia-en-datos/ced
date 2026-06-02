@@ -9,15 +9,15 @@ See @README.md for full project overview.
 ```bash
 pnpm dev          # development server
 pnpm build        # static export → out/
-pnpm lint         # eslint
-pnpm type-check   # tsc --noEmit
+pnpm lint         # biome check --write
+pnpm typecheck    # tsc --noEmit
 ```
 
 ## Architecture
 
-**Static Next.js export → Cloudflare Pages. Zero server.** All data is fetched client-side from public APIs and cached in localStorage via TanStack DB `QueryCollection` + `LocalStorageCollection`.
+**Static Next.js export → Cloudflare Pages. Zero server.** All data is fetched client-side from public APIs and cached in IndexedDB via TanStack Query `experimental_createQueryPersister`.
 
-Data flow: `manifest entry → QueryCollection → useLiveQuery → component`
+Data flow: `Socrata/API → Zod schema → useQuery hook → derived hooks → component`
 
 Never fetch directly in components. Never add a backend or database.
 
@@ -26,21 +26,17 @@ Never fetch directly in components. Never add a backend or database.
 Follows Bulletproof React — feature-based, unidirectional:
 
 ```
-src/
-├── app/              # Next.js App Router (layout, pages, [sector]/page.tsx)
-├── components/       # Shared UI (kpi-card, source-badge, policy-marker, ticker)
-├── components/ui/    # shadcn/ui — do not edit manually
-├── config/
-│   └── manifest.ts   # SINGLE SOURCE OF TRUTH for all KPIs and data sources
-├── features/         # One folder per sector (seguridad, economia, educacion…)
-│   └── [sector]/
-│       ├── components/
-│       ├── hooks/
-│       └── types/
-├── hooks/            # use-kpi.ts, use-cache.ts, use-manifest.ts
-├── lib/              # collections.ts, socrata.ts, worldbank.ts, csv.ts
-├── types/            # manifest.ts, sector.ts
-└── utils/            # format.ts (Colombian locale numbers), delta.ts
+app/                # Next.js App Router (layout, pages, [sector]/page.tsx)
+components/         # Shared UI (kpi-card, source-badge, sector-header, theme-toggle)
+components/ui/      # shadcn/ui — do not edit manually
+config/             # env.ts, sectors.ts
+features/           # One folder per sector (seguridad, economia, educacion…)
+  └── [sector]/
+      ├── components/
+      └── hooks/
+hooks/              # Shared hooks
+lib/                # api-client.ts, idb-storage.ts, react-query.ts
+utils/              # format.ts (Colombian locale numbers)
 ```
 
 **Import rule:** features import from shared (`components/hooks/lib/types/utils`) only. Features never import from each other. App composes features.
@@ -88,15 +84,25 @@ type ManifestEntry = {
 | Economic / education | 604800s (7 days) |
 | World Bank annual | 2592000s (30 days) |
 
-Cache keys: `ced_{manifestId}_{YYYY-MM-DD}`
+Cache is persisted in IndexedDB. Cache busting is tied to `package.json` version via the persister's `buster` option — bump version on breaking schema changes.
+
+## Coding conventions
+
+- **English variable names** — all identifiers in English, even for Spanish domain concepts (`department` not `departamento`, `count` not `cantidad`). UI strings stay in Spanish.
+- **camelCase outside API boundaries** — external APIs return snake_case. Transform at the boundary (Zod `.transform()`) and use camelCase everywhere else.
+- **Proper React components** — no plain functions returning JSX arrays. Always use components with fragments.
+- **Extract components** — when logic is specific to a concern (theme toggle, source badge), extract into its own component file.
+- **Env vars via `@/config/env.ts`** — never use inline `process.env` in components. All env access goes through the typed `env` object or `isDev` export.
+- **Validate API boundaries with Zod** — every external API response must be parsed through a Zod schema. Catches upstream breaking changes with clear errors instead of silent `NaN`s.
+- **Hooks over component logic** — extract data logic into hooks to keep components as pure UI. Each hook should be small and single-purpose (one raw data hook, separate derived hooks for different views of the same data).
 
 ## IMPORTANT rules
 
 - **Every number needs a `<SourceBadge>`** — no exceptions. This is the core trust mechanism.
 - **No 3D charts, no decorative gradients on data series.** All charts must be honest flat 2D Recharts.
-- **Policy event markers (`<PolicyMarker>`) are mandatory** on hero charts — they are the primary UX differentiator.
-- **This app is read-only.** Never implement `onInsert`/`onUpdate`/`onDelete` on any collection.
-- **`pnpm type-check` must pass** before committing any change.
+- **Policy event markers are mandatory** on hero charts — they are the primary UX differentiator.
+- **This app is read-only.** Never add write operations.
+- **`pnpm typecheck` must pass** before committing any change.
 
 ## Environment variables
 

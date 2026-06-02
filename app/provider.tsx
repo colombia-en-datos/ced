@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Toaster } from 'sonner'
 import { ThemeProvider } from '@/components/theme-provider'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { isDev } from '@/config/env'
 import { queryConfig } from '@/lib/react-query'
 
 type AppProviderProps = {
@@ -20,7 +21,7 @@ export const AppProvider = ({ children }: AppProviderProps) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {process.env.DEV && <ReactQueryDevtools />}
+      {isDev ? <ReactQueryDevtools /> : null}
       <ThemeProvider>
         <TooltipProvider>
           {children}

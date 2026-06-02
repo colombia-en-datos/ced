@@ -16,9 +16,11 @@ import { usePathname } from 'next/navigation'
 import type * as React from 'react'
 import { Logo } from '@/components/logo'
 import { NavMain } from '@/components/nav-main'
+import { ThemeToggle } from '@/components/theme-toggle'
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -67,6 +69,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={items} />
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <ThemeToggle />
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </Sidebar>
   )
 }

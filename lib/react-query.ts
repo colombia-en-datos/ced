@@ -1,10 +1,18 @@
-import { experimental_createQueryPersister } from '@tanstack/query-persist-client-core'
+import {
+  experimental_createQueryPersister,
+  type PersistedQuery,
+} from '@tanstack/query-persist-client-core'
 import type { DefaultOptions } from '@tanstack/react-query'
+import { idbStorage } from '@/lib/idb-storage'
+import pkg from '@/package.json'
 
-export const persister = experimental_createQueryPersister({
-  storage: typeof window !== 'undefined' ? localStorage : undefined,
+export const persister = experimental_createQueryPersister<PersistedQuery>({
+  storage: typeof window !== 'undefined' ? idbStorage : undefined,
   prefix: 'ced',
+  buster: pkg.version,
   maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days (matches longest TTL)
+  serialize: (persistedQuery) => persistedQuery,
+  deserialize: (cached) => cached,
 })
 
 export const queryConfig = {

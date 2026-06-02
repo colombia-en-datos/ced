@@ -1,5 +1,7 @@
 import * as z from 'zod'
 
+export const isDev = process.env.NODE_ENV !== 'production'
+
 const EnvSchema = z.object({
   SOCRATA_TOKEN: z.string().optional(),
   PROXY_URL: z.string().optional(),
