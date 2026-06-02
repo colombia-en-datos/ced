@@ -15,11 +15,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart'
-
-type PolicyEvent = {
-  year: number
-  label: string
-}
+import type { Event } from '@/data/events'
+import { formatNumber } from '@/utils/format'
 
 type DataPoint = Record<string, unknown> & { isPartial?: boolean }
 
@@ -29,7 +26,7 @@ type TimeLineChartProps = {
   yKey: string
   yLabel: string
   color?: string
-  policyEvents?: PolicyEvent[]
+  events?: Event[]
 }
 
 function DashedLineEnd({
@@ -85,7 +82,7 @@ export function TimeLineChart({
   yKey,
   yLabel,
   color = 'var(--chart-1)',
-  policyEvents,
+  events,
 }: TimeLineChartProps) {
   const instanceId = useId()
   const gradientId = `solid-mask-${instanceId.replaceAll(':', '')}`
@@ -117,9 +114,14 @@ export function TimeLineChart({
         <YAxis hide />
         <ChartTooltip
           cursor={false}
-          content={<ChartTooltipContent hideLabel />}
+          content={
+            <ChartTooltipContent
+              hideLabel
+              formatter={(value) => formatNumber(Number(value))}
+            />
+          }
         />
-        {policyEvents?.map((event) => (
+        {events?.map((event) => (
           <ReferenceLine
             key={event.year}
             x={event.year}

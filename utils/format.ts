@@ -21,6 +21,8 @@ export function formatRelativeTime(timestamp: number): string {
   return ''
 }
 
-export function formatNumber(value: number): string {
-  return value.toLocaleString('es-CO')
+export function formatNumber(value: number, decimals?: number): string {
+  return value.toLocaleString('es-CO', {
+    maximumFractionDigits: decimals ?? 0,
+  })
 }

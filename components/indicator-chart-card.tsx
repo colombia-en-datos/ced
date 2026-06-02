@@ -14,26 +14,47 @@ type IndicatorChartCardProps = {
   subtitle?: string
   source: string
   sourceUrl: string
+  headerAction?: ReactNode
   children: ReactNode
 }
 
 export function IndicatorChartCard({
+  children,
+}: Pick<IndicatorChartCardProps, 'children'>) {
+  return <Card>{children}</Card>
+}
+
+export function IndicatorChartCardHeader({
   title,
   subtitle,
+  children,
+}: Pick<IndicatorChartCardProps, 'title' | 'subtitle'> & {
+  children?: ReactNode
+}) {
+  return (
+    <CardHeader>
+      <div className="flex items-center gap-2">
+        <CardTitle>{title}</CardTitle>
+        {children}
+      </div>
+      {subtitle && <CardDescription>{subtitle}</CardDescription>}
+    </CardHeader>
+  )
+}
+
+export function IndicatorChartCardContent({
+  children,
+}: Pick<IndicatorChartCardProps, 'children'>) {
+  return <CardContent>{children}</CardContent>
+}
+
+export function IndicatorChartCardFooter({
   source,
   sourceUrl,
-  children,
-}: IndicatorChartCardProps) {
+}: Pick<IndicatorChartCardProps, 'source' | 'sourceUrl'>) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        {subtitle && <CardDescription>{subtitle}</CardDescription>}
-      </CardHeader>
-      <CardContent>{children}</CardContent>
-      <CardFooter className="justify-end">
-        <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />
-      </CardFooter>
-    </Card>
+    <CardFooter className="justify-end">
+      <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />
+    </CardFooter>
   )
 }

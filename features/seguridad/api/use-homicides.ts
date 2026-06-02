@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import * as z from 'zod'
+import { EVENTS } from '@/data/events'
 import { HOMICIDES_MANIFEST } from '@/data/security'
 import { useIndicatorByYear } from '@/hooks/use-indicator-by-year'
 import { socrataApi } from '@/lib/api-client'
@@ -53,5 +54,5 @@ export function useHomicides() {
 }
 
 export function useHomicidesByYear() {
-  return useIndicatorByYear(useHomicides(), 'Homicidios por año')
+  return useIndicatorByYear(useHomicides(), HOMICIDES_MANIFEST, EVENTS)
 }

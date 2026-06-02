@@ -11,23 +11,34 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import type { IndicatorManifest } from '@/data/types'
 import type { YearPoint } from '@/hooks/use-indicator-by-year'
-import { formatNumber } from '@/utils/format'
+import { formatNumber, formatRelativeTime } from '@/utils/format'
 
 type KpiSummaryCardProps = {
-  manifest: IndicatorManifest
+  label: string
+  source: string
+  sourceUrl: string
+  positiveDirection?: 'up' | 'down'
   latest?: YearPoint | null
   previous?: YearPoint | null
   delta?: number | null
+  displayUnit?: string
+  displayValue?: string | null
+  dataUpdatedAt?: number
   isLoading?: boolean
 }
 
 export function KpiSummaryCard({
-  manifest,
+  label,
+  source,
+  sourceUrl,
+  positiveDirection,
   latest,
   previous,
   delta,
+  displayUnit,
+  displayValue,
+  dataUpdatedAt,
   isLoading,
 }: KpiSummaryCardProps) {
   if (isLoading) {
@@ -48,17 +59,16 @@ export function KpiSummaryCard({
     )
   }
 
-  const label = latest
-    ? `${manifest.label} año ${latest.year}`
-    : `${manifest.label} por año`
+  const displayLabel = latest ? `${label} año ${latest.year}` : label
 
   const periodLabel =
     latest && previous ? `${previous.year} vs ${latest.year}` : undefined
 
   const trendIsPositive =
     delta != null &&
-    ((manifest.positiveDirection === 'down' && delta < 0) ||
-      (manifest.positiveDirection === 'up' && delta > 0))
+    positiveDirection != null &&
+    ((positiveDirection === 'down' && delta < 0) ||
+      (positiveDirection === 'up' && delta > 0))
 
   const TrendIcon =
     delta != null && delta >= 0 ? IconTrendingUp : IconTrendingDown
@@ -66,16 +76,19 @@ export function KpiSummaryCard({
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardDescription>{label}</CardDescription>
+        <CardDescription>{displayLabel}</CardDescription>
         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-          {latest ? formatNumber(latest.total) : '\u2014'}
+          {displayValue ?? '\u2014'}
         </CardTitle>
+        {displayUnit && (
+          <p className="text-xs text-muted-foreground">{displayUnit}</p>
+        )}
       </CardHeader>
       <CardFooter className="flex-col items-start gap-1.5 text-sm">
         {periodLabel && (
           <div className="flex items-center gap-2 text-muted-foreground">
             <span>{periodLabel}</span>
-            {delta != null && (
+            {delta != null && positiveDirection != null && (
               <Badge
                 variant="outline"
                 className={
@@ -84,19 +97,20 @@ export function KpiSummaryCard({
               >
                 <TrendIcon />
                 {delta > 0 ? '+' : ''}
-                {delta.toFixed(1)}%
+                {formatNumber(delta, 1)}%
               </Badge>
             )}
           </div>
         )}
         <div className="text-muted-foreground">
           Fuente:{' '}
-          <SourceBadge
-            source={manifest.source}
-            sourceUrl={manifest.sourceUrl}
-            variant="inline"
-          />
+          <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />
         </div>
+        {dataUpdatedAt ? (
+          <span className="text-xs text-muted-foreground">
+            Actualizado {formatRelativeTime(dataUpdatedAt)}
+          </span>
+        ) : null}
       </CardFooter>
     </Card>
   )

@@ -1,4 +1,9 @@
-export const Events = [
+export type Event = {
+  year: number
+  label: string
+}
+
+export const EVENTS: Event[] = [
   {
     year: 2016,
     label: 'Acuerdo de paz FARC',

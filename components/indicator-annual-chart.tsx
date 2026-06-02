@@ -1,65 +1,100 @@
 'use client'
 
+import { IconInfoCircle } from '@tabler/icons-react'
 import { ChartEmpty } from '@/components/chart-empty'
 import { ChartSkeleton } from '@/components/chart-skeleton'
-import { IndicatorChartCard } from '@/components/indicator-chart-card'
+import {
+  IndicatorChartCard,
+  IndicatorChartCardContent,
+  IndicatorChartCardFooter,
+  IndicatorChartCardHeader,
+} from '@/components/indicator-chart-card'
 import { TimeLineChart } from '@/components/time-line-chart'
-import { Events } from '@/data/events'
-import type { IndicatorManifest } from '@/data/types'
-
-type YearPoint = {
-  year: number
-  total: number
-  isPartial: boolean
-}
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import type { Event } from '@/data/events'
+import type { YearPoint } from '@/hooks/use-indicator-by-year'
+import { formatNumber } from '@/utils/format'
 
 type IndicatorAnnualChartProps = {
-  manifest: IndicatorManifest
   label: string
+  description?: string
+  source: string
+  sourceUrl: string
+  events?: Event[]
   data: YearPoint[] | undefined
+  first: YearPoint | null
   latest: YearPoint | null
   previous: YearPoint | null
   delta: number | null
+  displayUnit: string
+  displayValue: string | null
+  yKey: string
   isLoading: boolean
   error: Error | null
 }
 
 export function IndicatorAnnualChart({
-  manifest,
   label,
+  description,
+  source,
+  sourceUrl,
+  events,
   data,
+  first,
   latest,
   previous,
   delta,
+  displayUnit,
+  displayValue,
+  yKey,
   isLoading,
   error,
 }: IndicatorAnnualChartProps) {
   if (isLoading) return <ChartSkeleton />
   if (error)
     return <p className="text-destructive text-sm">Error: {error.message}</p>
-  if (!data?.length || !latest) return <ChartEmpty indicator={manifest.label} />
+  if (!data || !first || !latest) return <ChartEmpty indicator={label} />
 
   return (
-    <IndicatorChartCard
-      title={label}
-      subtitle={`Total nacional reportado, ${data[0].year}\u2013${latest.year}`}
-      source={manifest.source}
-      sourceUrl={manifest.sourceUrl}
-    >
-      <TimeLineChart
-        data={data}
-        xKey="year"
-        yKey="total"
-        yLabel={manifest.label}
-        policyEvents={Events}
-      />
-      {delta !== null && previous && (
-        <p className="mt-2 text-sm text-muted-foreground">
-          {latest.year}: {latest.total.toLocaleString('es-CO')} {manifest.unit}{' '}
-          ({delta > 0 ? '+' : ''}
-          {delta.toFixed(1)}% vs {previous.year})
-        </p>
-      )}
+    <IndicatorChartCard>
+      <IndicatorChartCardHeader
+        title={label}
+        subtitle={`Total nacional reportado, ${first.year}\u2013${latest.year}`}
+      >
+        {description && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <IconInfoCircle className="size-4 text-muted-foreground" />
+              </TooltipTrigger>
+              <TooltipContent>{description}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+      </IndicatorChartCardHeader>
+
+      <IndicatorChartCardContent>
+        <TimeLineChart
+          data={data}
+          xKey="year"
+          yKey={yKey}
+          yLabel={label}
+          events={events}
+        />
+        {delta !== null && previous && displayValue && (
+          <p className="mt-2 text-sm text-muted-foreground">
+            {latest.year}: {displayValue} {displayUnit} ({delta > 0 ? '+' : ''}
+            {formatNumber(delta, 1)}% vs {previous.year})
+          </p>
+        )}
+      </IndicatorChartCardContent>
+
+      <IndicatorChartCardFooter source={source} sourceUrl={sourceUrl} />
     </IndicatorChartCard>
   )
 }
