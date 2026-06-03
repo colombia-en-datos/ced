@@ -27,7 +27,7 @@ export function TrendBadge({ delta, positiveDirection, className }: TrendBadgePr
     >
       <TrendIcon />
       {delta > 0 ? '+' : ''}
-      {formatNumber(delta, 1)}%
+      {formatNumber(delta, 4)}%
     </Badge>
   )
 }

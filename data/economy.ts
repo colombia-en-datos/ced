@@ -3,12 +3,12 @@ import { indicatorManifest } from './types'
 
 export enum EconomyIndicators {
   Colcap = 'colcap',
-  CurrentAccount = 'current_account',
   ExchangeRate = 'exchange_rate',
   ExternalDebt = 'external_debt',
   ForeignInvestment = 'foreign_investment',
   GdpGrowth = 'gdp_growth',
   Inflation = 'inflation',
+  MinimumWage = 'minimum_wage',
   OccupationRate = 'occupation_rate',
   PolicyRate = 'policy_rate',
   Remittances = 'remittances',
@@ -65,6 +65,125 @@ export const EXCHANGE_RATE_MANIFEST = indicatorManifest.parse({
   positiveDirection: 'down',
 })
 
+export const REMITTANCES_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.Remittances}`,
+  sector: Sector.Economia,
+  label: 'Remesas de trabajadores',
+  description:
+    'Transferencias corrientes mensuales realizadas por emigrantes colombianos a su pais de origen, registradas en la Balanza de Pagos.',
+  source: 'Banco de la Republica',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/15363',
+  resourceId: '15363',
+  queryKey: 'remittances',
+  unit: 'Millones USD',
+  cacheTTL: 604800,
+  positiveDirection: 'up',
+})
+
+export const COLCAP_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.Colcap}`,
+  sector: Sector.Economia,
+  label: 'Indice COLCAP',
+  description:
+    'Indice de capitalizacion que refleja las variaciones de precios de las acciones mas liquidas de la Bolsa de Valores de Colombia.',
+  source: 'Banco de la Republica',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/6',
+  resourceId: '6',
+  queryKey: 'colcap',
+  unit: 'Puntos',
+  cacheTTL: 604800,
+  positiveDirection: 'up',
+})
+
+export const MINIMUM_WAGE_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.MinimumWage}`,
+  sector: Sector.Economia,
+  label: 'Salario minimo mensual',
+  description: 'Salario minimo mensual legal vigente fijado anualmente por el gobierno nacional.',
+  source: 'Banco de la Republica',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/15416',
+  resourceId: '15416',
+  queryKey: 'minimumWage',
+  unit: 'COP',
+  cacheTTL: 604800,
+  positiveDirection: 'up',
+})
+
+export const OCCUPATION_RATE_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.OccupationRate}`,
+  sector: Sector.Economia,
+  label: 'Tasa de ocupacion',
+  description:
+    'Proporcion de personas en edad de trabajar que se encuentran ocupadas. Total nacional, mensual.',
+  source: 'Banco de la Republica',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/15313',
+  resourceId: '15313',
+  queryKey: 'occupationRate',
+  unit: '%',
+  cacheTTL: 604800,
+  positiveDirection: 'up',
+})
+
+export const UNEMPLOYMENT_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.Unemployment}`,
+  sector: Sector.Economia,
+  label: 'Tasa de desempleo',
+  description:
+    'Proporcion de la poblacion economicamente activa que busca empleo sin conseguirlo. Total nacional, mensual.',
+  source: 'Banco de la Republica',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/15312',
+  resourceId: '15312',
+  queryKey: 'unemployment',
+  unit: '%',
+  cacheTTL: 604800,
+  positiveDirection: 'down',
+})
+
+export const POLICY_RATE_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.PolicyRate}`,
+  sector: Sector.Economia,
+  label: 'Tasa de politica monetaria',
+  description:
+    'Tasa de interes de intervencion del Banco de la Republica. Tasa minima de las subastas de repos a un dia.',
+  source: 'Banco de la Republica',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/59',
+  resourceId: '59',
+  queryKey: 'policyRate',
+  unit: '%',
+  cacheTTL: 604800,
+  positiveDirection: 'down',
+})
+
+export const EXTERNAL_DEBT_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.ExternalDebt}`,
+  sector: Sector.Economia,
+  label: 'Deuda externa total',
+  description:
+    'Saldo mensual de los pasivos contractuales pendientes de reintegro que asumen los residentes de Colombia frente a no residentes.',
+  source: 'Banco de la Republica',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/15330',
+  resourceId: '15330',
+  queryKey: 'externalDebt',
+  unit: 'Millones USD',
+  cacheTTL: 604800,
+  positiveDirection: 'down',
+})
+
+export const FOREIGN_INVESTMENT_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.ForeignInvestment}`,
+  sector: Sector.Economia,
+  label: 'Inversion extranjera directa',
+  description:
+    'Flujo anual de inversion extranjera directa en Colombia. Valores negativos indican desinversion neta.',
+  source: 'Banco de la Republica',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/15366',
+  resourceId: '15366',
+  queryKey: 'foreignInvestment',
+  unit: 'Millones USD',
+  cacheTTL: 604800,
+  positiveDirection: 'up',
+})
+
 export const ECONOMY_CATEGORIES: EconomyCategory[] = [
   {
     id: 'activity',
@@ -72,15 +191,15 @@ export const ECONOMY_CATEGORIES: EconomyCategory[] = [
     description: 'Crecimiento de la economia y situacion del mercado laboral.',
     indicators: [
       EconomyIndicators.GdpGrowth,
-      // EconomyIndicators.Unemployment,
-      // EconomyIndicators.OccupationRate,
+      EconomyIndicators.Unemployment,
+      EconomyIndicators.OccupationRate,
     ],
   },
   {
     id: 'prices',
     label: 'Precios',
     description: 'Variacion de precios y costo de vida.',
-    indicators: [EconomyIndicators.Inflation],
+    indicators: [EconomyIndicators.Inflation, EconomyIndicators.MinimumWage],
   },
   {
     id: 'external',
@@ -88,19 +207,15 @@ export const ECONOMY_CATEGORIES: EconomyCategory[] = [
     description: 'Relacion de Colombia con la economia global: comercio, deuda e inversion.',
     indicators: [
       EconomyIndicators.ExchangeRate,
-      // EconomyIndicators.Remittances,
-      // EconomyIndicators.ExternalDebt,
-      // EconomyIndicators.CurrentAccount,
-      // EconomyIndicators.ForeignInvestment,
+      EconomyIndicators.Remittances,
+      EconomyIndicators.ExternalDebt,
+      EconomyIndicators.ForeignInvestment,
     ],
   },
   {
     id: 'financial',
     label: 'Mercado financiero',
     description: 'Tasas de interes de referencia y desempeno del mercado accionario.',
-    indicators: [
-      // EconomyIndicators.PolicyRate,
-      // EconomyIndicators.Colcap,
-    ],
+    indicators: [EconomyIndicators.PolicyRate, EconomyIndicators.Colcap],
   },
 ]

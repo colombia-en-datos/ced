@@ -25,7 +25,7 @@ export default function EconomiaPage() {
       <KpiSummaryStrip indicators={allIndicators} onIndicatorClick={handleIndicatorClick} />
 
       <div className="flex flex-col gap-1 px-4 lg:px-6">
-        <h2 className="text-lg font-semibold tracking-tight">Indicadores anuales</h2>
+        <h2 className="text-lg font-semibold tracking-tight">Indicadores económicos</h2>
         <p className="text-sm text-muted-foreground">
           Series históricas de indicadores económicos a nivel nacional. Cada gráfica incluye marcadores de
           eventos de política pública relevantes.

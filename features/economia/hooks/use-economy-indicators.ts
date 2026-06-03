@@ -1,9 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ECONOMY_CATEGORIES, EconomyIndicators } from '@/data/economy'
-import { useExchangeRateByDay } from '@/features/economia/api/use-exchange-rate'
-import { useGdpGrowthByYear } from '@/features/economia/api/use-gdp-growth'
-import { useInflationByMonth } from '@/features/economia/api/use-inflation'
+import { ECONOMY_CATEGORIES, type EconomyIndicators } from '@/data/economy'
 import type { IndicatorResult } from '@/hooks/use-indicator-by-year'
+import {
+  useColcapByDay,
+  useExchangeRateByDay,
+  useExternalDebtByMonth,
+  useForeignInvestmentByYear,
+  useGdpGrowthByYear,
+  useInflationByMonth,
+  useMinimumWageByYear,
+  useOccupationRateByMonth,
+  usePolicyRateByDay,
+  useRemittancesByMonth,
+  useUnemploymentByMonth,
+} from '../api/indicators'
 
 export function useEconomyIndicators(activeCategory: string) {
   const [secondWaveEnabled, setSecondWaveEnabled] = useState(false)
@@ -16,20 +26,22 @@ export function useEconomyIndicators(activeCategory: string) {
     [activeCategory]
   )
 
-  const gdpGrowth = useGdpGrowthByYear({
-    enabled: activeIds.has(EconomyIndicators.GdpGrowth) || secondWaveEnabled,
-  })
-  const inflation = useInflationByMonth({
-    enabled: activeIds.has(EconomyIndicators.Inflation) || secondWaveEnabled,
-  })
-  const exchangeRate = useExchangeRateByDay({
-    enabled: activeIds.has(EconomyIndicators.ExchangeRate) || secondWaveEnabled,
+  const on = (id: `${EconomyIndicators}`) => ({
+    enabled: activeIds.has(id) || secondWaveEnabled,
   })
 
   const byId: Record<string, IndicatorResult> = {
-    [EconomyIndicators.GdpGrowth]: gdpGrowth,
-    [EconomyIndicators.Inflation]: inflation,
-    [EconomyIndicators.ExchangeRate]: exchangeRate,
+    gdp_growth: useGdpGrowthByYear(on('gdp_growth')),
+    inflation: useInflationByMonth(on('inflation')),
+    exchange_rate: useExchangeRateByDay(on('exchange_rate')),
+    remittances: useRemittancesByMonth(on('remittances')),
+    foreign_investment: useForeignInvestmentByYear(on('foreign_investment')),
+    unemployment: useUnemploymentByMonth(on('unemployment')),
+    occupation_rate: useOccupationRateByMonth(on('occupation_rate')),
+    policy_rate: usePolicyRateByDay(on('policy_rate')),
+    colcap: useColcapByDay(on('colcap')),
+    external_debt: useExternalDebtByMonth(on('external_debt')),
+    minimum_wage: useMinimumWageByYear(on('minimum_wage')),
   }
 
   const activeLoaded = [...activeIds].every((id) => byId[id]?.data !== undefined)
