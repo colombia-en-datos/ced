@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { CategoryTabs } from '@/components/category-tabs'
+import { KpiSummaryStrip } from '@/components/kpi-summary-strip'
 import { SectorHeader } from '@/components/sector-header'
 import { ECONOMY_CATEGORIES } from '@/data/economy'
 import { useEconomyIndicators } from '@/features/economia/hooks/use-economy-indicators'
-import { KpiSummaryStrip } from '@/features/seguridad/components/kpi-summary-strip'
 import { useCategoryTabs } from '@/hooks/use-category-tabs'
 import { useEventsByYear } from '@/hooks/use-events-by-year'
 
@@ -20,7 +20,6 @@ export default function EconomiaPage() {
       <SectorHeader
         title="Economía"
         subtitle="Indicadores económicos de Colombia con fuentes oficiales verificadas."
-        hasRateToggle
       />
       <KpiSummaryStrip indicators={allIndicators} onIndicatorClick={handleIndicatorClick} />
 

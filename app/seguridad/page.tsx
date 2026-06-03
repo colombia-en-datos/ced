@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { CategoryTabs } from '@/components/category-tabs'
+import { KpiSummaryStrip } from '@/components/kpi-summary-strip'
 import { SectorHeader } from '@/components/sector-header'
 import { SECURITY_CATEGORIES } from '@/data/security'
-import { KpiSummaryStrip } from '@/features/seguridad/components/kpi-summary-strip'
 import { useAnnualSecurityIndicators } from '@/features/seguridad/hooks/use-annual-security-indicators'
 import { useCategoryTabs } from '@/hooks/use-category-tabs'
 import { useEventsByYear } from '@/hooks/use-events-by-year'
@@ -20,7 +20,6 @@ export default function SeguridadPage() {
       <SectorHeader
         title="Seguridad Nacional"
         subtitle="Indicadores de seguridad y convivencia ciudadana con fuentes oficiales verificadas."
-        hasRateToggle
       />
       <KpiSummaryStrip indicators={allIndicators} onIndicatorClick={handleIndicatorClick} />
 
