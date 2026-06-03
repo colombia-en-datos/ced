@@ -1,6 +1,6 @@
 'use client'
 
-import { IndicatorAnnualChart } from '@/components/indicator-annual-chart'
+import { IndicatorChart } from '@/components/indicator-chart'
 import { usePopulationByYear } from '@/hooks/use-population-by-year'
 
 export default function Page() {
@@ -12,7 +12,7 @@ export default function Page() {
         <p className="text-muted-foreground">Indicadores oficiales, fuentes verificadas.</p>
       </div>
       <div className="px-4 lg:px-6">
-        <IndicatorAnnualChart {...population} />
+        <IndicatorChart {...population} />
       </div>
     </div>
   )

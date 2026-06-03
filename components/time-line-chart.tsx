@@ -1,17 +1,16 @@
 'use client'
 
-import { useId } from 'react'
+import { useId, useMemo } from 'react'
 import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from 'recharts'
 import { InfoTip } from '@/components/info-tip'
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import type { Event } from '@/data/events'
 import { formatNumber } from '@/utils/format'
 
-type DataPoint = Record<string, unknown> & { isPartial?: boolean }
+type DataPoint = Record<string, unknown> & { isPartial?: boolean; ts?: number; label?: string }
 
 type TimeLineChartProps = {
   data: DataPoint[]
-  xKey: string
   yKey: string
   yLabel: string
   unit?: string
@@ -69,7 +68,6 @@ function DashedLineEnd({
 
 export function TimeLineChart({
   data,
-  xKey,
   yKey,
   yLabel,
   unit,
@@ -79,6 +77,14 @@ export function TimeLineChart({
 }: TimeLineChartProps) {
   const instanceId = useId()
   const gradientId = `solid-mask-${instanceId.replaceAll(':', '')}`
+
+  const labelByTs = useMemo(() => {
+    const map = new Map<number, string>()
+    for (const d of data) {
+      if (d.ts != null && d.label != null) map.set(d.ts as number, d.label as string)
+    }
+    return map
+  }, [data])
 
   const chartConfig = {
     [yKey]: {
@@ -94,14 +100,23 @@ export function TimeLineChart({
     <ChartContainer config={chartConfig}>
       <LineChart accessibilityLayer data={data} margin={{ left: 12, right: 12, top: 20 }}>
         <CartesianGrid vertical={false} />
-        <XAxis dataKey={xKey} tickLine={false} axisLine={false} tickMargin={8} />
+        <XAxis
+          dataKey="ts"
+          type="number"
+          scale="time"
+          domain={['dataMin', 'dataMax']}
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(ts: number) => labelByTs.get(ts) ?? ''}
+        />
         <YAxis hide />
         <ChartTooltip
           cursor={false}
           content={
             <ChartTooltipContent
               labelClassName="text-xs font-light text-muted-foreground"
-              labelFormatter={(_label, payload) => String(payload?.[0]?.payload?.[xKey] ?? _label)}
+              labelFormatter={(_label, payload) => String(payload?.[0]?.payload?.label ?? _label)}
               formatter={(value) => (
                 <span className="text-sm font-medium text-foreground">
                   {formatNumber(Number(value), decimals)} {unit}
@@ -111,16 +126,19 @@ export function TimeLineChart({
           }
         />
         {eventsByYear
-          ? Array.from(eventsByYear.entries()).map(([year, yearEvents]) => (
-              <ReferenceLine
-                key={year}
-                x={year}
-                stroke="var(--color-amber-400)"
-                strokeDasharray="4 4"
-                strokeOpacity={0.6}
-                label={<EventMarker text={yearEvents.map((e) => e.id).join(',')} events={yearEvents} />}
-              />
-            ))
+          ? Array.from(eventsByYear.entries()).flatMap(([year, yearEvents]) => {
+              const eventTs = yearEvents[0].date.getTime()
+              return (
+                <ReferenceLine
+                  key={year}
+                  x={eventTs}
+                  stroke="var(--color-amber-400)"
+                  strokeDasharray="4 4"
+                  strokeOpacity={0.6}
+                  label={<EventMarker text={yearEvents.map((e) => e.id).join(',')} events={yearEvents} />}
+                />
+              )
+            })
           : null}
         {hasPartial ? (
           <DashedLineEnd
@@ -162,7 +180,7 @@ function EventMarker({
     <div className="flex flex-col gap-0.5">
       {events.map((e) => (
         <span key={e.label} className="whitespace-nowrap">
-          <span className="font-semibold text-amber-400">{e.id}</span> {e.label} ({e.year})
+          <span className="font-semibold text-amber-400">{e.id}</span> {e.label} ({e.date.getFullYear()})
         </span>
       ))}
     </div>

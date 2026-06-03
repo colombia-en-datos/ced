@@ -14,12 +14,16 @@ const PER = 100_000
 
 export type YearPoint = {
   year: number
+  /** Epoch ms — used for precise event marker positioning */
+  ts: number
+  /** Display label for the chart x-axis and trend summary */
+  label: string
   total: number
   rate: number
   isPartial: boolean
 }
 
-function aggregateByYear(rows: CountRow[], currentYear: number): YearPoint[] {
+export function aggregateByYear(rows: CountRow[], currentYear: number): YearPoint[] {
   const map = new Map<number, number>()
 
   for (const row of rows) {
@@ -31,6 +35,8 @@ function aggregateByYear(rows: CountRow[], currentYear: number): YearPoint[] {
     .sort(([a], [b]) => a - b)
     .map(([year, total]) => ({
       year,
+      ts: new Date(year, 0, 1).getTime(),
+      label: String(year),
       total,
       rate: POPULATION_BY_YEAR[year] ? (total / POPULATION_BY_YEAR[year]) * PER : 0,
       isPartial: year === currentYear,
@@ -47,7 +53,10 @@ function computeDelta(
     : null
 }
 
-export type IndicatorByYearResult = {
+export type Periodicity = 'annual' | 'quarterly' | 'monthly' | 'daily'
+
+export type IndicatorResult = {
+  periodicity: Periodicity
   id: string
   label: string
   description: string
@@ -72,23 +81,16 @@ export type IndicatorByYearResult = {
   dataUpdatedAt: number
 }
 
-export function useIndicatorByYear<T extends CountRow>(
-  query: UseQueryResult<T[]>,
+/** Composable core — takes pre-built yearly data and adds windowing, deltas, display logic. */
+export function useYearlyIndicator(
+  allYearly: YearPoint[] | undefined,
+  meta: { isLoading: boolean; error: Error | null; dataUpdatedAt: number },
   manifest: IndicatorManifest,
   events?: Event[]
-) {
+): IndicatorResult {
   const showRate = useRateView((s) => s.showRate)
   const windowFrom = useAnalysisWindow((s) => s.from)
   const windowTo = useAnalysisWindow((s) => s.to)
-  const currentYear = new Date().getFullYear()
-  const sourceUpdatedAt = useSocrataUpdatedAt(manifest.resourceId, manifest.cacheTTL, {
-    enabled: query.data !== undefined,
-  })
-
-  const allYearly = useMemo(
-    () => (query.data ? aggregateByYear(query.data, currentYear) : undefined),
-    [query.data, currentYear]
-  )
 
   const yearly = useMemo(
     () => allYearly?.filter((d) => d.year >= windowFrom && d.year <= windowTo),
@@ -106,13 +108,18 @@ export function useIndicatorByYear<T extends CountRow>(
 
   const delta = showRate ? rateDelta : absoluteDelta
   const displayUnit = showRate ? 'por 100k hab.' : manifest.unit
-  const displayValue = latest ? (showRate ? formatNumber(latest.rate, 1) : formatNumber(latest.total)) : null
+  const displayValue = latest
+    ? showRate
+      ? formatNumber(latest.rate, 4)
+      : formatNumber(latest.total, 4)
+    : null
   const yKey = showRate ? 'rate' : 'total'
 
   return {
-    ...query,
-    isLoading: query.isPending,
-    dataUpdatedAt: sourceUpdatedAt ?? query.dataUpdatedAt,
+    periodicity: 'annual',
+    isLoading: meta.isLoading,
+    error: meta.error,
+    dataUpdatedAt: meta.dataUpdatedAt,
     id: manifest.id,
     label: manifest.label,
     description: manifest.description,
@@ -133,4 +140,132 @@ export function useIndicatorByYear<T extends CountRow>(
     displayValue,
     yKey,
   }
+}
+
+/** Composable core for monthly/daily series — no rate toggle, compares consecutive points. */
+export function useMonthlyIndicator(
+  allPoints: YearPoint[] | undefined,
+  meta: { isLoading: boolean; error: Error | null; dataUpdatedAt: number },
+  manifest: IndicatorManifest,
+  events?: Event[]
+): IndicatorResult {
+  const windowFrom = useAnalysisWindow((s) => s.from)
+  const windowTo = useAnalysisWindow((s) => s.to)
+
+  const filtered = useMemo(
+    () => allPoints?.filter((d) => d.year >= windowFrom && d.year <= windowTo),
+    [allPoints, windowFrom, windowTo]
+  )
+
+  const complete = useMemo(() => filtered?.filter((d) => !d.isPartial) ?? [], [filtered])
+
+  const first = filtered?.[0] ?? null
+  const latest = complete[complete.length - 1] ?? null
+  const previous = complete.length >= 2 ? complete[complete.length - 2] : null
+
+  const absoluteDelta = computeDelta(latest, previous, 'total')
+
+  return {
+    periodicity: 'monthly',
+    isLoading: meta.isLoading,
+    error: meta.error,
+    dataUpdatedAt: meta.dataUpdatedAt,
+    id: manifest.id,
+    label: manifest.label,
+    description: manifest.description,
+    source: manifest.source,
+    sourceUrl: manifest.sourceUrl,
+    unit: manifest.unit,
+    positiveDirection: manifest.positiveDirection,
+    events,
+    data: filtered,
+    completeYears: complete,
+    first,
+    latest,
+    previous,
+    absoluteDelta,
+    rateDelta: null,
+    delta: absoluteDelta,
+    displayUnit: manifest.unit,
+    displayValue: latest ? formatNumber(latest.total, 1) : null,
+    yKey: 'total',
+  }
+}
+
+/** Composable core for daily series — no rate toggle, compares consecutive points. */
+export function useDailyIndicator(
+  allPoints: YearPoint[] | undefined,
+  meta: { isLoading: boolean; error: Error | null; dataUpdatedAt: number },
+  manifest: IndicatorManifest,
+  events?: Event[]
+): IndicatorResult {
+  const windowFrom = useAnalysisWindow((s) => s.from)
+  const windowTo = useAnalysisWindow((s) => s.to)
+
+  const filtered = useMemo(
+    () => allPoints?.filter((d) => d.year >= windowFrom && d.year <= windowTo),
+    [allPoints, windowFrom, windowTo]
+  )
+
+  const complete = useMemo(() => filtered?.filter((d) => !d.isPartial) ?? [], [filtered])
+
+  const first = filtered?.[0] ?? null
+  const latest = complete[complete.length - 1] ?? null
+  const previous = complete.length >= 2 ? complete[complete.length - 2] : null
+
+  const absoluteDelta = computeDelta(latest, previous, 'total')
+
+  return {
+    periodicity: 'daily',
+    isLoading: meta.isLoading,
+    error: meta.error,
+    dataUpdatedAt: meta.dataUpdatedAt,
+    id: manifest.id,
+    label: manifest.label,
+    description: manifest.description,
+    source: manifest.source,
+    sourceUrl: manifest.sourceUrl,
+    unit: manifest.unit,
+    positiveDirection: manifest.positiveDirection,
+    events,
+    data: filtered,
+    completeYears: complete,
+    first,
+    latest,
+    previous,
+    absoluteDelta,
+    rateDelta: null,
+    delta: absoluteDelta,
+    displayUnit: manifest.unit,
+    displayValue: latest ? formatNumber(latest.total, 1) : null,
+    yKey: 'total',
+  }
+}
+
+/** Socrata convenience wrapper — aggregates rows by year and fetches source updated-at. */
+export function useIndicatorByYear<T extends CountRow>(
+  query: UseQueryResult<T[]>,
+  manifest: IndicatorManifest,
+  events?: Event[]
+): IndicatorResult {
+  const currentYear = new Date().getFullYear()
+  const sourceUpdatedAt = useSocrataUpdatedAt(manifest.resourceId, manifest.cacheTTL, {
+    enabled: query.data !== undefined,
+  })
+
+  const allYearly = useMemo(
+    () => (query.data ? aggregateByYear(query.data, currentYear) : undefined),
+    [query.data, currentYear]
+  )
+
+  return useYearlyIndicator(
+    allYearly,
+    {
+      isLoading: query.isPending,
+      error: query.error,
+      dataUpdatedAt: sourceUpdatedAt ?? query.dataUpdatedAt,
+    },
+    manifest,
+    events
+  )
 }

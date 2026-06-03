@@ -72,6 +72,17 @@ export const socrataApi = {
   },
 }
 
+/** Banco de la Republica graficador-series API client. */
+export const banrepApi = {
+  /** Fetch a time series by its numeric series ID. */
+  series<T = unknown>(seriesId: string, options?: ApiOptions): Promise<T> {
+    return apiRequest<T>(
+      'https://suameca.banrep.gov.co/graficador-series/rest/graficadorService/consultaSerieParaGraficar',
+      { ...options, params: { idSerie: seriesId } }
+    )
+  },
+}
+
 /** Api a World Bank indicator for Colombia. Response data is at index [1]. */
 export async function worldBankApi<T>(indicator: string, options?: ApiOptions): Promise<T[]> {
   const url = `https://api.worldbank.org/v2/country/CO/indicator/${indicator}`

@@ -60,7 +60,8 @@ function EventFilterSection() {
                         <span className="inline-flex size-5 shrink-0 items-center justify-center rounded-full border border-amber-400/60 bg-amber-400/15 text-[10px] font-semibold text-amber-500">
                           {num}
                         </span>
-                        {event.label} <span className="text-muted-foreground">({event.year})</span>
+                        {event.label}{' '}
+                        <span className="text-muted-foreground">({event.date.getFullYear()})</span>
                       </label>
                     </div>
                   )

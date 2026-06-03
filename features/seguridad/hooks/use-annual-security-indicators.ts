@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { SECURITY_CATEGORIES, type SecurityIndicators } from '@/data/security'
-import type { IndicatorByYearResult } from '@/hooks/use-indicator-by-year'
+import type { IndicatorResult } from '@/hooks/use-indicator-by-year'
 import {
   useCocaBaseSeizuresByYear,
   useCocaineSeizuresByYear,
@@ -42,7 +42,7 @@ export function useAnnualSecurityIndicators(activeCategory: string) {
     enabled: activeIds.has(id) || secondWaveEnabled,
   })
 
-  const byId: Record<`${SecurityIndicators}`, IndicatorByYearResult> = {
+  const byId: Record<`${SecurityIndicators}`, IndicatorResult> = {
     kidnappings: useKidnappingsByYear(on('kidnappings')),
     homicides: useHomicidesByYear(on('homicides')),
     extortion: useExtortionByYear(on('extortion')),

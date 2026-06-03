@@ -15,6 +15,8 @@ export function usePopulationByYear() {
       .filter(([year]) => Number(year) <= currentYear)
       .map(([year, total]) => ({
         year: Number(year),
+        ts: new Date(Number(year), 0, 1).getTime(),
+        label: year,
         total,
         rate: 0,
         isPartial: Number(year) === currentYear,
@@ -35,7 +37,7 @@ export function usePopulationByYear() {
     sourceUrl: SOURCE_URL,
     unit: 'habitantes',
     displayUnit: 'habitantes',
-    displayValue: latest ? formatNumber(latest.total) : null,
+    displayValue: latest ? formatNumber(latest.total, 4) : null,
     yKey: 'total',
     data,
     completeYears,

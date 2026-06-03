@@ -2,10 +2,10 @@
 
 import { KpiSummaryCard, KpiSummaryCardSkeleton } from '@/components/kpi-summary-card'
 import { Marquee } from '@/components/ui/marquee'
-import type { IndicatorByYearResult } from '@/hooks/use-indicator-by-year'
+import type { IndicatorResult } from '@/hooks/use-indicator-by-year'
 
 type KpiSummaryStripProps = {
-  indicators: IndicatorByYearResult[]
+  indicators: IndicatorResult[]
   onIndicatorClick?: (indicatorId: string) => void
 }
 

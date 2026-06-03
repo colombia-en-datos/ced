@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 const CURRENT_YEAR = new Date().getFullYear()
-const MIN_WINDOW = 8
+const MIN_WINDOW = 1
 const DEFAULT_FROM = 1985
 const DEFAULT_TO = CURRENT_YEAR
 
