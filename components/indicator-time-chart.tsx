@@ -89,6 +89,7 @@ export const IndicatorTimeChart = memo(function IndicatorTimeChart({
           unit={displayUnit}
           eventsByYear={eventsByYear}
           decimals={4}
+          positiveDirection={positiveDirection}
         />
         {delta !== null && previous && displayValue && positiveDirection != null && (
           <IndicatorTrendSummary
