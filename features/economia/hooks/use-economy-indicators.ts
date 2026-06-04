@@ -9,11 +9,14 @@ import {
   useGdpGrowthByYear,
   useInflationByMonth,
   useMinimumWageByYear,
+  useNewHousingPriceByMonth,
   useOccupationRateByMonth,
   usePolicyRateByDay,
   useRemittancesByMonth,
   useUnemploymentByMonth,
+  useUsedHousingPriceByMonth,
 } from '../api/indicators'
+import { useRealMinimumWageByYear } from '../api/use-real-minimum-wage'
 
 export function useEconomyIndicators(activeCategory: string) {
   const [secondWaveEnabled, setSecondWaveEnabled] = useState(false)
@@ -42,6 +45,9 @@ export function useEconomyIndicators(activeCategory: string) {
     colcap: useColcapByDay(on('colcap')),
     external_debt: useExternalDebtByMonth(on('external_debt')),
     minimum_wage: useMinimumWageByYear(on('minimum_wage')),
+    real_minimum_wage: useRealMinimumWageByYear(on('real_minimum_wage')),
+    new_housing_price: useNewHousingPriceByMonth(on('new_housing_price')),
+    used_housing_price: useUsedHousingPriceByMonth(on('used_housing_price')),
   }
 
   const activeLoaded = [...activeIds].every((id) => byId[id]?.data !== undefined)

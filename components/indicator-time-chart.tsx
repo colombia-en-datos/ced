@@ -1,6 +1,6 @@
 'use client'
 
-import { IconInfoCircle } from '@tabler/icons-react'
+import type { ReactNode } from 'react'
 import { memo } from 'react'
 import { ChartEmpty } from '@/components/chart-empty'
 import { ChartSkeleton } from '@/components/chart-skeleton'
@@ -11,7 +11,6 @@ import {
   IndicatorChartCardHeader,
 } from '@/components/indicator-chart-card'
 import { IndicatorTrendSummary } from '@/components/indicator-trend-summary'
-import { InfoTip } from '@/components/info-tip'
 import { TimeLineChart } from '@/components/time-line-chart'
 import type { Event } from '@/data/events'
 import { formatNumber } from '@/utils/format'
@@ -29,7 +28,7 @@ export type TimePoint = {
 type IndicatorTimeChartProps = {
   id?: string
   title: string
-  description?: string
+  headerInfo?: ReactNode
   subtitle: string
   source: string
   sourceUrl: string
@@ -50,7 +49,7 @@ type IndicatorTimeChartProps = {
 export const IndicatorTimeChart = memo(function IndicatorTimeChart({
   id,
   title,
-  description,
+  headerInfo,
   subtitle,
   source,
   sourceUrl,
@@ -74,11 +73,7 @@ export const IndicatorTimeChart = memo(function IndicatorTimeChart({
   return (
     <IndicatorChartCard id={id}>
       <IndicatorChartCardHeader title={title} subtitle={subtitle}>
-        {description ? (
-          <InfoTip content={description}>
-            <IconInfoCircle className="size-4 text-muted-foreground" />
-          </InfoTip>
-        ) : null}
+        {headerInfo}
       </IndicatorChartCardHeader>
 
       <IndicatorChartCardContent>

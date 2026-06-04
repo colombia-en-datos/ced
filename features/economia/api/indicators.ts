@@ -6,10 +6,12 @@ import {
   GDP_GROWTH_MANIFEST,
   INFLATION_MANIFEST,
   MINIMUM_WAGE_MANIFEST,
+  NEW_HOUSING_PRICE_MANIFEST,
   OCCUPATION_RATE_MANIFEST,
   POLICY_RATE_MANIFEST,
   REMITTANCES_MANIFEST,
   UNEMPLOYMENT_MANIFEST,
+  USED_HOUSING_PRICE_MANIFEST,
 } from '@/data/economy'
 import { createBanrepIndicator } from '@/lib/create-banrep-indicator'
 
@@ -24,3 +26,5 @@ export const { useByDay: usePolicyRateByDay } = createBanrepIndicator(POLICY_RAT
 export const { useByDay: useColcapByDay } = createBanrepIndicator(COLCAP_MANIFEST)
 export const { useByMonth: useExternalDebtByMonth } = createBanrepIndicator(EXTERNAL_DEBT_MANIFEST)
 export const { useByYear: useMinimumWageByYear } = createBanrepIndicator(MINIMUM_WAGE_MANIFEST)
+export const { useByMonth: useNewHousingPriceByMonth } = createBanrepIndicator(NEW_HOUSING_PRICE_MANIFEST)
+export const { useByMonth: useUsedHousingPriceByMonth } = createBanrepIndicator(USED_HOUSING_PRICE_MANIFEST)

@@ -9,10 +9,13 @@ export enum EconomyIndicators {
   GdpGrowth = 'gdp_growth',
   Inflation = 'inflation',
   MinimumWage = 'minimum_wage',
+  NewHousingPrice = 'new_housing_price',
   OccupationRate = 'occupation_rate',
   PolicyRate = 'policy_rate',
+  RealMinimumWage = 'real_minimum_wage',
   Remittances = 'remittances',
   Unemployment = 'unemployment',
+  UsedHousingPrice = 'used_housing_price',
 }
 
 export type EconomyCategory = {
@@ -109,6 +112,32 @@ export const MINIMUM_WAGE_MANIFEST = indicatorManifest.parse({
   positiveDirection: 'up',
 })
 
+export const REAL_MINIMUM_WAGE_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.RealMinimumWage}`,
+  sector: Sector.Economia,
+  label: 'Salario minimo real',
+  description:
+    'Indice del salario minimo real: salario minimo nominal deflactado por el promedio anual del IPC. Base = primer ano disponible. Permite comparar el poder adquisitivo del salario minimo a lo largo del tiempo.',
+  source: 'Banco de la Republica (derivado)',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/15416',
+  resourceId: 'derived_real_minimum_wage',
+  queryKey: 'realMinimumWage',
+  unit: 'Indice real',
+  cacheTTL: 604800,
+  positiveDirection: 'up',
+  formula: '(Salario mínimo nominal ÷ IPC) × 100',
+  derivedSources: [
+    {
+      label: 'Salario mínimo mensual (serie 15416)',
+      url: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/15416',
+    },
+    {
+      label: 'Índice de Precios al Consumidor (serie 15000)',
+      url: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/15000',
+    },
+  ],
+})
+
 export const OCCUPATION_RATE_MANIFEST = indicatorManifest.parse({
   id: `${Sector.Economia}_${EconomyIndicators.OccupationRate}`,
   sector: Sector.Economia,
@@ -184,6 +213,36 @@ export const FOREIGN_INVESTMENT_MANIFEST = indicatorManifest.parse({
   positiveDirection: 'up',
 })
 
+export const NEW_HOUSING_PRICE_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.NewHousingPrice}`,
+  sector: Sector.Economia,
+  label: 'Precio vivienda nueva (IPVNBR)',
+  description:
+    'Indice real de precios de la vivienda nueva, agregado nacional. Base diciembre 2006. Elaborado por el Banco de la Republica.',
+  source: 'Banco de la Republica',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/17269',
+  resourceId: '17269',
+  queryKey: 'newHousingPrice',
+  unit: 'Indice real',
+  cacheTTL: 604800,
+  positiveDirection: 'up',
+})
+
+export const USED_HOUSING_PRICE_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.UsedHousingPrice}`,
+  sector: Sector.Economia,
+  label: 'Precio vivienda usada (IPVU)',
+  description:
+    'Indice real de precios de la vivienda usada, trimestral. Base 1990=100. Elaborado por el Banco de la Republica.',
+  source: 'Banco de la Republica',
+  sourceUrl: 'https://suameca.banrep.gov.co/graficador-interactivo/grafica/57',
+  resourceId: '57',
+  queryKey: 'usedHousingPrice',
+  unit: 'Indice real',
+  cacheTTL: 604800,
+  positiveDirection: 'up',
+})
+
 export const ECONOMY_CATEGORIES: EconomyCategory[] = [
   {
     id: 'activity',
@@ -199,7 +258,13 @@ export const ECONOMY_CATEGORIES: EconomyCategory[] = [
     id: 'prices',
     label: 'Precios',
     description: 'Variacion de precios y costo de vida.',
-    indicators: [EconomyIndicators.Inflation, EconomyIndicators.MinimumWage],
+    indicators: [
+      EconomyIndicators.Inflation,
+      EconomyIndicators.MinimumWage,
+      EconomyIndicators.RealMinimumWage,
+      EconomyIndicators.NewHousingPrice,
+      EconomyIndicators.UsedHousingPrice,
+    ],
   },
   {
     id: 'external',

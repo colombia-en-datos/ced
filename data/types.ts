@@ -15,6 +15,10 @@ export const indicatorManifest = z.object({
   unit: z.string(),
   cacheTTL: z.number(),
   positiveDirection: z.union([z.literal('up'), z.literal('down')]),
+  active: z.boolean().default(true),
+  query: z.string().optional(),
+  formula: z.string().optional(),
+  derivedSources: z.array(z.object({ label: z.string(), url: z.url() })).optional(),
 })
 
 export type IndicatorManifest = z.infer<typeof indicatorManifest>

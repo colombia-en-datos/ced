@@ -55,6 +55,8 @@ function computeDelta(
 
 export type Periodicity = 'annual' | 'quarterly' | 'monthly' | 'daily'
 
+export type DerivedSource = { label: string; url: string }
+
 export type IndicatorResult = {
   periodicity: Periodicity
   id: string
@@ -64,6 +66,8 @@ export type IndicatorResult = {
   sourceUrl: string
   unit: string
   positiveDirection: 'up' | 'down'
+  formula?: string
+  derivedSources?: DerivedSource[]
   events: Event[] | undefined
   data: YearPoint[] | undefined
   completeYears: YearPoint[]
@@ -127,6 +131,8 @@ export function useYearlyIndicator(
     sourceUrl: manifest.sourceUrl,
     unit: manifest.unit,
     positiveDirection: manifest.positiveDirection,
+    formula: manifest.formula,
+    derivedSources: manifest.derivedSources,
     events,
     data: yearly,
     completeYears,
@@ -177,6 +183,8 @@ export function useMonthlyIndicator(
     sourceUrl: manifest.sourceUrl,
     unit: manifest.unit,
     positiveDirection: manifest.positiveDirection,
+    formula: manifest.formula,
+    derivedSources: manifest.derivedSources,
     events,
     data: filtered,
     completeYears: complete,
@@ -227,6 +235,8 @@ export function useDailyIndicator(
     sourceUrl: manifest.sourceUrl,
     unit: manifest.unit,
     positiveDirection: manifest.positiveDirection,
+    formula: manifest.formula,
+    derivedSources: manifest.derivedSources,
     events,
     data: filtered,
     completeYears: complete,

@@ -76,6 +76,37 @@ type ManifestEntry = {
 - **DANE** — CSV downloads, parsed with PapaParse. May need CORS proxy.
 - **CORS proxy** — Cloudflare Worker for DANE endpoints. URL in `NEXT_PUBLIC_PROXY_URL`.
 
+## Searching for datasets
+
+### datos.gov.co (Socrata)
+
+Catalog search API:
+
+```
+GET https://www.datos.gov.co/api/catalog/v1?q={search_term}&only=datasets&provenance=official&Información-de-la-Entidad_Departamento=Bogotá D.C.&limit=20&offset=0&order=relevance&published=true&approval_status=approved&audience=public
+```
+
+Required filters:
+- `only=datasets` — return datasets only (not charts, maps, etc.)
+- `provenance=official` — official sources only
+- `Información-de-la-Entidad_Departamento=Bogotá D.C.` — national-level data from ministries headquartered in Bogotá (filters out regional/departmental datasets)
+
+Dataset metadata: `GET https://www.datos.gov.co/api/views/{resourceId}.json` — returns columns, row counts, attribution.
+
+### Banco de la República (BanRep)
+
+Autocomplete search API:
+
+```
+GET https://suameca.banrep.gov.co/graficador-series/rest/graficadorService/completarBusqueda?valor={search_term}
+```
+
+Headers: `Accept: application/json`, `Content-type: application/json`
+
+Returns array of series with `id`, `nombre`, `unidad`, `descripcionPeriodicidad`.
+
+Series data: `GET https://suameca.banrep.gov.co/graficador-series/rest/graficadorService/consultaSerieParaGraficar?idSerie={seriesId}` — returns `[timestamp_ms, value]` pairs.
+
 ## Cache TTLs
 
 | Data type | TTL |
