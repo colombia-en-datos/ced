@@ -76,7 +76,7 @@ export function createBanrepIndicator(manifest: IndicatorManifest) {
         return parsed.data
       },
       staleTime: manifest.cacheTTL * 1000,
-      enabled: Boolean(options?.enabled),
+      enabled: manifest.active !== false && Boolean(options?.enabled),
     })
   }
 

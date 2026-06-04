@@ -2,15 +2,22 @@
 
 import { omit } from 'es-toolkit'
 import { IndicatorChart } from '@/components/indicator-chart'
+import type { SeriesConfig } from '@/components/multi-line-chart'
+import { MultiSeriesChart } from '@/components/multi-series-chart'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { Event } from '@/data/events'
+import type { MultiSeriesResult } from '@/data/types'
 import type { IndicatorResult } from '@/hooks/use-indicator-by-year'
 
-type Category = {
+export type CategoryChartItem =
+  | { type: 'indicator'; data: IndicatorResult }
+  | { type: 'multi-series'; data: MultiSeriesResult; series: SeriesConfig[] }
+
+export type Category = {
   id: string
   label: string
   description: string
-  data: IndicatorResult[]
+  items: CategoryChartItem[]
 }
 
 type CategoryTabsProps = {
@@ -18,6 +25,21 @@ type CategoryTabsProps = {
   onTabChange: (tab: string) => void
   categories: Category[]
   eventsByYear: Map<number, Event[]>
+}
+
+function ChartItem({ item, eventsByYear }: { item: CategoryChartItem; eventsByYear: Map<number, Event[]> }) {
+  switch (item.type) {
+    case 'indicator':
+      return (
+        <IndicatorChart
+          id={`chart-${item.data.id}`}
+          eventsByYear={eventsByYear}
+          {...omit(item.data, ['id'])}
+        />
+      )
+    case 'multi-series':
+      return <MultiSeriesChart result={item.data} series={item.series} eventsByYear={eventsByYear} />
+  }
 }
 
 export function CategoryTabs({ activeTab, onTabChange, categories, eventsByYear }: CategoryTabsProps) {
@@ -37,13 +59,8 @@ export function CategoryTabs({ activeTab, onTabChange, categories, eventsByYear 
         <TabsContent key={cat.id} value={cat.id}>
           <p className="mt-2 mb-4 text-sm text-muted-foreground">{cat.description}</p>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {cat.data.map((indicator) => (
-              <IndicatorChart
-                key={indicator.id}
-                id={`chart-${indicator.id}`}
-                eventsByYear={eventsByYear}
-                {...omit(indicator, ['id'])}
-              />
+            {cat.items.map((item) => (
+              <ChartItem key={item.data.id} item={item} eventsByYear={eventsByYear} />
             ))}
           </div>
         </TabsContent>

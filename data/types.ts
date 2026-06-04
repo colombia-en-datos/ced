@@ -1,4 +1,5 @@
 import z from 'zod'
+import type { SeriesConfig } from '@/components/multi-line-chart'
 import { Sector } from '@/config/sectors'
 
 export const indicatorManifest = z.object({
@@ -22,6 +23,17 @@ export const indicatorManifest = z.object({
 })
 
 export type IndicatorManifest = z.infer<typeof indicatorManifest>
+
+export type SectorCategoryItem<T extends string> =
+  | { type: 'indicator'; id: T }
+  | { type: 'multi-series'; id: T; series: SeriesConfig[] }
+
+export type SectorCategory<T extends string> = {
+  id: string
+  label: string
+  description: string
+  items: SectorCategoryItem<T>[]
+}
 
 export type MultiSeriesResult = {
   id: string

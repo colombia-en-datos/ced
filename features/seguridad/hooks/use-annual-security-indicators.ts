@@ -31,15 +31,12 @@ export function useAnnualSecurityIndicators(activeCategory: string) {
 
   const activeIds = useMemo(
     () =>
-      new Set(
-        SECURITY_CATEGORIES.find((c) => c.id === activeCategory)?.indicators ??
-          ([] as `${SecurityIndicators}`[])
-      ),
+      new Set(SECURITY_CATEGORIES.find((c) => c.id === activeCategory)?.items.map((item) => item.id) ?? []),
     [activeCategory]
   )
 
   const on = (id: `${SecurityIndicators}`) => ({
-    enabled: activeIds.has(id) || secondWaveEnabled,
+    enabled: activeIds.has(id as SecurityIndicators) || secondWaveEnabled,
   })
 
   const byId: Record<`${SecurityIndicators}`, IndicatorResult> = {
@@ -79,7 +76,7 @@ export function useAnnualSecurityIndicators(activeCategory: string) {
 
   const categories = SECURITY_CATEGORIES.map((cat) => ({
     ...cat,
-    data: cat.indicators.map((id) => byId[id]),
+    items: cat.items.map((item) => ({ type: 'indicator' as const, data: byId[item.id] })),
   }))
 
   return { allIndicators, categories }

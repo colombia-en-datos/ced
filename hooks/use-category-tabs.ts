@@ -1,16 +1,16 @@
 import { useCallback, useMemo } from 'react'
 
-type CategoryWithData = {
+type CategoryWithItems = {
   id: string
-  data: { id: string }[]
+  items: { data: { id: string } }[]
 }
 
-export function useCategoryTabs(setActiveTab: (tab: string) => void, categories: CategoryWithData[]) {
+export function useCategoryTabs(setActiveTab: (tab: string) => void, categories: CategoryWithItems[]) {
   const indicatorToCategory = useMemo(() => {
     const map: Record<string, string> = {}
     for (const cat of categories) {
-      for (const ind of cat.data) {
-        map[ind.id] = cat.id
+      for (const item of cat.items) {
+        map[item.data.id] = cat.id
       }
     }
     return map

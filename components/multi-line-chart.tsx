@@ -62,7 +62,8 @@ export function MultiLineChart({ data, series, unit, eventsByYear, decimals = 1 
           axisLine={false}
           tickMargin={4}
           width={40}
-          tickFormatter={(v: number) => `${formatNumber(v, 0)}${unit ? unit : ''}`}
+          domain={['auto', 'auto']}
+          tickFormatter={(v: number) => formatNumber(v, 0)}
         />
         <ChartTooltip
           content={

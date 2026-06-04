@@ -17,18 +17,20 @@ export function createSocrataIndicator<T extends CountRow>(
     return useQuery({
       queryKey: [manifest.queryKey, 'raw'],
       queryFn: async ({ signal }) => {
-        const params = [
-          manifest.orderField && `$order=${manifest.orderField} ASC`,
-          manifest.limit && `$limit=${manifest.limit}`,
-        ]
-          .filter(Boolean)
-          .join('&')
+        const params =
+          manifest.query ??
+          [
+            manifest.orderField && `$order=${manifest.orderField} ASC`,
+            manifest.limit && `$limit=${manifest.limit}`,
+          ]
+            .filter(Boolean)
+            .join('&')
         const raw = await socrataApi.resource(manifest.resourceId, params || undefined, { signal })
 
         return responseSchema.parse(raw)
       },
       staleTime: manifest.cacheTTL * 1000,
-      enabled: Boolean(options?.enabled),
+      enabled: manifest.active !== false && Boolean(options?.enabled),
     })
   }
 

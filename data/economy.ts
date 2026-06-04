@@ -1,5 +1,5 @@
 import { Sector } from '@/config/sectors'
-import { indicatorManifest } from './types'
+import { indicatorManifest, type SectorCategory } from './types'
 
 export enum EconomyIndicators {
   Colcap = 'colcap',
@@ -16,13 +16,6 @@ export enum EconomyIndicators {
   Remittances = 'remittances',
   Unemployment = 'unemployment',
   UsedHousingPrice = 'used_housing_price',
-}
-
-export type EconomyCategory = {
-  id: string
-  label: string
-  description: string
-  indicators: EconomyIndicators[]
 }
 
 export const GDP_GROWTH_MANIFEST = indicatorManifest.parse({
@@ -243,44 +236,47 @@ export const USED_HOUSING_PRICE_MANIFEST = indicatorManifest.parse({
   positiveDirection: 'up',
 })
 
-export const ECONOMY_CATEGORIES: EconomyCategory[] = [
+export const ECONOMY_CATEGORIES: SectorCategory<EconomyIndicators>[] = [
   {
     id: 'activity',
     label: 'Actividad economica',
     description: 'Crecimiento de la economia y situacion del mercado laboral.',
-    indicators: [
-      EconomyIndicators.GdpGrowth,
-      EconomyIndicators.Unemployment,
-      EconomyIndicators.OccupationRate,
+    items: [
+      { type: 'indicator', id: EconomyIndicators.GdpGrowth },
+      { type: 'indicator', id: EconomyIndicators.Unemployment },
+      { type: 'indicator', id: EconomyIndicators.OccupationRate },
     ],
   },
   {
     id: 'prices',
     label: 'Precios',
     description: 'Variacion de precios y costo de vida.',
-    indicators: [
-      EconomyIndicators.Inflation,
-      EconomyIndicators.MinimumWage,
-      EconomyIndicators.RealMinimumWage,
-      EconomyIndicators.NewHousingPrice,
-      EconomyIndicators.UsedHousingPrice,
+    items: [
+      { type: 'indicator', id: EconomyIndicators.Inflation },
+      { type: 'indicator', id: EconomyIndicators.MinimumWage },
+      { type: 'indicator', id: EconomyIndicators.RealMinimumWage },
+      { type: 'indicator', id: EconomyIndicators.NewHousingPrice },
+      { type: 'indicator', id: EconomyIndicators.UsedHousingPrice },
     ],
   },
   {
     id: 'external',
     label: 'Sector externo',
     description: 'Relacion de Colombia con la economia global: comercio, deuda e inversion.',
-    indicators: [
-      EconomyIndicators.ExchangeRate,
-      EconomyIndicators.Remittances,
-      EconomyIndicators.ExternalDebt,
-      EconomyIndicators.ForeignInvestment,
+    items: [
+      { type: 'indicator', id: EconomyIndicators.ExchangeRate },
+      { type: 'indicator', id: EconomyIndicators.Remittances },
+      { type: 'indicator', id: EconomyIndicators.ExternalDebt },
+      { type: 'indicator', id: EconomyIndicators.ForeignInvestment },
     ],
   },
   {
     id: 'financial',
     label: 'Mercado financiero',
     description: 'Tasas de interes de referencia y desempeno del mercado accionario.',
-    indicators: [EconomyIndicators.PolicyRate, EconomyIndicators.Colcap],
+    items: [
+      { type: 'indicator', id: EconomyIndicators.PolicyRate },
+      { type: 'indicator', id: EconomyIndicators.Colcap },
+    ],
   },
 ]

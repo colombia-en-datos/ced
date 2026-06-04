@@ -58,6 +58,7 @@ export type Periodicity = 'annual' | 'quarterly' | 'monthly' | 'daily'
 export type DerivedSource = { label: string; url: string }
 
 export type IndicatorResult = {
+  active: boolean
   periodicity: Periodicity
   id: string
   label: string
@@ -120,6 +121,7 @@ export function useYearlyIndicator(
   const yKey = showRate ? 'rate' : 'total'
 
   return {
+    active: manifest.active !== false,
     periodicity: 'annual',
     isLoading: meta.isLoading,
     error: meta.error,
@@ -172,6 +174,7 @@ export function useMonthlyIndicator(
   const absoluteDelta = computeDelta(latest, previous, 'total')
 
   return {
+    active: manifest.active !== false,
     periodicity: 'monthly',
     isLoading: meta.isLoading,
     error: meta.error,
@@ -224,6 +227,7 @@ export function useDailyIndicator(
   const absoluteDelta = computeDelta(latest, previous, 'total')
 
   return {
+    active: manifest.active !== false,
     periodicity: 'daily',
     isLoading: meta.isLoading,
     error: meta.error,

@@ -1,5 +1,5 @@
 import { Sector } from '@/config/sectors'
-import { indicatorManifest } from './types'
+import { indicatorManifest, type SectorCategory } from './types'
 
 export enum SecurityIndicators {
   CocaBaseSeizures = 'coca_base_seizures',
@@ -26,49 +26,42 @@ export enum SecurityIndicators {
   VehicleTheft = 'vehicle_theft',
 }
 
-export type SecurityCategory = {
-  id: string
-  label: string
-  description: string
-  indicators: SecurityIndicators[]
-}
-
-export const SECURITY_CATEGORIES: SecurityCategory[] = [
+export const SECURITY_CATEGORIES: SectorCategory<SecurityIndicators>[] = [
   {
     id: 'violence',
     label: 'Violencia y conflicto',
     description: 'Delitos contra la vida e infraestructura en el contexto del conflicto armado.',
-    indicators: [
-      SecurityIndicators.Homicides,
-      SecurityIndicators.Terrorism,
-      SecurityIndicators.Kidnappings,
-      SecurityIndicators.Extortion,
-      SecurityIndicators.Displacement,
-      SecurityIndicators.ForceCasualties,
-      SecurityIndicators.OilPipelineBombings,
+    items: [
+      { type: 'indicator', id: SecurityIndicators.Homicides },
+      { type: 'indicator', id: SecurityIndicators.Terrorism },
+      { type: 'indicator', id: SecurityIndicators.Kidnappings },
+      { type: 'indicator', id: SecurityIndicators.Extortion },
+      { type: 'indicator', id: SecurityIndicators.Displacement },
+      { type: 'indicator', id: SecurityIndicators.ForceCasualties },
+      { type: 'indicator', id: SecurityIndicators.OilPipelineBombings },
     ],
   },
   {
     id: 'social',
     label: 'Convivencia',
     description: 'Indicadores de violencia interpersonal y protección de poblaciones vulnerables.',
-    indicators: [
-      SecurityIndicators.DomesticViolence,
-      SecurityIndicators.SexualCrimes,
-      SecurityIndicators.CrimesAgainstMinors,
-      SecurityIndicators.TrafficInjuries,
+    items: [
+      { type: 'indicator', id: SecurityIndicators.DomesticViolence },
+      { type: 'indicator', id: SecurityIndicators.SexualCrimes },
+      { type: 'indicator', id: SecurityIndicators.CrimesAgainstMinors },
+      { type: 'indicator', id: SecurityIndicators.TrafficInjuries },
     ],
   },
   {
     id: 'theft',
     label: 'Hurtos',
     description: 'Modalidades de hurto reportadas a nivel nacional.',
-    indicators: [
-      SecurityIndicators.PersonalTheft,
-      SecurityIndicators.HomeTheft,
-      SecurityIndicators.VehicleTheft,
-      SecurityIndicators.FinancialTheft,
-      SecurityIndicators.TouristCrimes,
+    items: [
+      { type: 'indicator', id: SecurityIndicators.PersonalTheft },
+      { type: 'indicator', id: SecurityIndicators.HomeTheft },
+      { type: 'indicator', id: SecurityIndicators.VehicleTheft },
+      { type: 'indicator', id: SecurityIndicators.FinancialTheft },
+      { type: 'indicator', id: SecurityIndicators.TouristCrimes },
     ],
   },
   {
@@ -76,13 +69,13 @@ export const SECURITY_CATEGORIES: SecurityCategory[] = [
     label: 'Operativos',
     description:
       'Resultados operacionales de la fuerza pública en lucha contra el narcotráfico y la minería ilegal.',
-    indicators: [
-      SecurityIndicators.CocaineSeizures,
-      SecurityIndicators.CocaBaseSeizures,
-      SecurityIndicators.MarijuanaSeizures,
-      SecurityIndicators.CropEradication,
-      SecurityIndicators.IllegalMiningCaptures,
-      SecurityIndicators.FirearmSeizures,
+    items: [
+      { type: 'indicator', id: SecurityIndicators.CocaineSeizures },
+      { type: 'indicator', id: SecurityIndicators.CocaBaseSeizures },
+      { type: 'indicator', id: SecurityIndicators.MarijuanaSeizures },
+      { type: 'indicator', id: SecurityIndicators.CropEradication },
+      { type: 'indicator', id: SecurityIndicators.IllegalMiningCaptures },
+      { type: 'indicator', id: SecurityIndicators.FirearmSeizures },
     ],
   },
 ]

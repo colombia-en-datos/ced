@@ -23,17 +23,15 @@ export function useEconomyIndicators(activeCategory: string) {
 
   const activeIds = useMemo(
     () =>
-      new Set(
-        (ECONOMY_CATEGORIES.find((c) => c.id === activeCategory)?.indicators as string[] | undefined) ?? []
-      ),
+      new Set(ECONOMY_CATEGORIES.find((c) => c.id === activeCategory)?.items.map((item) => item.id) ?? []),
     [activeCategory]
   )
 
   const on = (id: `${EconomyIndicators}`) => ({
-    enabled: activeIds.has(id) || secondWaveEnabled,
+    enabled: activeIds.has(id as EconomyIndicators) || secondWaveEnabled,
   })
 
-  const byId: Record<string, IndicatorResult> = {
+  const byId: Record<`${EconomyIndicators}`, IndicatorResult> = {
     gdp_growth: useGdpGrowthByYear(on('gdp_growth')),
     inflation: useInflationByMonth(on('inflation')),
     exchange_rate: useExchangeRateByDay(on('exchange_rate')),
@@ -62,7 +60,7 @@ export function useEconomyIndicators(activeCategory: string) {
 
   const categories = ECONOMY_CATEGORIES.map((cat) => ({
     ...cat,
-    data: cat.indicators.map((id) => byId[id]),
+    items: cat.items.map((item) => ({ type: 'indicator' as const, data: byId[item.id] })),
   }))
 
   return { allIndicators, categories }

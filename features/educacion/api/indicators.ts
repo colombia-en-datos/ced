@@ -1,11 +1,18 @@
 import { type QueryObserverOptions, useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import * as z from 'zod'
-import { BASIC_EDUCATION_MANIFEST, EducationIndicators } from '@/data/education'
+import {
+  BASIC_EDUCATION_MANIFEST,
+  EducationIndicators,
+  HIGHER_ED_ENROLLMENT_MANIFEST,
+  OFFICIAL_TEACHERS_MANIFEST,
+  SCHOOLS_MANIFEST,
+} from '@/data/education'
 import { EVENTS } from '@/data/events'
 import type { MultiSeriesResult } from '@/data/types'
 import { useYearlyIndicator, type YearPoint } from '@/hooks/use-indicator-by-year'
 import { socrataApi } from '@/lib/api-client'
+import { createSocrataIndicator } from '@/lib/create-socrata-indicator'
 
 const rowSchema = z
   .object({
@@ -212,3 +219,32 @@ export function useDropoutByYear(options?: Pick<QueryObserverOptions, 'enabled'>
     dataUpdatedAt: query.dataUpdatedAt,
   }
 }
+
+// ---------------------------------------------------------------------------
+// Simple createSocrataIndicator hooks
+// ---------------------------------------------------------------------------
+
+const officialTeachersSchema = z
+  .object({ anno_inf: z.coerce.number(), total: z.coerce.number() })
+  .transform((r) => ({ date: new Date(r.anno_inf, 0, 1), count: r.total }))
+
+export const { useRaw: useOfficialTeachers, useByYear: useOfficialTeachersByYear } = createSocrataIndicator(
+  OFFICIAL_TEACHERS_MANIFEST,
+  officialTeachersSchema
+)
+
+const schoolsSchema = z
+  .object({ a_o: z.coerce.number(), total: z.coerce.number() })
+  .transform((r) => ({ date: new Date(r.a_o, 0, 1), count: r.total }))
+
+export const { useRaw: useSchools, useByYear: useSchoolsByYear } = createSocrataIndicator(
+  SCHOOLS_MANIFEST,
+  schoolsSchema
+)
+
+const higherEdEnrollmentSchema = z
+  .object({ a_o: z.coerce.number(), total: z.coerce.number() })
+  .transform((r) => ({ date: new Date(r.a_o, 0, 1), count: r.total }))
+
+export const { useRaw: useHigherEdEnrollment, useByYear: useHigherEdEnrollmentByYear } =
+  createSocrataIndicator(HIGHER_ED_ENROLLMENT_MANIFEST, higherEdEnrollmentSchema)
