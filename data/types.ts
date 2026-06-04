@@ -18,3 +18,17 @@ export const indicatorManifest = z.object({
 })
 
 export type IndicatorManifest = z.infer<typeof indicatorManifest>
+
+export type MultiSeriesResult = {
+  id: string
+  label: string
+  description: string
+  source: string
+  sourceUrl: string
+  unit: string
+  positiveDirection: 'up' | 'down'
+  data: Record<string, unknown>[] | undefined
+  isLoading: boolean
+  error: Error | null
+  dataUpdatedAt: number
+}

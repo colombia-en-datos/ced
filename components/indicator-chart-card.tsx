@@ -53,7 +53,7 @@ export function IndicatorChartCardFooter({
   dataUpdatedAt?: number
 }) {
   return (
-    <CardFooter className="items-center justify-between border-t border-border/40 pt-4">
+    <CardFooter className="mt-auto items-center justify-between border-t border-border/40 pt-4">
       {dataUpdatedAt ? <DataUpdatedAt timestamp={dataUpdatedAt} /> : <span />}
       <SourceBadge source={source} sourceUrl={sourceUrl} variant="inline" />
     </CardFooter>
