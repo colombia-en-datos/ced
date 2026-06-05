@@ -47,6 +47,7 @@ export const IndicatorChart = memo(function IndicatorChart({
       headerInfo={
         <IndicatorInfoTip description={description} formula={formula} derivedSources={derivedSources} />
       }
+      first={first}
       latest={latest}
       {...rest}
     />

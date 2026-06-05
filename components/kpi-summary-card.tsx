@@ -63,7 +63,7 @@ export const KpiSummaryCard = memo(function KpiSummaryCard({
 
   const displayLabel = latest ? `${label} año ${latest.year}` : label
 
-  const periodLabel = latest && previous ? `${previous.year} vs ${latest.year}` : undefined
+  const periodLabel = latest && previous ? `${previous.label} vs ${latest.label}` : undefined
 
   return (
     <Card

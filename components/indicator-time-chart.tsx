@@ -10,7 +10,7 @@ import {
   IndicatorChartCardFooter,
   IndicatorChartCardHeader,
 } from '@/components/indicator-chart-card'
-import { IndicatorTrendSummary } from '@/components/indicator-trend-summary'
+import { IndicatorRangeSummary, IndicatorTrendSummary } from '@/components/indicator-trend-summary'
 import { TimeLineChart } from '@/components/time-line-chart'
 import type { Event } from '@/data/events'
 import { formatNumber } from '@/utils/format'
@@ -35,6 +35,7 @@ type IndicatorTimeChartProps = {
   positiveDirection?: 'up' | 'down'
   eventsByYear?: Map<number, Event[]>
   data: TimePoint[] | undefined
+  first: TimePoint | null
   latest: TimePoint | null
   previous: TimePoint | null
   delta: number | null
@@ -56,6 +57,7 @@ export const IndicatorTimeChart = memo(function IndicatorTimeChart({
   positiveDirection,
   eventsByYear,
   data,
+  first,
   latest,
   previous,
   delta,
@@ -87,15 +89,30 @@ export const IndicatorTimeChart = memo(function IndicatorTimeChart({
           positiveDirection={positiveDirection}
         />
         {delta !== null && previous && displayValue && positiveDirection != null && (
-          <IndicatorTrendSummary
-            periodLabel={latest.label}
-            value={displayValue}
-            unit={displayUnit}
-            delta={delta}
-            positiveDirection={positiveDirection}
-            previousValue={formatNumber(previous[yKey as keyof TimePoint] as number, 4)}
-            previousLabel={previous.label}
-          />
+          <div className="mt-3 flex flex-col gap-1">
+            <IndicatorTrendSummary
+              periodLabel={latest.label}
+              value={displayValue}
+              unit={displayUnit}
+              delta={delta}
+              positiveDirection={positiveDirection}
+              previousValue={formatNumber(previous[yKey as keyof TimePoint] as number, 4)}
+              previousLabel={previous.label}
+            />
+            {first && first.ts !== previous.ts && (() => {
+              const firstVal = first[yKey as keyof TimePoint] as number
+              const latestVal = latest[yKey as keyof TimePoint] as number
+              const rangeDelta = firstVal !== 0 ? ((latestVal - firstVal) / firstVal) * 100 : null
+              return rangeDelta !== null ? (
+                <IndicatorRangeSummary
+                  periodLabel={`${first.label}\u2013${latest.label}`}
+                  delta={rangeDelta}
+                  positiveDirection={positiveDirection}
+                  fromValue={formatNumber(firstVal, 4)}
+                />
+              ) : null
+            })()}
+          </div>
         )}
       </IndicatorChartCardContent>
 
