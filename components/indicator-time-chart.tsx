@@ -99,19 +99,21 @@ export const IndicatorTimeChart = memo(function IndicatorTimeChart({
               previousValue={formatNumber(previous[yKey as keyof TimePoint] as number, 4)}
               previousLabel={previous.label}
             />
-            {first && first.ts !== previous.ts && (() => {
-              const firstVal = first[yKey as keyof TimePoint] as number
-              const latestVal = latest[yKey as keyof TimePoint] as number
-              const rangeDelta = firstVal !== 0 ? ((latestVal - firstVal) / firstVal) * 100 : null
-              return rangeDelta !== null ? (
-                <IndicatorRangeSummary
-                  periodLabel={`${first.label}\u2013${latest.label}`}
-                  delta={rangeDelta}
-                  positiveDirection={positiveDirection}
-                  fromValue={formatNumber(firstVal, 4)}
-                />
-              ) : null
-            })()}
+            {first &&
+              first.ts !== previous.ts &&
+              (() => {
+                const firstVal = first[yKey as keyof TimePoint] as number
+                const latestVal = latest[yKey as keyof TimePoint] as number
+                const rangeDelta = firstVal !== 0 ? ((latestVal - firstVal) / firstVal) * 100 : null
+                return rangeDelta !== null ? (
+                  <IndicatorRangeSummary
+                    periodLabel={`${first.label}\u2013${latest.label}`}
+                    delta={rangeDelta}
+                    positiveDirection={positiveDirection}
+                    fromValue={formatNumber(firstVal, 4)}
+                  />
+                ) : null
+              })()}
           </div>
         )}
       </IndicatorChartCardContent>

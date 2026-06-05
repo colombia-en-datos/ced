@@ -10,6 +10,7 @@ type IndicatorChartProps = {
   id?: string
   label: string
   description?: string
+  question?: string
   formula?: string
   derivedSources?: DerivedSource[]
   source: string
@@ -32,13 +33,15 @@ type IndicatorChartProps = {
 export const IndicatorChart = memo(function IndicatorChart({
   label,
   description,
+  question,
   formula,
   derivedSources,
   first,
   latest,
   ...rest
 }: IndicatorChartProps) {
-  const subtitle = first && latest ? `Total nacional reportado, ${first.year}\u2013${latest.year}` : ''
+  const fallback = first && latest ? `${first.year}\u2013${latest.year}` : ''
+  const subtitle = question ?? fallback
 
   return (
     <IndicatorTimeChart

@@ -63,6 +63,7 @@ export type IndicatorResult = {
   id: string
   label: string
   description: string
+  question?: string
   source: string
   sourceUrl: string
   unit: string
@@ -129,6 +130,7 @@ export function useYearlyIndicator(
     id: manifest.id,
     label: manifest.label,
     description: manifest.description,
+    question: manifest.question,
     source: manifest.source,
     sourceUrl: manifest.sourceUrl,
     unit: manifest.unit,
@@ -182,6 +184,7 @@ export function useMonthlyIndicator(
     id: manifest.id,
     label: manifest.label,
     description: manifest.description,
+    question: manifest.question,
     source: manifest.source,
     sourceUrl: manifest.sourceUrl,
     unit: manifest.unit,
@@ -235,6 +238,7 @@ export function useDailyIndicator(
     id: manifest.id,
     label: manifest.label,
     description: manifest.description,
+    question: manifest.question,
     source: manifest.source,
     sourceUrl: manifest.sourceUrl,
     unit: manifest.unit,

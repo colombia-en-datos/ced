@@ -36,7 +36,9 @@ function useSocialProtectionRaw(options?: Pick<QueryObserverOptions, 'enabled'>)
   })
 }
 
-export function useSocialProtectionByYear(options?: Pick<QueryObserverOptions, 'enabled'>): MultiSeriesResult {
+export function useSocialProtectionByYear(
+  options?: Pick<QueryObserverOptions, 'enabled'>
+): MultiSeriesResult {
   const query = useSocialProtectionRaw(options)
   const currentYear = new Date().getFullYear()
 
@@ -47,7 +49,12 @@ export function useSocialProtectionByYear(options?: Pick<QueryObserverOptions, '
     for (const row of query.data) {
       const key = COMPONENT_MAP[row.componentedesc]
       if (!key) continue
-      const entry = byYear.get(row.ano) ?? { pensiones: 0, compensacionFamiliar: 0, riesgosLaborales: 0, cesantias: 0 }
+      const entry = byYear.get(row.ano) ?? {
+        pensiones: 0,
+        compensacionFamiliar: 0,
+        riesgosLaborales: 0,
+        cesantias: 0,
+      }
       entry[key] = row.total
       byYear.set(row.ano, entry)
     }

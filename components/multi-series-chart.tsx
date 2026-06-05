@@ -8,6 +8,7 @@ import {
   IndicatorChartCardFooter,
   IndicatorChartCardHeader,
 } from '@/components/indicator-chart-card'
+import { IndicatorInfoTip } from '@/components/indicator-info-tip'
 import { MultiLineChart, type SeriesConfig } from '@/components/multi-line-chart'
 import type { Event } from '@/data/events'
 import type { MultiSeriesResult } from '@/data/types'
@@ -27,7 +28,9 @@ export function MultiSeriesChart({
 
   return (
     <IndicatorChartCard>
-      <IndicatorChartCardHeader title={result.label} subtitle={result.description} />
+      <IndicatorChartCardHeader title={result.label} subtitle={result.question ?? result.description}>
+        <IndicatorInfoTip description={result.description} />
+      </IndicatorChartCardHeader>
       <IndicatorChartCardContent>
         <MultiLineChart data={result.data} series={series} unit={result.unit} eventsByYear={eventsByYear} />
       </IndicatorChartCardContent>

@@ -18,6 +18,7 @@ export const indicatorManifest = z.object({
   positiveDirection: z.union([z.literal('up'), z.literal('down')]),
   active: z.boolean().default(true),
   query: z.string().optional(),
+  question: z.string().optional(),
   formula: z.string().optional(),
   derivedSources: z.array(z.object({ label: z.string(), url: z.url() })).optional(),
 })
@@ -39,6 +40,7 @@ export type MultiSeriesResult = {
   id: string
   label: string
   description: string
+  question?: string
   source: string
   sourceUrl: string
   unit: string
