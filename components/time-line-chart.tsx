@@ -221,7 +221,14 @@ export function TimeLineChart({
             tickMargin={8}
             tickFormatter={(ts: number) => labelByTs.get(ts) ?? ''}
           />
-          <YAxis hide />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tickMargin={4}
+            width={40}
+            domain={['auto', 'auto']}
+            tickFormatter={(v: number) => formatNumber(v, decimals > 2 ? 0 : decimals)}
+          />
           <ChartTooltip
             cursor={false}
             content={
