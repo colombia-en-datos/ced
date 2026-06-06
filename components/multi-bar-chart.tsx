@@ -13,7 +13,7 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart'
 import type { Event } from '@/data/events'
-import { formatNumber } from '@/utils/format'
+import { formatCompact, formatNumber } from '@/utils/format'
 
 type DataPoint = Record<string, unknown> & { ts?: number; label?: string }
 
@@ -58,7 +58,7 @@ export function MultiBarChart({ data, series, unit, eventsByYear, decimals = 1 }
           tickMargin={4}
           width={40}
           domain={['auto', 'auto']}
-          tickFormatter={(v: number) => formatNumber(v, 0)}
+          tickFormatter={formatCompact}
         />
         <ChartTooltip
           cursor={false}

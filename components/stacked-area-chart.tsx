@@ -10,10 +10,9 @@ import {
   ChartLegend,
   ChartLegendContent,
   ChartTooltip,
-  ChartTooltipContent,
 } from '@/components/ui/chart'
 import type { Event } from '@/data/events'
-import { formatNumber } from '@/utils/format'
+import { formatCompact, formatNumber } from '@/utils/format'
 
 type DataPoint = Record<string, unknown> & { ts?: number; label?: string }
 
@@ -58,34 +57,39 @@ export function StackedAreaChart({ data, series, unit, eventsByYear, decimals = 
           tickMargin={4}
           width={40}
           domain={['auto', 'auto']}
-          tickFormatter={(v: number) => formatNumber(v, 0)}
+          tickFormatter={formatCompact}
         />
         <ChartTooltip
           cursor={false}
-          content={
-            <ChartTooltipContent
-              indicator="dot"
-              labelClassName="text-xs font-light text-muted-foreground"
-              labelFormatter={(_label, payload) => String(payload?.[0]?.payload?.label ?? _label)}
-              formatter={(value, name) => (
-                <>
-                  <div
-                    className="h-2.5 w-2.5 shrink-0 rounded-xs"
-                    style={{ backgroundColor: `var(--color-${name})` }}
-                  />
-                  <div className="flex flex-1 items-center justify-between gap-4 leading-none">
-                    <span className="text-muted-foreground">
-                      {chartConfig[name as string]?.label ?? name}
-                    </span>
-                    <span className="font-mono font-medium tabular-nums text-foreground">
-                      {formatNumber(Number(value), decimals)}
+          content={({ active, payload }) => {
+            if (!active || !payload?.length) return null
+            const label = String(payload[0]?.payload?.label ?? '')
+            const total = series.reduce((sum, s) => sum + Number(payload[0]?.payload?.[s.key] ?? 0), 0)
+            return (
+              <div className="rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl">
+                <div className="mb-1.5 text-xs font-light text-muted-foreground">{label}</div>
+                <div className="grid gap-1.5">
+                  {series.map((s) => (
+                    <div key={s.key} className="flex items-center gap-2">
+                      <div className="h-2.5 w-2.5 shrink-0 rounded-xs" style={{ backgroundColor: s.color }} />
+                      <span className="text-muted-foreground">{s.label}</span>
+                      <span className="ml-auto font-mono font-medium tabular-nums text-foreground">
+                        {formatNumber(Number(payload[0]?.payload?.[s.key] ?? 0), decimals)}
+                        {unit ? ` ${unit}` : ''}
+                      </span>
+                    </div>
+                  ))}
+                  <div className="flex items-center border-t pt-1.5 text-xs font-medium text-foreground">
+                    Total
+                    <span className="ml-auto font-mono font-medium tabular-nums">
+                      {formatNumber(total, decimals)}
                       {unit ? ` ${unit}` : ''}
                     </span>
                   </div>
-                </>
-              )}
-            />
-          }
+                </div>
+              </div>
+            )
+          }}
         />
         <ChartLegend content={<ChartLegendContent className="flex-wrap" />} />
         {eventsByYear

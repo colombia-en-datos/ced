@@ -26,3 +26,11 @@ export function formatNumber(value: number, decimals?: number): string {
     maximumFractionDigits: decimals ?? 0,
   })
 }
+
+/** Compact format for chart Y-axis ticks: 1.200.000 → "1,2M", 45.000 → "45K" */
+export function formatCompact(value: number): string {
+  const abs = Math.abs(value)
+  if (abs >= 1e6) return `${(value / 1e6).toLocaleString('es-CO', { maximumFractionDigits: 1 })}M`
+  if (abs >= 1e3) return `${(value / 1e3).toLocaleString('es-CO', { maximumFractionDigits: 0 })}K`
+  return value.toLocaleString('es-CO', { maximumFractionDigits: 0 })
+}

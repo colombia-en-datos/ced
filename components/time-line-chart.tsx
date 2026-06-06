@@ -6,7 +6,7 @@ import { EventMarker } from '@/components/event-marker'
 import { type ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import type { Event } from '@/data/events'
 import { cn } from '@/lib/utils'
-import { formatNumber } from '@/utils/format'
+import { formatCompact, formatNumber } from '@/utils/format'
 
 type DataPoint = Record<string, unknown> & { isPartial?: boolean; ts?: number; label?: string }
 
@@ -227,7 +227,7 @@ export function TimeLineChart({
             tickMargin={4}
             width={40}
             domain={['auto', 'auto']}
-            tickFormatter={(v: number) => formatNumber(v, decimals > 2 ? 0 : decimals)}
+            tickFormatter={formatCompact}
           />
           <ChartTooltip
             cursor={false}

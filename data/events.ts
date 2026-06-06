@@ -38,7 +38,7 @@ export const EVENT_GROUPS: EventGroup[] = [
       { id: 6, date: new Date('2008-09-15'), label: 'Crisis financiera global' },
       { id: 9, date: new Date('2012-05-15'), label: 'Entrada en vigor TLC con EE.UU.' },
       { id: 11, date: new Date('2014-11-27'), label: 'Colapso precio del petróleo' },
-      { id: 16, date: new Date('2020-03-25'), label: 'COVID-19 — PIB cae 6.8%' },
+      { id: 16, date: new Date('2020-03-25'), label: 'COVID-19' },
       { id: 17, date: new Date('2021-04-28'), label: 'Paro Nacional — reforma tributaria retirada' },
     ],
   },
