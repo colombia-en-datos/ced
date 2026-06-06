@@ -2,6 +2,8 @@ import { Sector } from '@/config/sectors'
 import { indicatorManifest, type SectorCategory } from './types'
 
 export enum EconomyIndicators {
+  BudgetByType = 'budget_by_type',
+  BudgetInvestment = 'budget_investment',
   Colcap = 'colcap',
   ExchangeRate = 'exchange_rate',
   ExternalDebt = 'external_debt',
@@ -236,6 +238,44 @@ export const USED_HOUSING_PRICE_MANIFEST = indicatorManifest.parse({
   positiveDirection: 'up',
 })
 
+export const BUDGET_BY_TYPE_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.BudgetByType}`,
+  sector: Sector.Economia,
+  label: 'Presupuesto por tipo de gasto',
+  description:
+    'Pagos del Presupuesto General de la Nación desagregados por tipo de gasto: funcionamiento, inversión y servicio de la deuda pública. Valores acumulados al último mes disponible de cada año.',
+  question: '¿Qué proporción del presupuesto se destina a inversión frente a funcionamiento y deuda?',
+  source: 'MinHacienda',
+  sourceUrl:
+    'https://www.datos.gov.co/Hacienda-y-Cr-dito-P-blico/Informaci-n-de-Gastos-del-Presupuesto-General-de-l/5phs-yqfw/about_data',
+  resourceId: '5phs-yqfw',
+  queryKey: 'budgetByType',
+  query:
+    '$select=anio,nombretipogasto,nombremes,sum(pagos) as total&$group=anio,nombretipogasto,nombremes&$order=anio ASC&$limit=5000',
+  unit: 'Billones COP',
+  cacheTTL: 604800,
+  positiveDirection: 'up',
+})
+
+export const BUDGET_INVESTMENT_MANIFEST = indicatorManifest.parse({
+  id: `${Sector.Economia}_${EconomyIndicators.BudgetInvestment}`,
+  sector: Sector.Economia,
+  label: 'Inversión pública por sector',
+  description:
+    'Pagos de inversión del Presupuesto General de la Nación, desagregados por los 8 sectores con mayor inversión. Valores acumulados a diciembre de cada año.',
+  question: '¿Cómo distribuye el gobierno colombiano su inversión entre los distintos sectores?',
+  source: 'MinHacienda',
+  sourceUrl:
+    'https://www.datos.gov.co/Hacienda-y-Cr-dito-P-blico/Informaci-n-de-Gastos-del-Presupuesto-General-de-l/5phs-yqfw/about_data',
+  resourceId: '5phs-yqfw',
+  queryKey: 'budgetInvestment',
+  query:
+    "$select=anio,sector,nombremes,sum(pagos) as total&$where=nombretipogasto='INVERSION'&$group=anio,sector,nombremes&$order=anio ASC&$limit=5000",
+  unit: 'Billones COP',
+  cacheTTL: 604800,
+  positiveDirection: 'up',
+})
+
 export const ECONOMY_CATEGORIES: SectorCategory<EconomyIndicators>[] = [
   {
     id: 'activity',
@@ -277,6 +317,36 @@ export const ECONOMY_CATEGORIES: SectorCategory<EconomyIndicators>[] = [
     items: [
       { type: 'indicator', id: EconomyIndicators.PolicyRate },
       { type: 'indicator', id: EconomyIndicators.Colcap },
+    ],
+  },
+  {
+    id: 'spending',
+    label: 'Gasto público',
+    description: 'Distribución de la inversión del gobierno nacional por sector.',
+    items: [
+      {
+        type: 'multi-series',
+        id: EconomyIndicators.BudgetByType,
+        series: [
+          { key: 'funcionamiento', label: 'Funcionamiento', color: 'oklch(0.62 0.21 260)' },
+          { key: 'inversion', label: 'Inversión', color: 'oklch(0.72 0.17 145)' },
+          { key: 'deuda', label: 'Servicio de la deuda', color: 'oklch(0.65 0.22 25)' },
+        ],
+      },
+      {
+        type: 'multi-series',
+        id: EconomyIndicators.BudgetInvestment,
+        series: [
+          { key: 'transporte', label: 'Transporte', color: 'oklch(0.62 0.21 260)' },
+          { key: 'inclusionSocial', label: 'Inclusión social', color: 'oklch(0.72 0.17 145)' },
+          { key: 'igualdadEquidad', label: 'Igualdad y equidad', color: 'oklch(0.65 0.22 350)' },
+          { key: 'educacion', label: 'Educación', color: 'oklch(0.75 0.18 75)' },
+          { key: 'trabajo', label: 'Trabajo', color: 'oklch(0.65 0.22 25)' },
+          { key: 'minasEnergia', label: 'Minas y energía', color: 'oklch(0.68 0.19 200)' },
+          { key: 'vivienda', label: 'Vivienda', color: 'oklch(0.70 0.16 310)' },
+          { key: 'agricultura', label: 'Agricultura', color: 'oklch(0.72 0.20 115)' },
+        ],
+      },
     ],
   },
 ]

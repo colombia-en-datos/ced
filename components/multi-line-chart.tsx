@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useId, useMemo } from 'react'
 import { CartesianGrid, Line, LineChart, ReferenceLine, XAxis, YAxis } from 'recharts'
 import { InfoTip } from '@/components/info-tip'
 import {
@@ -31,6 +31,13 @@ type MultiLineChartProps = {
 }
 
 export function MultiLineChart({ data, series, unit, eventsByYear, decimals = 1 }: MultiLineChartProps) {
+  const instanceId = useId()
+  const gradientPrefix = `ml-mask-${instanceId.replaceAll(':', '')}`
+
+  const partialCount = data.filter((d) => d.isPartial).length
+  const hasPartial = partialCount > 0
+  const solidRatio = hasPartial ? ((data.length - partialCount) / data.length) * 100 : 100
+
   const labelByTs = useMemo(() => {
     const map = new Map<number, string>()
     for (const d of data) {
@@ -90,7 +97,7 @@ export function MultiLineChart({ data, series, unit, eventsByYear, decimals = 1 
             />
           }
         />
-        <ChartLegend content={<ChartLegendContent />} />
+        <ChartLegend content={<ChartLegendContent className="flex-wrap" />} />
         {eventsByYear
           ? Array.from(eventsByYear.entries()).flatMap(([year, yearEvents]) => {
               const eventTs = yearEvents[0].date.getTime()
@@ -106,16 +113,50 @@ export function MultiLineChart({ data, series, unit, eventsByYear, decimals = 1 
               )
             })
           : null}
-        {series.map((s) => (
-          <Line
-            key={s.key}
-            dataKey={s.key}
-            type="monotone"
-            stroke={`var(--color-${s.key})`}
-            strokeWidth={2}
-            dot={false}
-          />
-        ))}
+        {hasPartial && (
+          <defs>
+            {series.map((s) => (
+              <linearGradient key={s.key} id={`${gradientPrefix}-${s.key}`} x1="0%" y1="0" x2="100%" y2="0">
+                <stop offset="0%" stopColor={s.color} />
+                <stop offset={`${solidRatio}%`} stopColor={s.color} />
+                <stop offset={`${solidRatio}%`} stopColor="transparent" />
+                <stop offset="100%" stopColor="transparent" />
+              </linearGradient>
+            ))}
+          </defs>
+        )}
+        {hasPartial
+          ? series.flatMap((s) => [
+              <Line
+                key={`${s.key}-dash`}
+                dataKey={s.key}
+                type="monotone"
+                stroke={`var(--color-${s.key})`}
+                strokeWidth={2}
+                strokeDasharray="5 5"
+                dot={false}
+                tooltipType="none"
+              />,
+              <Line
+                key={s.key}
+                dataKey={s.key}
+                type="monotone"
+                stroke={`url(#${gradientPrefix}-${s.key})`}
+                strokeWidth={2}
+                dot={false}
+                legendType="none"
+              />,
+            ])
+          : series.map((s) => (
+              <Line
+                key={s.key}
+                dataKey={s.key}
+                type="monotone"
+                stroke={`var(--color-${s.key})`}
+                strokeWidth={2}
+                dot={false}
+              />
+            ))}
       </LineChart>
     </ChartContainer>
   )

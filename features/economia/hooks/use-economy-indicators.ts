@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
+import type { CategoryChartItem } from '@/components/category-tabs'
 import { ECONOMY_CATEGORIES, type EconomyIndicators } from '@/data/economy'
+import type { MultiSeriesResult } from '@/data/types'
 import type { IndicatorResult } from '@/hooks/use-indicator-by-year'
 import {
   useColcapByDay,
@@ -16,6 +18,8 @@ import {
   useUnemploymentByMonth,
   useUsedHousingPriceByMonth,
 } from '../api/indicators'
+import { useBudgetByTypeByYear } from '../api/use-budget-by-type'
+import { useBudgetInvestmentByYear } from '../api/use-budget-investment'
 import { useRealMinimumWageByYear } from '../api/use-real-minimum-wage'
 
 export function useEconomyIndicators(activeCategory: string) {
@@ -31,7 +35,7 @@ export function useEconomyIndicators(activeCategory: string) {
     enabled: activeIds.has(id as EconomyIndicators) || secondWaveEnabled,
   })
 
-  const byId: Record<`${EconomyIndicators}`, IndicatorResult> = {
+  const indicatorById: Record<string, IndicatorResult> = {
     gdp_growth: useGdpGrowthByYear(on('gdp_growth')),
     inflation: useInflationByMonth(on('inflation')),
     exchange_rate: useExchangeRateByDay(on('exchange_rate')),
@@ -48,7 +52,14 @@ export function useEconomyIndicators(activeCategory: string) {
     used_housing_price: useUsedHousingPriceByMonth(on('used_housing_price')),
   }
 
-  const activeLoaded = [...activeIds].every((id) => byId[id]?.data !== undefined)
+  const multiById: Record<string, MultiSeriesResult> = {
+    budget_by_type: useBudgetByTypeByYear(on('budget_by_type')),
+    budget_investment: useBudgetInvestmentByYear(on('budget_investment')),
+  }
+
+  const activeLoaded = [...activeIds].every(
+    (id) => indicatorById[id]?.data !== undefined || multiById[id]?.data !== undefined
+  )
 
   useEffect(() => {
     if (activeLoaded && !secondWaveEnabled) {
@@ -56,11 +67,16 @@ export function useEconomyIndicators(activeCategory: string) {
     }
   }, [activeLoaded, secondWaveEnabled])
 
-  const allIndicators = Object.values(byId)
+  const allIndicators = Object.values(indicatorById)
 
   const categories = ECONOMY_CATEGORIES.map((cat) => ({
     ...cat,
-    items: cat.items.map((item) => ({ type: 'indicator' as const, data: byId[item.id] })),
+    items: cat.items.map((item): CategoryChartItem => {
+      if (item.type === 'indicator') {
+        return { type: 'indicator', data: indicatorById[item.id] }
+      }
+      return { type: 'multi-series', data: multiById[item.id], series: item.series }
+    }),
   }))
 
   return { allIndicators, categories }
