@@ -12,7 +12,7 @@ import {
 import type React from 'react'
 
 export enum Sector {
-  Overview = 'overview',
+  Inicio = 'inicio',
   Seguridad = 'seguridad',
   Economia = 'economia',
   Educacion = 'educacion',
@@ -24,7 +24,6 @@ export enum Sector {
 }
 
 export const sectors = [
-  { title: 'Overview', url: '/', slug: Sector.Overview },
   { title: 'Seguridad', url: '/seguridad', slug: Sector.Seguridad },
   { title: 'Economía', url: '/economia', slug: Sector.Economia },
   { title: 'Educación', url: '/educacion', slug: Sector.Educacion },
@@ -40,7 +39,7 @@ export const sectors = [
 ] as const
 
 export const sectorIcons: Record<Sector, React.ReactNode> = {
-  [Sector.Overview]: <IconCategory />,
+  [Sector.Inicio]: <IconCategory />,
   [Sector.Seguridad]: <IconShieldLock />,
   [Sector.Economia]: <IconBuildingBank />,
   [Sector.Educacion]: <IconSchool />,

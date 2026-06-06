@@ -30,7 +30,7 @@ import {
 import { Sector, sectors } from '@/config/sectors'
 
 const sectorIcons: Record<Sector, React.ReactNode> = {
-  [Sector.Overview]: <IconCategory />,
+  [Sector.Inicio]: <IconCategory />,
   [Sector.Seguridad]: <IconShieldLock />,
   [Sector.Economia]: <IconBuildingBank />,
   [Sector.Educacion]: <IconSchool />,
@@ -48,7 +48,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     title: s.title,
     url: s.url,
     icon: sectorIcons[s.slug],
-    isActive: s.url === '/' ? pathname === '/' : pathname.startsWith(s.url),
+    isActive: pathname.startsWith(s.url),
   }))
 
   return (
