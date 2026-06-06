@@ -75,7 +75,7 @@ export function useEconomyIndicators(activeCategory: string) {
       if (item.type === 'indicator') {
         return { type: 'indicator', data: indicatorById[item.id] }
       }
-      return { type: 'multi-series', data: multiById[item.id], series: item.series }
+      return { type: item.type, data: multiById[item.id], series: item.series }
     }),
   }))
 

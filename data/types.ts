@@ -28,6 +28,8 @@ export type IndicatorManifest = z.infer<typeof indicatorManifest>
 export type SectorCategoryItem<T extends string> =
   | { type: 'indicator'; id: T }
   | { type: 'multi-series'; id: T; series: SeriesConfig[] }
+  | { type: 'bar-chart'; id: T; series: SeriesConfig[] }
+  | { type: 'stacked-area'; id: T; series: SeriesConfig[] }
 
 export type SectorCategory<T extends string> = {
   id: string

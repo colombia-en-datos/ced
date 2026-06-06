@@ -1,9 +1,11 @@
 'use client'
 
 import { omit } from 'es-toolkit'
+import { BarChartCard } from '@/components/bar-chart-card'
 import { IndicatorChart } from '@/components/indicator-chart'
 import type { SeriesConfig } from '@/components/multi-line-chart'
 import { MultiSeriesChart } from '@/components/multi-series-chart'
+import { StackedAreaChartCard } from '@/components/stacked-area-chart-card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { Event } from '@/data/events'
 import type { MultiSeriesResult } from '@/data/types'
@@ -12,6 +14,8 @@ import type { IndicatorResult } from '@/hooks/use-indicator-by-year'
 export type CategoryChartItem =
   | { type: 'indicator'; data: IndicatorResult }
   | { type: 'multi-series'; data: MultiSeriesResult; series: SeriesConfig[] }
+  | { type: 'bar-chart'; data: MultiSeriesResult; series: SeriesConfig[] }
+  | { type: 'stacked-area'; data: MultiSeriesResult; series: SeriesConfig[] }
 
 export type Category = {
   id: string
@@ -39,6 +43,10 @@ function ChartItem({ item, eventsByYear }: { item: CategoryChartItem; eventsByYe
       )
     case 'multi-series':
       return <MultiSeriesChart result={item.data} series={item.series} eventsByYear={eventsByYear} />
+    case 'bar-chart':
+      return <BarChartCard result={item.data} series={item.series} eventsByYear={eventsByYear} />
+    case 'stacked-area':
+      return <StackedAreaChartCard result={item.data} series={item.series} eventsByYear={eventsByYear} />
   }
 }
 
